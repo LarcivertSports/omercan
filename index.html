@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LarcivertSports</title>
+    <title>The Ömercan</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -19,6 +19,7 @@
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
+            overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu çıksın */
         }
 
         .container {
@@ -31,6 +32,8 @@
             -webkit-backdrop-filter: blur(10px);
             max-width: 500px;
             width: 100%;
+            margin-top: 20px; /* Üstten boşluk */
+            margin-bottom: 20px; /* Alttan boşluk */
         }
 
         /* Profil Resmi */
@@ -60,7 +63,7 @@
         }
 
         /* Ana ve Alt Kategori Butonları */
-        .category-button, .sub-link-button {
+        .category-button {
             display: block;
             background-color: rgba(255, 255, 255, 0.9);
             color: #333;
@@ -73,10 +76,11 @@
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             position: relative;
-            cursor: pointer; /* Tıklanabilir olduğunu belirtir */
+            cursor: pointer;
+            text-align: left; /* Metni sola hizala */
         }
 
-        .category-button:hover, .sub-link-button:hover {
+        .category-button:hover {
             background-color: #fff;
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -84,25 +88,50 @@
 
         /* Alt Kategoriler için Konteyner */
         .sub-category-links {
-            display: none; /* Varsayılan olarak gizli */
-            padding-left: 20px; /* İçeriden boşluk bırakır */
-            margin-top: -5px; /* Üstteki butonla arayı kapatır */
+            display: none;
+            padding-left: 20px;
+            margin-top: -5px;
             margin-bottom: 15px;
-            border-left: 3px solid rgba(255, 255, 255, 0.5); /* Solunda çizgi */
+            border-left: 3px solid rgba(255, 255, 255, 0.5);
         }
 
         .sub-category-links.active {
-            display: block; /* Aktif olduğunda görünür */
+            display: block;
         }
 
+        /* Yeni: Butonları içeren grid kapsayıcısı */
+        .sub-link-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* İki eşit sütun */
+            gap: 10px; /* Butonlar arası boşluk */
+            margin-bottom: 10px; /* Gridin altındaki boşluk */
+        }
+
+        /* Alt kategori butonları (grid içinde) */
         .sub-link-button {
-            background-color: rgba(255, 255, 255, 0.7); /* Alt butonların rengi biraz farklı */
-            margin-bottom: 10px; /* Alt butonlar arasında daha az boşluk */
-            font-size: 1em; /* Alt butonların yazı tipi boyutu biraz küçük */
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #333;
+            padding: 15px 10px; /* İç boşluğu ayarla */
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95em; /* Küçük ekranlarda sığması için font boyutu */
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            cursor: pointer;
+            text-align: left; /* Metni sola hizala */
+            display: flex; /* İkon ve metni hizalamak için */
+            align-items: center; /* Dikeyde ortala */
+            justify-content: flex-start; /* Yatayda sola hizala */
+            width: 100%; /* Sütunun tüm genişliğini kapla */
+            box-sizing: border-box; /* Padding ve border genişliğe dahil */
         }
 
-        .sub-link-button:last-child {
-            margin-bottom: 0; /* Son alt butonun altında boşluk olmasın */
+        .sub-link-button:hover {
+            background-color: #fff;
+            transform: translateY(-3px); /* Daha az yükselme */
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
         }
 
         /* Sosyal Medya İkonları */
@@ -138,50 +167,123 @@
         .category-button i, .sub-link-button i {
             margin-right: 10px;
         }
+
+        /* Medya Oynatıcı Konteyneri */
+        .media-player-in-category {
+            display: none;
+            margin-top: 15px;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .media-player-in-category.active {
+            display: block;
+        }
+
+        .media-player-in-category iframe,
+        .media-player-in-category video,
+        .media-player-in-category audio {
+            width: 100%;
+            max-width: 100%;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* HLS Oynatıcı için özel stil */
+        .hls-player-wrapper {
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .hls-player-wrapper .aspect-ratio-box {
+            padding-bottom: 56.25%; /* 16:9 en boy oranı için (9/16 = 0.5625) */
+            height: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hls-player-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        /* Küçük ekranlar için medya sorgusu */
+        @media (max-width: 480px) {
+            .sub-link-buttons-grid {
+                grid-template-columns: 1fr; /* Küçük ekranlarda tek sütun */
+            }
+            .sub-link-button {
+                font-size: 1em; /* Tek sütunda daha büyük font */
+            }
+            .container {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <img src="https://via.placeholder.com/120" alt="Profil Resmi" class="profile-img">
-        <h1>Larcivert Sports</h1>
+        <h1>Adınız Soyadınız</h1>
         <p>Ben bir web geliştiriciyim ve burada tüm bağlantılarımı bulabilirsiniz!</p>
 
         <div class="category-button" data-target="projeler">
             <i class="fas fa-code"></i> Beinsports
         </div>
         <div class="sub-category-links" id="projeler">
-            <a href="https://larcivertsports.blogspot.com/p/bein-sports-1-yedek-1.html" target="_blank" class="sub-link-button">
-                <i class="fab fa-github"></i> Bein 1
-            </a>
-            <a href="https://proje2.com" target="_blank" class="sub-link-button">
-                <i class="fas fa-globe"></i> Proje 2 (Canlı Site)
-            </a>
-            <a href="https://behance.net/sizinprofiliniz" target="_blank" class="sub-link-button">
-                <i class="fab fa-behance"></i> Tasarım Portfolyom
-            </a>
+            <div class="sub-link-buttons-grid">
+                <button class="sub-link-button media-trigger" data-media-id="beinsports1-hls" data-player-target="player-projeler">
+                    <i class="fas fa-play-circle"></i> Beinsports 1
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="beinsports2-hls" data-player-target="player-projeler">
+                    <i class="fas fa-play-circle"></i> Beinsports 2
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje3-hls" data-player-target="player-projeler">
+                    <i class="fas fa-play-circle"></i> Proje 3
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje4-hls" data-player-target="player-projeler">
+                    <i class="fas fa-play-circle"></i> Proje 4
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje5-hls" data-player-target="player-projeler">
+                    <i class="fas fa-play-circle"></i> Proje 5
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje6-hls" data-player-target="player-projeler">
+                    <i class="fas fa-play-circle"></i> Proje 6
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje7-hls" data-player-target="player-projeler">
+                    <i class="fas fa-play-circle"></i> Proje 7
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje8-hls" data-player-target="player-projeler">
+                    <i class="fas fa-play-circle"></i> Proje 8
+                </button>
+            </div>
+            
+            <div class="media-player-in-category" id="player-projeler">
+                <button class="close-button" onclick="closeMediaPlayer('player-projeler')">×</button>
+                <div class="media-player-content-inner">
+                    </div>
+            </div>
         </div>
-
-        <div class="category-button" data-target="iletisim">
-            <i class="fas fa-address-book"></i> İletişim Bilgileri
-        </div>
-        <div class="sub-category-links" id="iletisim">
-            <a href="mailto:sizinemailadresiniz@example.com" class="sub-link-button">
-                <i class="fas fa-envelope"></i> Bana E-posta Gönder
-            </a>
-            <a href="https://wa.me/sizintelefonnumaraniz" target="_blank" class="sub-link-button">
-                <i class="fab fa-whatsapp"></i> WhatsApp
-            </a>
-            <a href="tel:+905XXXXXXXXX" class="sub-link-button">
-                <i class="fas fa-phone"></i> Beni Ara
-            </a>
-        </div>
-
-        <a href="https://www.linkedin.com/in/sizinprofiliniz" target="_blank" class="link-button">
-            <i class="fab fa-linkedin"></i> LinkedIn Profilim
-        </a>
-        <a href="https://sizinblogadresiniz.com" target="_blank" class="link-button">
-            <i class="fas fa-blog"></i> Blogum
-        </a>
 
         <div class="social-icons">
             <a href="https://instagram.com/sizinkullaniciadiniz" target="_blank" class="social-icon-link">
@@ -199,10 +301,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const categoryButtons = document.querySelectorAll('.category-button');
+            const mediaTriggers = document.querySelectorAll('.media-trigger');
 
+            // Ana kategori butonları için tıklama olayları
             categoryButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const targetId = this.dataset.target; // data-target'taki ID'yi alır
+                    const targetId = this.dataset.target;
                     const subCategoryLinks = document.getElementById(targetId);
 
                     // Tıklanan alt kategoriyi aç/kapat
@@ -212,11 +316,118 @@
                     document.querySelectorAll('.sub-category-links').forEach(otherSubCategory => {
                         if (otherSubCategory.id !== targetId) {
                             otherSubCategory.classList.remove('active');
+                            // Diğer alt kategorilerin içindeki medya oynatıcıları kapat
+                            otherSubCategory.querySelectorAll('.media-player-in-category').forEach(player => {
+                                player.classList.remove('active');
+                                player.querySelector('.media-player-content-inner').innerHTML = ''; // İçeriği temizle
+                            });
                         }
+                    });
+
+                    // Açılan alt kategorideki medya oynatıcıyı da kapat
+                    subCategoryLinks.querySelectorAll('.media-player-in-category').forEach(player => {
+                        player.classList.remove('active');
+                        player.querySelector('.media-player-content-inner').innerHTML = '';
                     });
                 });
             });
+
+            // Medya oynatıcı tetikleyici butonlar için tıklama olayları
+            mediaTriggers.forEach(button => {
+                button.addEventListener('click', function() {
+                    const mediaId = this.dataset.mediaId;
+                    const playerTargetId = this.dataset.playerTarget;
+                    const mediaPlayerContainer = document.getElementById(playerTargetId);
+                    const mediaPlayerContent = mediaPlayerContainer.querySelector('.media-player-content-inner');
+
+                    let mediaCode = '';
+
+                    // Tüm medya oynatıcıları gizle ve içeriklerini temizle
+                    document.querySelectorAll('.media-player-in-category').forEach(player => {
+                        player.classList.remove('active');
+                        player.querySelector('.media-player-content-inner').innerHTML = '';
+                    });
+
+                    // Hangi medyanın yükleneceğine karar ver
+                    switch (mediaId) {
+                        case 'beinsports1-hls':
+                            mediaCode = `
+                                <div class="hls-player-wrapper">
+                                    <div class="aspect-ratio-box">
+                                        <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsbeinsports-1%2Fplaylist.m3u8"
+                                                frameborder="0" allowfullscreen>
+                                        </iframe>
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                        case 'beinsports2-hls':
+                            mediaCode = `
+                                <div class="hls-player-wrapper">
+                                    <div class="aspect-ratio-box">
+                                        <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsbeinsports-2%2Fplaylist.m3u8&autoplay=1"
+                                                frameborder="0" allowfullscreen>
+                                        </iframe>
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                        case 'proje3-hls': // Diğer projeler için örnek (isteğe bağlı olarak güncellenebilir)
+                        case 'proje4-hls':
+                        case 'proje5-hls':
+                        case 'proje6-hls':
+                        case 'proje7-hls':
+                        case 'proje8-hls':
+                            // Aynı HLS yayınını kullanmaya devam ediyorlarsa
+                            mediaCode = `
+                                <div class="hls-player-wrapper">
+                                    <div class="aspect-ratio-box">
+                                        <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsbeinsports-1%2Fplaylist.m3u8"
+                                                frameborder="0" allowfullscreen>
+                                        </iframe>
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                        case 'youtube-video': // HTML'den kaldırıldı, JS'de işlevsiz kaldı
+                            mediaCode = `
+                                <iframe width="100%" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            `;
+                            break;
+                        case 'spotify-podcast': // HTML'den kaldırıldı, JS'de işlevsiz kaldı
+                            mediaCode = `
+                                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/7sM6u4Vb4w8g9mR5v3k5f3?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            `;
+                            break;
+                        case 'local-audio': // HTML'den kaldırıldı, JS'de işlevsiz kaldı
+                            mediaCode = `
+                                <audio controls style="width: 100%;">
+                                    <source src="YOUR_AUDIO_FILE_URL.mp3" type="audio/mpeg">
+                                    Tarayıcınız ses oynatmayı desteklemiyor.
+                                </audio>
+                            `;
+                            break;
+                        default:
+                            mediaCode = '<p>Medya içeriği bulunamadı.</p>';
+                    }
+
+                    // Medya oynatıcı içeriğini güncelle
+                    mediaPlayerContent.innerHTML = mediaCode;
+                    // Medya oynatıcıyı göster
+                    mediaPlayerContainer.classList.add('active');
+
+                    // Diğer tüm alt kategorileri kapatma burada değil, sadece oynatıcıyı kontrol et
+                });
+            });
         });
+
+        // Medya oynatıcıyı kapatma fonksiyonu (hangi oynatıcı ID'sinin kapatılacağını belirtir)
+        function closeMediaPlayer(playerTargetId) {
+            const mediaPlayerContainer = document.getElementById(playerTargetId);
+            const mediaPlayerContent = mediaPlayerContainer.querySelector('.media-player-content-inner');
+            mediaPlayerContainer.classList.remove('active');
+            mediaPlayerContent.innerHTML = ''; // İçeriği temizle
+        }
     </script>
 </body>
 </html>

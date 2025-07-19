@@ -326,7 +326,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             const categoryButtons = document.querySelectorAll('.category-button');
             const mediaTriggers = document.querySelectorAll('.media-trigger');
-            const lastWatchedButton = document.getElementById('lastWatchedButton'); // Get the new button
+            const lastWatchedButton = document.getElementById('lastWatchedButton');
+
+            // Helper function to close all media players except a specified one
+            function closeAllMediaPlayersExcept(excludedPlayerId) {
+                document.querySelectorAll('.media-player-in-category').forEach(player => {
+                    if (player.id !== excludedPlayerId) {
+                        player.classList.remove('active');
+                        player.querySelector('.media-player-content-inner').innerHTML = '';
+                    }
+                });
+            }
 
             // Ana kategori butonları için tıklama olayları
             categoryButtons.forEach(button => {
@@ -334,36 +344,25 @@
                     const targetId = this.dataset.target;
                     const subCategoryLinks = document.getElementById(targetId);
 
-                    // Tıklanan alt kategoriyi aç/kapat
-                    if (targetId !== 'lastWatchedButton') { // If it's not the last watched button
+                    // Close all media players when a category button is clicked, except if it's the last watched button being clicked
+                    if (targetId !== 'lastWatchedButton') {
+                        closeAllMediaPlayersExcept(''); // Close all players
+                    } else {
+                        // If last watched button is clicked, it will handle closing other players itself
+                    }
+
+                    // Toggle the active state for the clicked sub-category links
+                    if (subCategoryLinks && targetId !== 'lastWatchedButton') {
                         subCategoryLinks.classList.toggle('active');
                     }
 
 
-                    // Diğer tüm alt kategorileri kapat
+                    // Close all other sub-category links
                     document.querySelectorAll('.sub-category-links').forEach(otherSubCategory => {
                         if (otherSubCategory.id !== targetId) {
                             otherSubCategory.classList.remove('active');
-                            // Diğer alt kategorilerin içindeki medya oynatıcıları kapat
-                            otherSubCategory.querySelectorAll('.media-player-in-category').forEach(player => {
-                                player.classList.remove('active');
-                                player.querySelector('.media-player-content-inner').innerHTML = ''; // İçeriği temizle
-                            });
                         }
                     });
-
-                    // Açılan alt kategorideki medya oynatıcıyı da kapat
-                    if (subCategoryLinks && targetId !== 'lastWatchedButton') {
-                        subCategoryLinks.querySelectorAll('.media-player-in-category').forEach(player => {
-                            player.classList.remove('active');
-                            player.querySelector('.media-player-content-inner').innerHTML = '';
-                        });
-                    }
-
-                    // Ensure last watched player is also closed if a category is opened/closed
-                    if (targetId !== 'lastWatchedButton') {
-                        closeMediaPlayer('player-last-watched');
-                    }
                 });
             });
 
@@ -371,18 +370,19 @@
             mediaTriggers.forEach(button => {
                 button.addEventListener('click', function() {
                     const mediaId = this.dataset.mediaId;
-                    const playerTargetId = this.dataset.playerTarget;
+                    const playerTargetId = this.dataset.playerTarget; // e.g., 'player-spor'
                     const mediaPlayerContainer = document.getElementById(playerTargetId);
                     const mediaPlayerContent = mediaPlayerContainer.querySelector('.media-player-content-inner');
 
                     // Save last watched channel to local storage
                     localStorage.setItem('lastWatchedMediaId', mediaId);
-                    // localStorage.setItem('lastWatchedPlayerTarget', playerTargetId); // Not strictly needed if always loading into 'player-last-watched'
 
-                    // Tüm medya oynatıcıları gizle ve içeriklerini temizle (including last watched player)
-                    document.querySelectorAll('.media-player-in-category').forEach(player => {
-                        player.classList.remove('active');
-                        player.querySelector('.media-player-content-inner').innerHTML = '';
+                    // Close all media players except the one that's about to be activated
+                    closeAllMediaPlayersExcept(playerTargetId);
+
+                    // Close all sub-category links when a media is triggered
+                    document.querySelectorAll('.sub-category-links').forEach(subCategory => {
+                        subCategory.classList.remove('active');
                     });
 
                     loadMediaPlayerContent(mediaId, mediaPlayerContent, mediaPlayerContainer);
@@ -393,26 +393,16 @@
             if (lastWatchedButton) {
                 lastWatchedButton.addEventListener('click', function() {
                     const lastWatchedMediaId = localStorage.getItem('lastWatchedMediaId');
-                    // const lastWatchedPlayerTarget = localStorage.getItem('lastWatchedPlayerTarget'); // Not strictly needed
                     const lastWatchedPlayerContainer = document.getElementById('player-last-watched');
                     const lastWatchedPlayerContent = lastWatchedPlayerContainer.querySelector('.media-player-content-inner');
 
-                    // Close any currently active sub-category media players
-                    document.querySelectorAll('.media-player-in-category').forEach(player => {
-                        if (player.id !== 'player-last-watched') {
-                            player.classList.remove('active');
-                            player.querySelector('.media-player-content-inner').innerHTML = '';
-                        }
-                    });
+                    // Close all media players except the 'player-last-watched'
+                    closeAllMediaPlayersExcept('player-last-watched');
 
                     // Close all sub-category links
                     document.querySelectorAll('.sub-category-links').forEach(subCategory => {
                         subCategory.classList.remove('active');
                     });
-
-                    // Activate the last watched sub-category link wrapper
-                    lastWatchedPlayerContainer.classList.add('active');
-
 
                     if (lastWatchedMediaId) {
                         loadMediaPlayerContent(lastWatchedMediaId, lastWatchedPlayerContent, lastWatchedPlayerContainer);
@@ -559,7 +549,7 @@
                         mediaCode = `
                             <div class="hls-player-wrapper">
                                 <div class="aspect-ratio-box">
-                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-3%2Fplaylist.m3u8"
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-3%2Fplaylist.m320"
                                             frameborder="0" allowfullscreen>
                                     </iframe>
                                 </div>

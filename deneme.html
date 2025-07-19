@@ -44,7 +44,9 @@
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 20px;
+            /* Ortalamak için yeni eklenen stiller */
+            display: block; /* Blok element yap */
+            margin: 0 auto 20px auto; /* Üst ve alt marjin 20px, yanlar auto ile ortala */
             border: 4px solid #fff;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
         }
@@ -432,18 +434,6 @@
             <button class="close-button" onclick="closeMediaPlayer('player-last-watched')">×</button>
             <div class="media-player-content-inner">
                 </div>
-        </div>
-
-        <div class="social-icons">
-            <a href="https://instagram.com/sizinkullaniciadiniz" target="_blank" class="social-icon-link">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://twitter.com/sizinkullaniciadiniz" target="_blank" class="social-icon-link">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="https://tiktok.com/@sizinkullaniciadiniz" target="_blank" class="social-icon-link">
-                <i class="fab fa-tiktok"></i>
-            </a>
         </div>
     </div>
 
@@ -895,19 +885,6 @@
                                     </iframe>
                                 </div>
                             </div>
-                        `;
-                        break;
-                    case 'spotify-podcast':
-                        mediaCode = `
-                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/7sM6u4Vb4w8g9mR5v3k5f3?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-                        `;
-                        break;
-                    case 'local-audio':
-                        mediaCode = `
-                            <audio controls style="width: 100%;">
-                                <source src="YOUR_AUDIO_FILE_URL.mp3" type="audio/mpeg">
-                                Tarayıcınız ses oynatmayı desteklemiyor.
-                            </audio>
                         `;
                         break;
                     default:

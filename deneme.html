@@ -29,12 +29,24 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             max-width: 900px; /* Genişletildi */
             width: 100%;
             position: relative; /* İçerideki mutlak konumlu öğeler için */
             display: flex; /* İçerikleri yan yana hizalamak için */
             flex-direction: column; /* İçerikleri sütun halinde sıralamak için */
             gap: 20px; /* Elemanlar arası boşluk */
+        }
+
+        /* Profil Resmi */
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 4px solid #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
         }
 
         h1 {
@@ -99,7 +111,16 @@
             display: flex; /* Aktif olduğunda göster */
         }
 
-        .sub-category-links a {
+        /* Yeni: Butonları içeren grid kapsayıcısı */
+        .sub-link-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* İki eşit sütun */
+            gap: 10px; /* Butonlar arası boşluk */
+            margin-bottom: 10px; /* Gridin altındaki boşluk */
+        }
+
+        /* Alt kategori butonları (grid içinde) */
+        .sub-link-button {
             background-color: rgba(255, 255, 255, 0.1);
             color: #fff;
             padding: 12px 20px;
@@ -108,9 +129,13 @@
             transition: background-color 0.3s ease;
             display: block; /* Tam genişlik kaplaması için */
             font-size: 1em;
+            cursor: pointer; /* Ekledim */
+            border: none; /* Ekledim */
+            text-align: left; /* Ekledim */
         }
 
-        .sub-category-links a:hover {
+
+        .sub-link-button:hover {
             background-color: rgba(255, 255, 255, 0.2);
         }
 
@@ -215,102 +240,190 @@
             .category-buttons-grid {
                 grid-template-columns: 1fr; /* Küçük ekranlarda tek sütun */
             }
+            .sub-link-buttons-grid {
+                grid-template-columns: 1fr; /* Küçük ekranlarda tek sütun */
+            }
+            .sub-link-button {
+                font-size: 1em; /* Tek sütunda daha büyük font */
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Benim Bağlantılarım</h1>
-        <p class="description">
-            Aşağıdaki kategorilerden dilediğinizi seçerek ilgili bağlantılara ulaşabilir, medya içeriklerini anında oynatmaya başlayabilirsiniz.
-        </p>
+        <img src="https://via.placeholder.com/120" alt="Profil Resmi" class="profile-img">
+        <h1>The Ömercan</h1>
+        <p class="description">Ben bir web geliştiriciyim ve burada tüm bağlantılarımı bulabilirsiniz!</p>
 
         <div class="category-buttons-grid">
-            <div class="category-button" data-target="sporKanallari">
-                <i class="fas fa-futbol"></i> Spor Kanalları
+            <div class="category-button" data-target="projeler">
+                <i class="fas fa-basketball-ball"></i> Beinsports
             </div>
-            <div class="category-button" data-target="muzikPodcast">
-                <i class="fas fa-music"></i> Müzik & Podcast
+            <div class="category-button" data-target="tabiispor">
+                <i class="fas fa-basketball-ball"></i> TabiiSpor
             </div>
-            <div class="category-button" data-target="egitimKaynaklari">
-                <i class="fas fa-book-open"></i> Eğitim Kaynakları
+            <div class="category-button" data-target="tivibuspor">
+                <i class="fas fa-basketball-ball"></i> Tivibu Spor
             </div>
-            <div class="category-button" data-target="lastWatchedButton">
+            <div class="category-button" data-target="ssport">
+                <i class="fas fa-basketball-ball"></i> S Sport
+            </div>
+            <div class="category-button" data-target="smartsport">
+                <i class="fas fa-basketball-ball"></i> Smart Spor
+            </div>
+            <div class="category-button" data-target="trtspor">
+                <i class="fas fa-basketball-ball"></i> TRT SPOR Kanalları
+            </div>
+            <div class="category-button" data-target="diger_spor_kanallari">
+                <i class="fas fa-basketball-ball"></i> DİĞER SPOR KANALLARI
+            </div>
+            <div class="category-button" data-target="lastWatchedButton" id="lastWatchedButton">
                 <i class="fas fa-history"></i> Son İzlenen Kanal
             </div>
         </div>
 
-        <div id="sporKanallari" class="sub-category-links">
-            <h3>BeIN Sports</h3>
-            <a href="#" class="media-trigger" data-media-id="beinsports1-hls" data-player-target="player-spor">BeIN Sports 1</a>
-            <a href="#" class="media-trigger" data-media-id="beinsports2-hls" data-player-target="player-spor">BeIN Sports 2</a>
-            <a href="#" class="media-trigger" data-media-id="proje3-hls" data-player-target="player-spor">Proje 3</a>
-            <a href="#" class="media-trigger" data-media-id="proje4-hls" data-player-target="player-spor">Proje 4</a>
-            <a href="#" class="media-trigger" data-media-id="proje5-hls" data-player-target="player-spor">Proje 5</a>
-            <a href="#" class="media-trigger" data-media-id="proje6-hls" data-player-target="player-spor">Proje 6</a>
-            <a href="#" class="media-trigger" data-media-id="proje7-hls" data-player-target="player-spor">Proje 7</a>
-            <a href="#" class="media-trigger" data-media-id="proje8-hls" data-player-target="player-spor">Proje 8</a>
-
-            <h3>Tabii Spor</h3>
-            <a href="#" class="media-trigger" data-media-id="tabiispor1-hls" data-player-target="player-spor">Tabii Spor 1</a>
-            <a href="#" class="media-trigger" data-media-id="tabiispor2-hls" data-player-target="player-spor">Tabii Spor 2</a>
-            <a href="#" class="media-trigger" data-media-id="tabiispor3-hls" data-player-target="player-spor">Tabii Spor 3</a>
-            <a href="#" class="media-trigger" data-media-id="tabiispor4-hls" data-player-target="player-spor">Tabii Spor 4</a>
-            <a href="#" class="media-trigger" data-media-id="tabiispor5-hls" data-player-target="player-spor">Tabii Spor 5</a>
-            <a href="#" class="media-trigger" data-media-id="tabiispor6-hls" data-player-target="player-spor">Tabii Spor 6</a>
-
-            <h3>Tivibu Spor</h3>
-            <a href="#" class="media-trigger" data-media-id="tivibuspor1-hls" data-player-target="player-spor">Tivibu Spor 1</a>
-            <a href="#" class="media-trigger" data-media-id="tivibuspor2-hls" data-player-target="player-spor">Tivibu Spor 2</a>
-            <a href="#" class="media-trigger" data-media-id="tivibuspor3-hls" data-player-target="player-spor">Tivibu Spor 3</a>
-            <a href="#" class="media-trigger" data-media-id="tivibuspor4-hls" data-player-target="player-spor">Tivibu Spor 4</a>
-
-            <h3>S Sport</h3>
-            <a href="#" class="media-trigger" data-media-id="ssport1-hls" data-player-target="player-spor">S Sport 1</a>
-            <a href="#" class="media-trigger" data-media-id="ssport2-hls" data-player-target="player-spor">S Sport 2</a>
-            <a href="#" class="media-trigger" data-media-id="ssportplus1-hls" data-player-target="player-spor">S Sport Plus 1</a>
-            <a href="#" class="media-trigger" data-media-id="ssportplus2-hls" data-player-target="player-spor">S Sport Plus 2</a>
-
-            <h3>Smart Spor</h3>
-            <a href="#" class="media-trigger" data-media-id="smartsport1-hls" data-player-target="player-spor">Smart Spor 1</a>
-            <a href="#" class="media-trigger" data-media-id="smartsport2-hls" data-player-target="player-spor">Smart Spor 2</a>
-
-            <h3>TRT Spor Kanalları</h3>
-            <a href="#" class="media-trigger" data-media-id="trt1-hls" data-player-target="player-spor">TRT 1</a>
-            <a href="#" class="media-trigger" data-media-id="trtspor-hls" data-player-target="player-spor">TRT Spor</a>
-            <a href="#" class="media-trigger" data-media-id="trtspor-yildiz-hls" data-player-target="player-spor">TRT Spor Yıldız</a>
-
-            <h3>Diğer Spor Kanalları</h3>
-            <a href="#" class="media-trigger" data-media-id="aspor-hls" data-player-target="player-spor">A Spor</a>
-            <a href="#" class="media-trigger" data-media-id="tv85-hls" data-player-target="player-spor">TV 8.5</a>
-            <a href="#" class="media-trigger" data-media-id="tv8-hls" data-player-target="player-spor">TV 8</a>
-            <a href="#" class="media-trigger" data-media-id="real_madrid_tv-hls" data-player-target="player-spor">Real Madrid TV</a>
-            <a href="#" class="media-trigger" data-media-id="tay_tv-hls" data-player-target="player-spor">Tay TV</a>
-            <a href="#" class="media-trigger" data-media-id="dazn1-hls" data-player-target="player-spor">Dazn 1</a>
-            <a href="#" class="media-trigger" data-media-id="dazn2-hls" data-player-target="player-spor">Dazn 2</a>
-            <a href="#" class="media-trigger" data-media-id="ufc_fight_pass-hls" data-player-target="player-spor">UFC Fight Pass</a>
+        <div class="sub-category-links" id="projeler">
+            <div class="sub-link-buttons-grid">
+                <button class="sub-link-button media-trigger" data-media-id="beinsports1-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Beinsports 1
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="beinsports2-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Beinsports 2
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje3-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Proje 3
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje4-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Proje 4
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje5-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Proje 5
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje6-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Proje 6
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje7-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Proje 7
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="proje8-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Proje 8
+                </button>
+            </div>
         </div>
 
-        <div id="muzikPodcast" class="sub-category-links">
-            <h3>Müzik ve Podcast Seçenekleri</h3>
-            <a href="#" class="media-trigger" data-media-id="spotify-podcast" data-player-target="player-muzik">Spotify Podcast (Örnek)</a>
-            <a href="#" class="media-trigger" data-media-id="local-audio" data-player-target="player-muzik">Yerel Ses Dosyası (Örnek)</a>
+        <div class="sub-category-links" id="tabiispor">
+            <div class="sub-link-buttons-grid">
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor1-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TabiiSpor 1
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor2-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TabiiSpor 2
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor3-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TabiiSpor 3
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor4-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TabiiSpor 4
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor5-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TabiiSpor 5
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor6-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TabiiSpor 6
+                </button>
             </div>
+        </div>
 
-        <div id="egitimKaynaklari" class="sub-category-links">
-            <h3>Eğitim Kaynakları (Örnek)</h3>
-            <a href="https://example.com/egitim1" target="_blank">Eğitim Sitesi 1</a>
-            <a href="https://example.com/egitim2" target="_blank">Eğitim Sitesi 2</a>
+        <div class="sub-category-links" id="tivibuspor">
+            <div class="sub-link-buttons-grid">
+                <button class="sub-link-button media-trigger" data-media-id="tivibuspor1-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Tivibu Spor 1
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tivibuspor2-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Tivibu Spor 2
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tivibuspor3-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Tivibu Spor 3
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tivibuspor4-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Tivibu Spor 4
+                </button>
             </div>
+        </div>
+
+        <div class="sub-category-links" id="ssport">
+            <div class="sub-link-buttons-grid">
+                <button class="sub-link-button media-trigger" data-media-id="ssport1-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> S Sport 1
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="ssport2-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> S Sport 2
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="ssportplus1-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> S Sport+ 1
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="ssportplus2-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> S Sport+ 2
+                </button>
+            </div>
+        </div>
+
+        <div class="sub-category-links" id="smartsport">
+            <div class="sub-link-buttons-grid">
+                <button class="sub-link-button media-trigger" data-media-id="smartsport1-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Smart Spor 1
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="smartsport2-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Smart Spor 2
+                </button>
+            </div>
+        </div>
+
+        <div class="sub-category-links" id="trtspor">
+            <div class="sub-link-buttons-grid">
+                <button class="sub-link-button media-trigger" data-media-id="trt1-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TRT 1
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="trtspor-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TRT Spor
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="trtspor-yildiz-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TRT Spor Yıldız
+                </button>
+            </div>
+        </div>
+
+        <div class="sub-category-links" id="diger_spor_kanallari">
+            <div class="sub-link-buttons-grid">
+                <button class="sub-link-button media-trigger" data-media-id="aspor-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> A SPOR
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tv85-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TV 8,5
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tv8-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TV 8
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="real_madrid_tv-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> Real Madrid TV
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="tay_tv-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> TAY TV
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="dazn1-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> DAZN 1
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="dazn2-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> DAZN 2
+                </button>
+                <button class="sub-link-button media-trigger" data-media-id="ufc_fight_pass-hls" data-player-target="player-spor">
+                    <i class="fas fa-play-circle"></i> UFC FİGHT PASS
+                </button>
+            </div>
+        </div>
 
         <div class="media-player-in-category" id="player-spor">
             <button class="close-button" onclick="closeMediaPlayer('player-spor')">×</button>
-            <div class="media-player-content-inner">
-                </div>
-        </div>
-
-        <div class="media-player-in-category" id="player-muzik">
-            <button class="close-button" onclick="closeMediaPlayer('player-muzik')">×</button>
             <div class="media-player-content-inner">
                 </div>
         </div>
@@ -320,15 +433,27 @@
             <div class="media-player-content-inner">
                 </div>
         </div>
+
+        <div class="social-icons">
+            <a href="https://instagram.com/sizinkullaniciadiniz" target="_blank" class="social-icon-link">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://twitter.com/sizinkullaniciadiniz" target="_blank" class="social-icon-link">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://tiktok.com/@sizinkullaniciadiniz" target="_blank" class="social-icon-link">
+                <i class="fab fa-tiktok"></i>
+            </a>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const categoryButtons = document.querySelectorAll('.category-button');
             const mediaTriggers = document.querySelectorAll('.media-trigger');
-            const lastWatchedButton = document.getElementById('lastWatchedButton');
+            const lastWatchedButton = document.getElementById('lastWatchedButton'); // Yeni eklenen buton ID'si
 
-            // Helper function to close all media players except a specified one
+            // Yardımcı fonksiyon: Belirtilen hariç tüm medya oynatıcıları kapatır
             function closeAllMediaPlayersExcept(excludedPlayerId) {
                 document.querySelectorAll('.media-player-in-category').forEach(player => {
                     if (player.id !== excludedPlayerId) {
@@ -344,25 +469,38 @@
                     const targetId = this.dataset.target;
                     const subCategoryLinks = document.getElementById(targetId);
 
-                    // Close all media players when a category button is clicked, except if it's the last watched button being clicked
+                    // Tüm medya oynatıcıları kapat, ancak 'lastWatchedButton' tıklanıyorsa işlem farklı
                     if (targetId !== 'lastWatchedButton') {
-                        closeAllMediaPlayersExcept(''); // Close all players
+                        closeAllMediaPlayersExcept(''); // Tüm oynatıcıları kapat
                     } else {
-                        // If last watched button is clicked, it will handle closing other players itself
+                        // 'lastWatchedButton' kendi içinde kapanışları yönetecek
                     }
 
-                    // Toggle the active state for the clicked sub-category links
+                    // Tıklanan alt kategoriyi aç/kapat
                     if (subCategoryLinks && targetId !== 'lastWatchedButton') {
                         subCategoryLinks.classList.toggle('active');
                     }
 
-
-                    // Close all other sub-category links
+                    // Diğer tüm alt kategorileri kapat
                     document.querySelectorAll('.sub-category-links').forEach(otherSubCategory => {
                         if (otherSubCategory.id !== targetId) {
                             otherSubCategory.classList.remove('active');
+                            // Diğer alt kategorilerin içindeki medya oynatıcıları da kapat
+                            otherSubCategory.querySelectorAll('.media-player-in-category').forEach(player => {
+                                player.classList.remove('active');
+                                player.querySelector('.media-player-content-inner').innerHTML = '';
+                            });
                         }
                     });
+
+                    // Açılan alt kategorideki medya oynatıcıyı da kapat (eğer varsa ve aktifse)
+                    // Bu, kategori açıldığında oynatıcının başlangıçta kapalı olmasını sağlar
+                    if (subCategoryLinks) {
+                        subCategoryLinks.querySelectorAll('.media-player-in-category').forEach(player => {
+                            player.classList.remove('active');
+                            player.querySelector('.media-player-content-inner').innerHTML = '';
+                        });
+                    }
                 });
             });
 
@@ -370,17 +508,17 @@
             mediaTriggers.forEach(button => {
                 button.addEventListener('click', function() {
                     const mediaId = this.dataset.mediaId;
-                    const playerTargetId = this.dataset.playerTarget; // e.g., 'player-spor'
+                    const playerTargetId = this.dataset.playerTarget;
                     const mediaPlayerContainer = document.getElementById(playerTargetId);
                     const mediaPlayerContent = mediaPlayerContainer.querySelector('.media-player-content-inner');
 
-                    // Save last watched channel to local storage
+                    // Son izlenen kanalı kaydet
                     localStorage.setItem('lastWatchedMediaId', mediaId);
 
-                    // Close all media players except the one that's about to be activated
+                    // Sadece tıklanan oynatıcı hariç tüm diğer medya oynatıcıları kapat
                     closeAllMediaPlayersExcept(playerTargetId);
 
-                    // Close all sub-category links when a media is triggered
+                    // Tüm alt kategori bağlantılarını kapat
                     document.querySelectorAll('.sub-category-links').forEach(subCategory => {
                         subCategory.classList.remove('active');
                     });
@@ -396,10 +534,10 @@
                     const lastWatchedPlayerContainer = document.getElementById('player-last-watched');
                     const lastWatchedPlayerContent = lastWatchedPlayerContainer.querySelector('.media-player-content-inner');
 
-                    // Close all media players except the 'player-last-watched'
+                    // Sadece "player-last-watched" hariç diğer tüm medya oynatıcıları kapat
                     closeAllMediaPlayersExcept('player-last-watched');
 
-                    // Close all sub-category links
+                    // Tüm alt kategori bağlantılarını kapat
                     document.querySelectorAll('.sub-category-links').forEach(subCategory => {
                         subCategory.classList.remove('active');
                     });
@@ -445,6 +583,7 @@
                     case 'proje6-hls':
                     case 'proje7-hls':
                     case 'proje8-hls':
+                        // Aynı HLS yayınını kullanmaya devam ediyorlarsa
                         mediaCode = `
                             <div class="hls-player-wrapper">
                                 <div class="aspect-ratio-box">
@@ -549,7 +688,7 @@
                         mediaCode = `
                             <div class="hls-player-wrapper">
                                 <div class="aspect-ratio-box">
-                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-3%2Fplaylist.m320"
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-3%2Fplaylist.m3u8"
                                             frameborder="0" allowfullscreen>
                                     </iframe>
                                 </div>
@@ -783,7 +922,7 @@
         // Medya oynatıcıyı kapatma fonksiyonu (hangi oynatıcı ID'sinin kapatılacağını belirtir)
         function closeMediaPlayer(playerTargetId) {
             const mediaPlayerContainer = document.getElementById(playerTargetId);
-            if (mediaPlayerContainer) { // Check if the element exists
+            if (mediaPlayerContainer) { // Elemanın varlığını kontrol et
                 const mediaPlayerContent = mediaPlayerContainer.querySelector('.media-player-content-inner');
                 mediaPlayerContainer.classList.remove('active');
                 mediaPlayerContent.innerHTML = ''; // İçeriği temizle
@@ -791,4 +930,4 @@
         }
     </script>
 </body>
-</html>
+    </html>

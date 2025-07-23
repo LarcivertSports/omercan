@@ -212,6 +212,15 @@
         }
 
         /* Yükleniyor spinner'ı */
+        .loader-wrapper { /* Yeni: Yükleyiciyi sarmalayan div */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px; /* Yeterli yükseklik ver */
+            color: #fff;
+            font-size: 1.1em;
+        }
         .loader {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid #fff;
@@ -463,9 +472,9 @@
             const mediaTriggers = document.querySelectorAll('.media-trigger');
             const lastWatchedButton = document.getElementById('lastWatchedButton');
             const mainMediaPlayer = document.getElementById('mainMediaPlayer');
-            const mediaPlayerTitle = document.getElementById('mediaPlayerTitle'); // Yeni: Oynatıcı başlık alanı
+            const mediaPlayerTitle = document.getElementById('mediaPlayerTitle');
             const mainMediaPlayerContent = mainMediaPlayer.querySelector('.media-player-content-inner');
-            const originalDocumentTitle = document.title; // Sayfanın orijinal başlığını kaydet
+            const originalDocumentTitle = document.title;
 
             // Medya içeriği haritası
             const mediaContentMap = {
@@ -473,10 +482,10 @@
                 'beinsports2-hls': `https://www.mersotv1.com/channel.html?id=yayinb2#amp=1`,
                 'proje3-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsbeinsports-1%2Fplaylist.m3u8`,
                 'proje4-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsbeinsports-1%2Fplaylist.m3u8`,
-                'proje5-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`, // Düzeltildi
-                'proje6-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`, // Düzeltildi
-                'proje7-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`, // Düzeltildi
-                'proje8-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`, // Düzeltildi
+                'proje5-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`,
+                'proje6-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`,
+                'proje7-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`,
+                'proje8-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`,
                 'tabiispor1-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-1%2Fplaylist.m3u8`,
                 'tabiispor2-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-2%2Fplaylist.m3u8`,
                 'tabiispor3-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-3%2Fplaylist.m3u8`,
@@ -524,42 +533,65 @@
                 const mediaUrl = mediaContentMap[mediaId];
 
                 if (mediaUrl) {
-                    // Yükleniyor göstergesi
-                    mainMediaPlayerContent.innerHTML = '<div class="loader"></div><p style="margin-top: 10px;">Yükleniyor...</p>';
-                    mediaPlayerTitle.textContent = `Oynatılıyor: ${channelName}`; // Oynatıcı başlığını güncelle
-                    document.title = `${channelName} - ${originalDocumentTitle}`; // Sayfa başlığını güncelle
+                    // Yükleniyor göstergesi ve başlığı ayarla
+                    mainMediaPlayerContent.innerHTML = `
+                        <div class="loader-wrapper">
+                            <div class="loader"></div>
+                            <p style="margin-top: 10px;">Yükleniyor...</p>
+                        </div>
+                    `;
+                    mediaPlayerTitle.textContent = `Oynatılıyor: ${channelName}`;
+                    document.title = `${channelName} - ${originalDocumentTitle}`;
                     mainMediaPlayer.classList.add('active');
 
                     const iframe = document.createElement('iframe');
                     iframe.src = mediaUrl;
                     iframe.setAttribute('allowfullscreen', '');
                     iframe.setAttribute('frameborder', '0');
-                    // iframe yüklendiğinde spinner'ı kaldırma
+                    iframe.style.display = 'none'; // iFrame yüklenene kadar gizle
+
+                    // iFrame yüklendiğinde
                     iframe.onload = () => {
-                        mainMediaPlayerContent.innerHTML = ''; // Spinner'ı kaldır
-                        mainMediaPlayerContent.appendChild(iframe); // iFrame'i ekle
-                    };
-                    iframe.onerror = () => {
-                        mainMediaPlayerContent.innerHTML = '<p>Medya yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>';
+                        mainMediaPlayerContent.innerHTML = ''; // Yükleyiciyi kaldır
+                        if (mediaUrl.includes("mersotv1.com")) {
+                            mainMediaPlayerContent.appendChild(iframe); // iFrame'i direkt ekle
+                        } else {
+                            const hlsWrapper = document.createElement('div');
+                            hlsWrapper.className = 'hls-player-wrapper';
+                            hlsWrapper.appendChild(iframe);
+                            mainMediaPlayerContent.appendChild(hlsWrapper);
+                        }
+                        iframe.style.display = 'block'; // iFrame'i görünür yap
                     };
 
-                    // Eğer mersotv1.com ise direkt iframe'i yükle, liivereadting'de ise wrapper ile yükle
+                    // iFrame yüklenirken hata oluştuğunda
+                    iframe.onerror = () => {
+                        mainMediaPlayerContent.innerHTML = '<p style="color: red;">Medya yüklenemedi. Link bozuk olabilir veya yayın durdurulmuş olabilir.</p>';
+                        mediaPlayerTitle.textContent = 'Hata Oluştu';
+                        console.error(`Error loading media for ${channelName}: ${mediaUrl}`); // Konsola hata logla
+                    };
+
+                    // iframe'i DOM'a ekle (yüklemeyi başlatmak için)
+                    // Ancak, yükleyiciyi göstermek için önce onu ekleyelim ve sonra iframe'i append edelim.
+                    // Böylece iframe yüklenirken yükleyici görünür kalır.
                     if (mediaUrl.includes("mersotv1.com")) {
-                        mainMediaPlayerContent.innerHTML = '';
+                        // MersoTV için doğrudan içeriğe ekle
+                        // Yükleyiciyi göstermek için, iframe'i öncelikle görünmez olarak ekleyip, yükleyiciyi güncelleyelim.
                         mainMediaPlayerContent.appendChild(iframe);
                     } else {
+                        // Diğerleri için wrapper ile ekle
                         const hlsWrapper = document.createElement('div');
                         hlsWrapper.className = 'hls-player-wrapper';
                         hlsWrapper.appendChild(iframe);
-                        mainMediaPlayerContent.innerHTML = ''; // Yükleniyor'u temizle
                         mainMediaPlayerContent.appendChild(hlsWrapper);
                     }
+
 
                     // Son izlenen kanalı kaydet
                     localStorage.setItem('lastWatchedMedia', JSON.stringify({ id: mediaId, name: channelName }));
 
                 } else {
-                    mainMediaPlayerContent.innerHTML = '<p>Medya içeriği bulunamadı veya geçersiz.</p>';
+                    mainMediaPlayerContent.innerHTML = '<p style="color: red;">Medya içeriği bulunamadı veya geçersiz bir kanal seçtiniz.</p>';
                     mediaPlayerTitle.textContent = 'Hata';
                     mainMediaPlayer.classList.add('active');
                 }
@@ -587,7 +619,7 @@
             mediaTriggers.forEach(button => {
                 button.addEventListener('click', function() {
                     const mediaId = this.dataset.mediaId;
-                    const channelName = this.dataset.channelName || this.textContent.trim(); // Kanal adını al
+                    const channelName = this.dataset.channelName || this.textContent.trim();
 
                     loadMediaPlayerContent(mediaId, channelName);
                 });
@@ -621,4 +653,4 @@
         });
     </script>
 </body>
-    </html>
+                    </html>

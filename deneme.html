@@ -131,17 +131,18 @@
             transition: background-color 0.3s ease;
             display: block; /* Tam genişlik kaplaması için */
             font-size: 1em;
-            cursor: pointer;
-            border: none;
-            text-align: left;
+            cursor: pointer; /* Ekledim */
+            border: none; /* Ekledim */
+            text-align: left; /* Ekledim */
         }
+
 
         .sub-link-button:hover {
             background-color: rgba(255, 255, 255, 0.2);
         }
 
         /* Medya Oynatıcı Stilleri */
-        .media-player-container {
+        .media-player-in-category {
             display: none; /* Başlangıçta gizli */
             background-color: rgba(0, 0, 0, 0.7); /* Koyu arka plan */
             border-radius: 15px;
@@ -156,7 +157,7 @@
             margin-right: auto;
         }
 
-        .media-player-container.active {
+        .media-player-in-category.active {
             display: block; /* Aktif olduğunda göster */
         }
 
@@ -180,13 +181,6 @@
             margin-top: 10px; /* Kapatma butonundan sonra boşluk */
         }
 
-        .media-player-title { /* Yeni: Oynatıcı başlığı */
-            color: #fff;
-            font-size: 1.5em;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
         /* Video / HLS Oynatıcı Wrapper */
         .hls-player-wrapper {
             position: relative;
@@ -195,11 +189,6 @@
             height: 0;
             overflow: hidden;
             border-radius: 10px; /* Köşeleri yuvarla */
-            background-color: #333; /* Yüklenirken veya hata durumunda arka plan */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #eee;
         }
 
         .hls-player-wrapper iframe {
@@ -209,30 +198,6 @@
             width: 100%;
             height: 100%;
             border: none;
-        }
-
-        /* Yükleniyor spinner'ı */
-        .loader-wrapper { /* Yeni: Yükleyiciyi sarmalayan div */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 200px; /* Yeterli yükseklik ver */
-            color: #fff;
-            font-size: 1.1em;
-        }
-        .loader {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
 
         /* Animasyonlar */
@@ -314,35 +279,35 @@
             <div class="category-button" data-target="diger_spor_kanallari">
                 <i class="fas fa-basketball-ball"></i> DİĞER SPOR KANALLARI
             </div>
-            <div class="category-button" id="lastWatchedButton">
+            <div class="category-button" data-target="lastWatchedButton" id="lastWatchedButton">
                 <i class="fas fa-history"></i> Son İzlenen Kanal
             </div>
         </div>
 
         <div class="sub-category-links" id="projeler">
             <div class="sub-link-buttons-grid">
-                <button class="sub-link-button media-trigger" data-media-id="beinsports1-hls" data-channel-name="Beinsports 1">
+                <button class="sub-link-button media-trigger" data-media-id="beinsports1-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Beinsports 1
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="beinsports2-hls" data-channel-name="Beinsports 2">
+                <button class="sub-link-button media-trigger" data-media-id="beinsports2-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Beinsports 2
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="proje3-hls" data-channel-name="Proje 3">
+                <button class="sub-link-button media-trigger" data-media-id="proje3-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Proje 3
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="proje4-hls" data-channel-name="Proje 4">
+                <button class="sub-link-button media-trigger" data-media-id="proje4-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Proje 4
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="proje5-hls" data-channel-name="Proje 5">
+                <button class="sub-link-button media-trigger" data-media-id="proje5-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Proje 5
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="proje6-hls" data-channel-name="Proje 6">
+                <button class="sub-link-button media-trigger" data-media-id="proje6-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Proje 6
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="proje7-hls" data-channel-name="Proje 7">
+                <button class="sub-link-button media-trigger" data-media-id="proje7-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Proje 7
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="proje8-hls" data-channel-name="Proje 8">
+                <button class="sub-link-button media-trigger" data-media-id="proje8-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Proje 8
                 </button>
             </div>
@@ -350,22 +315,22 @@
 
         <div class="sub-category-links" id="tabiispor">
             <div class="sub-link-buttons-grid">
-                <button class="sub-link-button media-trigger" data-media-id="tabiispor1-hls" data-channel-name="TabiiSpor 1">
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor1-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TabiiSpor 1
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tabiispor2-hls" data-channel-name="TabiiSpor 2">
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor2-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TabiiSpor 2
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tabiispor3-hls" data-channel-name="TabiiSpor 3">
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor3-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TabiiSpor 3
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tabiispor4-hls" data-channel-name="TabiiSpor 4">
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor4-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TabiiSpor 4
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tabiispor5-hls" data-channel-name="TabiiSpor 5">
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor5-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TabiiSpor 5
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tabiispor6-hls" data-channel-name="TabiiSpor 6">
+                <button class="sub-link-button media-trigger" data-media-id="tabiispor6-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TabiiSpor 6
                 </button>
             </div>
@@ -373,16 +338,16 @@
 
         <div class="sub-category-links" id="tivibuspor">
             <div class="sub-link-buttons-grid">
-                <button class="sub-link-button media-trigger" data-media-id="tivibuspor1-hls" data-channel-name="Tivibu Spor 1">
+                <button class="sub-link-button media-trigger" data-media-id="tivibuspor1-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Tivibu Spor 1
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tivibuspor2-hls" data-channel-name="Tivibu Spor 2">
+                <button class="sub-link-button media-trigger" data-media-id="tivibuspor2-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Tivibu Spor 2
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tivibuspor3-hls" data-channel-name="Tivibu Spor 3">
+                <button class="sub-link-button media-trigger" data-media-id="tivibuspor3-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Tivibu Spor 3
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tivibuspor4-hls" data-channel-name="Tivibu Spor 4">
+                <button class="sub-link-button media-trigger" data-media-id="tivibuspor4-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Tivibu Spor 4
                 </button>
             </div>
@@ -390,16 +355,16 @@
 
         <div class="sub-category-links" id="ssport">
             <div class="sub-link-buttons-grid">
-                <button class="sub-link-button media-trigger" data-media-id="ssport1-hls" data-channel-name="S Sport 1">
+                <button class="sub-link-button media-trigger" data-media-id="ssport1-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> S Sport 1
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="ssport2-hls" data-channel-name="S Sport 2">
+                <button class="sub-link-button media-trigger" data-media-id="ssport2-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> S Sport 2
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="ssportplus1-hls" data-channel-name="S Sport+ 1">
+                <button class="sub-link-button media-trigger" data-media-id="ssportplus1-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> S Sport+ 1
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="ssportplus2-hls" data-channel-name="S Sport+ 2">
+                <button class="sub-link-button media-trigger" data-media-id="ssportplus2-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> S Sport+ 2
                 </button>
             </div>
@@ -407,10 +372,10 @@
 
         <div class="sub-category-links" id="smartsport">
             <div class="sub-link-buttons-grid">
-                <button class="sub-link-button media-trigger" data-media-id="smartsport1-hls" data-channel-name="Smart Spor 1">
+                <button class="sub-link-button media-trigger" data-media-id="smartsport1-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Smart Spor 1
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="smartsport2-hls" data-channel-name="Smart Spor 2">
+                <button class="sub-link-button media-trigger" data-media-id="smartsport2-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Smart Spor 2
                 </button>
             </div>
@@ -418,13 +383,13 @@
 
         <div class="sub-category-links" id="trtspor">
             <div class="sub-link-buttons-grid">
-                <button class="sub-link-button media-trigger" data-media-id="trt1-hls" data-channel-name="TRT 1">
+                <button class="sub-link-button media-trigger" data-media-id="trt1-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TRT 1
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="trtspor-hls" data-channel-name="TRT Spor">
+                <button class="sub-link-button media-trigger" data-media-id="trtspor-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TRT Spor
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="trtspor-yildiz-hls" data-channel-name="TRT Spor Yıldız">
+                <button class="sub-link-button media-trigger" data-media-id="trtspor-yildiz-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TRT Spor Yıldız
                 </button>
             </div>
@@ -432,36 +397,42 @@
 
         <div class="sub-category-links" id="diger_spor_kanallari">
             <div class="sub-link-buttons-grid">
-                <button class="sub-link-button media-trigger" data-media-id="aspor-hls" data-channel-name="A SPOR">
+                <button class="sub-link-button media-trigger" data-media-id="aspor-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> A SPOR
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tv85-hls" data-channel-name="TV 8,5">
+                <button class="sub-link-button media-trigger" data-media-id="tv85-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TV 8,5
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tv8-hls" data-channel-name="TV 8">
+                <button class="sub-link-button media-trigger" data-media-id="tv8-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TV 8
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="real_madrid_tv-hls" data-channel-name="Real Madrid TV">
+                <button class="sub-link-button media-trigger" data-media-id="real_madrid_tv-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> Real Madrid TV
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="tay_tv-hls" data-channel-name="TAY TV">
+                <button class="sub-link-button media-trigger" data-media-id="tay_tv-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> TAY TV
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="dazn1-hls" data-channel-name="DAZN 1">
+                <button class="sub-link-button media-trigger" data-media-id="dazn1-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> DAZN 1
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="dazn2-hls" data-channel-name="DAZN 2">
+                <button class="sub-link-button media-trigger" data-media-id="dazn2-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> DAZN 2
                 </button>
-                <button class="sub-link-button media-trigger" data-media-id="ufc_fight_pass-hls" data-channel-name="UFC FİGHT PASS">
+                <button class="sub-link-button media-trigger" data-media-id="ufc_fight_pass-hls" data-player-target="player-spor">
                     <i class="fas fa-play-circle"></i> UFC FİGHT PASS
                 </button>
             </div>
         </div>
 
-        <div class="media-player-container" id="mainMediaPlayer">
-            <button class="close-button" onclick="closeMediaPlayer()">×</button>
-            <div class="media-player-title" id="mediaPlayerTitle"></div> <div class="media-player-content-inner">
+        <div class="media-player-in-category" id="player-spor">
+            <button class="close-button" onclick="closeMediaPlayer('player-spor')">×</button>
+            <div class="media-player-content-inner">
+                </div>
+        </div>
+
+        <div class="media-player-in-category" id="player-last-watched">
+            <button class="close-button" onclick="closeMediaPlayer('player-last-watched')">×</button>
+            <div class="media-player-content-inner">
                 </div>
         </div>
     </div>
@@ -470,147 +441,55 @@
         document.addEventListener('DOMContentLoaded', function() {
             const categoryButtons = document.querySelectorAll('.category-button');
             const mediaTriggers = document.querySelectorAll('.media-trigger');
-            const lastWatchedButton = document.getElementById('lastWatchedButton');
-            const mainMediaPlayer = document.getElementById('mainMediaPlayer');
-            const mediaPlayerTitle = document.getElementById('mediaPlayerTitle');
-            const mainMediaPlayerContent = mainMediaPlayer.querySelector('.media-player-content-inner');
-            const originalDocumentTitle = document.title;
+            const lastWatchedButton = document.getElementById('lastWatchedButton'); // Yeni eklenen buton ID'si
 
-            // Medya içeriği haritası
-            const mediaContentMap = {
-                'beinsports1-hls': `https://www.mersotv1.com/channel.html?id=yayinstar`,
-                'beinsports2-hls': `https://www.mersotv1.com/channel.html?id=yayinb2#amp=1`,
-                'proje3-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsbeinsports-1%2Fplaylist.m3u8`,
-                'proje4-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsbeinsports-1%2Fplaylist.m3u8`,
-                'proje5-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`,
-                'proje6-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`,
-                'proje7-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`,
-                'proje8-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fbeinsports-1%2Fplaylist.m3u8`,
-                'tabiispor1-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-1%2Fplaylist.m3u8`,
-                'tabiispor2-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-2%2Fplaylist.m3u8`,
-                'tabiispor3-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-3%2Fplaylist.m3u8`,
-                'tabiispor4-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-4%2Fplaylist.m3u8`,
-                'tabiispor5-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-5%2Fplaylist.m3u8`,
-                'tabiispor6-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-6%2Fplaylist.m3u8`,
-                'tivibuspor1-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-1%2Fplaylist.m3u8`,
-                'tivibuspor2-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-2%2Fplaylist.m3u8`,
-                'tivibuspor3-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-3%2Fplaylist.m3u8`,
-                'tivibuspor4-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-4%2Fplaylist.m3u8`,
-                'ssport1-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fssport-1%2Fplaylist.m3u8`,
-                'ssport2-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fssport-2%2Fplaylist.m3u8`,
-                'ssportplus1-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fssportplus-1%2Fplaylist.m3u8`,
-                'ssportplus2-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fssportplus-2%2Fplaylist.m3u8`,
-                'smartsport1-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsmartsport-1%2Fplaylist.m3u8`,
-                'smartsport2-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsmartsport-2%2Fplaylist.m3u8`,
-                'trt1-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftrt1%2Fplaylist.m3u8`,
-                'trtspor-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftrtspor%2Fplaylist.m3u8`,
-                'trtspor-yildiz-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftrtspor-yildiz%2Fplaylist.m3u8`,
-                'aspor-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Faspor%2Fplaylist.m3u8`,
-                'tv85-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftv85%2Fplaylist.m3u8`,
-                'tv8-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftv8%2Fplaylist.m3u8`,
-                'real_madrid_tv-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Frealmadridtv%2Fplaylist.m3u8`,
-                'tay_tv-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftaytv%2Fplaylist.m3u8`,
-                'dazn1-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fdazn1%2Fplaylist.m3u8`,
-                'dazn2-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fdazn2%2Fplaylist.m3u8`,
-                'ufc_fight_pass-hls': `https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fufcfightpass%2Fplaylist.m3u8`,
-            };
-
-            // Tüm alt kategori bağlantılarını ve medya oynatıcıyı kapatan yardımcı fonksiyon
-            function closeAllPanels() {
-                document.querySelectorAll('.sub-category-links').forEach(subCategory => {
-                    subCategory.classList.remove('active');
-                });
-                mainMediaPlayer.classList.remove('active');
-                mainMediaPlayerContent.innerHTML = ''; // İçeriği temizle
-                mediaPlayerTitle.textContent = ''; // Başlığı temizle
-                document.title = originalDocumentTitle; // Sayfa başlığını orijinaline döndür
-            }
-
-            // Medya içeriğini yükleyen yardımcı fonksiyon
-            function loadMediaPlayerContent(mediaId, channelName) {
-                closeAllPanels(); // Her zaman temiz bir başlangıç için
-
-                const mediaUrl = mediaContentMap[mediaId];
-
-                if (mediaUrl) {
-                    // Yükleniyor göstergesi ve başlığı ayarla
-                    mainMediaPlayerContent.innerHTML = `
-                        <div class="loader-wrapper">
-                            <div class="loader"></div>
-                            <p style="margin-top: 10px;">Yükleniyor...</p>
-                        </div>
-                    `;
-                    mediaPlayerTitle.textContent = `Oynatılıyor: ${channelName}`;
-                    document.title = `${channelName} - ${originalDocumentTitle}`;
-                    mainMediaPlayer.classList.add('active');
-
-                    const iframe = document.createElement('iframe');
-                    iframe.src = mediaUrl;
-                    iframe.setAttribute('allowfullscreen', '');
-                    iframe.setAttribute('frameborder', '0');
-                    iframe.style.display = 'none'; // iFrame yüklenene kadar gizle
-
-                    // iFrame yüklendiğinde
-                    iframe.onload = () => {
-                        mainMediaPlayerContent.innerHTML = ''; // Yükleyiciyi kaldır
-                        if (mediaUrl.includes("mersotv1.com")) {
-                            mainMediaPlayerContent.appendChild(iframe); // iFrame'i direkt ekle
-                        } else {
-                            const hlsWrapper = document.createElement('div');
-                            hlsWrapper.className = 'hls-player-wrapper';
-                            hlsWrapper.appendChild(iframe);
-                            mainMediaPlayerContent.appendChild(hlsWrapper);
-                        }
-                        iframe.style.display = 'block'; // iFrame'i görünür yap
-                    };
-
-                    // iFrame yüklenirken hata oluştuğunda
-                    iframe.onerror = () => {
-                        mainMediaPlayerContent.innerHTML = '<p style="color: red;">Medya yüklenemedi. Link bozuk olabilir veya yayın durdurulmuş olabilir.</p>';
-                        mediaPlayerTitle.textContent = 'Hata Oluştu';
-                        console.error(`Error loading media for ${channelName}: ${mediaUrl}`); // Konsola hata logla
-                    };
-
-                    // iframe'i DOM'a ekle (yüklemeyi başlatmak için)
-                    // Ancak, yükleyiciyi göstermek için önce onu ekleyelim ve sonra iframe'i append edelim.
-                    // Böylece iframe yüklenirken yükleyici görünür kalır.
-                    if (mediaUrl.includes("mersotv1.com")) {
-                        // MersoTV için doğrudan içeriğe ekle
-                        // Yükleyiciyi göstermek için, iframe'i öncelikle görünmez olarak ekleyip, yükleyiciyi güncelleyelim.
-                        mainMediaPlayerContent.appendChild(iframe);
-                    } else {
-                        // Diğerleri için wrapper ile ekle
-                        const hlsWrapper = document.createElement('div');
-                        hlsWrapper.className = 'hls-player-wrapper';
-                        hlsWrapper.appendChild(iframe);
-                        mainMediaPlayerContent.appendChild(hlsWrapper);
+            // Yardımcı fonksiyon: Belirtilen hariç tüm medya oynatıcıları kapatır
+            function closeAllMediaPlayersExcept(excludedPlayerId) {
+                document.querySelectorAll('.media-player-in-category').forEach(player => {
+                    if (player.id !== excludedPlayerId) {
+                        player.classList.remove('active');
+                        player.querySelector('.media-player-content-inner').innerHTML = '';
                     }
-
-
-                    // Son izlenen kanalı kaydet
-                    localStorage.setItem('lastWatchedMedia', JSON.stringify({ id: mediaId, name: channelName }));
-
-                } else {
-                    mainMediaPlayerContent.innerHTML = '<p style="color: red;">Medya içeriği bulunamadı veya geçersiz bir kanal seçtiniz.</p>';
-                    mediaPlayerTitle.textContent = 'Hata';
-                    mainMediaPlayer.classList.add('active');
-                }
+                });
             }
 
-            // Kategori butonları için tıklama olayları
+            // Ana kategori butonları için tıklama olayları
             categoryButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const targetId = this.dataset.target;
+                    const subCategoryLinks = document.getElementById(targetId);
 
-                    // Tüm panelleri kapat (medya oynatıcı dahil)
-                    closeAllPanels();
+                    // Tüm medya oynatıcıları kapat, ancak 'lastWatchedButton' tıklanıyorsa işlem farklı
+                    if (targetId !== 'lastWatchedButton') {
+                        closeAllMediaPlayersExcept(''); // Tüm oynatıcıları kapat
+                    } else {
+                        // 'lastWatchedButton' kendi içinde kapanışları yönetecek
+                    }
 
-                    // Eğer tıklanan buton "Son İzlenen Kanal" butonu değilse, ilgili alt kategoriyi aç
-                    if (targetId && targetId !== 'lastWatchedButton') {
-                        const subCategoryLinks = document.getElementById(targetId);
-                        if (subCategoryLinks) {
-                            subCategoryLinks.classList.add('active');
+                    // Tıklanan alt kategoriyi aç/kapat
+                    if (subCategoryLinks && targetId !== 'lastWatchedButton') {
+                        subCategoryLinks.classList.toggle('active');
+                    }
+
+                    // Diğer tüm alt kategorileri kapat
+                    document.querySelectorAll('.sub-category-links').forEach(otherSubCategory => {
+                        if (otherSubCategory.id !== targetId) {
+                            otherSubCategory.classList.remove('active');
+                            // Diğer alt kategorilerin içindeki medya oynatıcıları da kapat
+                            otherSubCategory.querySelectorAll('.media-player-in-category').forEach(player => {
+                                player.classList.remove('active');
+                                player.querySelector('.media-player-content-inner').innerHTML = '';
+                            });
                         }
+                    });
+
+                    // Açılan alt kategorideki medya oynatıcıyı da kapat (eğer varsa ve aktifse)
+                    // Bu, kategori açıldığında oynatıcının başlangıçta kapalı olmasını sağlar
+                    if (subCategoryLinks) {
+                        subCategoryLinks.querySelectorAll('.media-player-in-category').forEach(player => {
+                            player.classList.remove('active');
+                            player.querySelector('.media-player-content-inner').innerHTML = '';
+                        });
                     }
                 });
             });
@@ -619,38 +498,405 @@
             mediaTriggers.forEach(button => {
                 button.addEventListener('click', function() {
                     const mediaId = this.dataset.mediaId;
-                    const channelName = this.dataset.channelName || this.textContent.trim();
+                    const playerTargetId = this.dataset.playerTarget;
+                    const mediaPlayerContainer = document.getElementById(playerTargetId);
+                    const mediaPlayerContent = mediaPlayerContainer.querySelector('.media-player-content-inner');
 
-                    loadMediaPlayerContent(mediaId, channelName);
+                    // Son izlenen kanalı kaydet
+                    localStorage.setItem('lastWatchedMediaId', mediaId);
+
+                    // Sadece tıklanan oynatıcı hariç tüm diğer medya oynatıcıları kapat
+                    closeAllMediaPlayersExcept(playerTargetId);
+
+                    // Tüm alt kategori bağlantılarını kapat
+                    document.querySelectorAll('.sub-category-links').forEach(subCategory => {
+                        subCategory.classList.remove('active');
+                    });
+
+                    loadMediaPlayerContent(mediaId, mediaPlayerContent, mediaPlayerContainer);
                 });
             });
 
-            // "Son İzlenen Kanal" butonu için tıklama olayı
+            // "Son İzlenen Kanallar" butonu için tıklama olayı
             if (lastWatchedButton) {
                 lastWatchedButton.addEventListener('click', function() {
-                    const lastWatchedMedia = JSON.parse(localStorage.getItem('lastWatchedMedia'));
+                    const lastWatchedMediaId = localStorage.getItem('lastWatchedMediaId');
+                    const lastWatchedPlayerContainer = document.getElementById('player-last-watched');
+                    const lastWatchedPlayerContent = lastWatchedPlayerContainer.querySelector('.media-player-content-inner');
 
-                    // Tüm panelleri kapat
-                    closeAllPanels();
+                    // Sadece "player-last-watched" hariç diğer tüm medya oynatıcıları kapat
+                    closeAllMediaPlayersExcept('player-last-watched');
 
-                    if (lastWatchedMedia && lastWatchedMedia.id) {
-                        loadMediaPlayerContent(lastWatchedMedia.id, lastWatchedMedia.name);
+                    // Tüm alt kategori bağlantılarını kapat
+                    document.querySelectorAll('.sub-category-links').forEach(subCategory => {
+                        subCategory.classList.remove('active');
+                    });
+
+                    if (lastWatchedMediaId) {
+                        loadMediaPlayerContent(lastWatchedMediaId, lastWatchedPlayerContent, lastWatchedPlayerContainer);
                     } else {
-                        mainMediaPlayerContent.innerHTML = '<p>Henüz izlenen bir kanal yok.</p>';
-                        mediaPlayerTitle.textContent = 'Son İzlenen Kanal';
-                        mainMediaPlayer.classList.add('active');
+                        lastWatchedPlayerContent.innerHTML = '<p>Henüz izlenen bir kanal yok.</p>';
+                        lastWatchedPlayerContainer.classList.add('active');
                     }
                 });
             }
 
-            // Medya oynatıcıyı kapatma fonksiyonu
-            window.closeMediaPlayer = function() {
-                mainMediaPlayer.classList.remove('active');
-                mainMediaPlayerContent.innerHTML = ''; // İçeriği temizle
-                mediaPlayerTitle.textContent = ''; // Başlığı temizle
-                document.title = originalDocumentTitle; // Sayfa başlığını orijinaline döndür
+            // Medya içeriğini yükleyen yardımcı fonksiyon
+            function loadMediaPlayerContent(mediaId, contentElement, containerElement) {
+                let mediaCode = '';
+                switch (mediaId) {
+                    case 'beinsports1-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <iframe allowfullscreen="" frameborder="0" height="360" src="https://www.mersotv1.com/channel.html?id=yayinstar" width="640"></iframe>
+                            </div>
+                        `;
+                        break;
+                    case 'beinsports2-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <iframe src="https://www.mersotv1.com/channel.html?id=yayinb2#amp=1" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        `;
+                        break;
+                    case 'proje3-hls':
+                    case 'proje4-hls':
+                    case 'proje5-hls':
+                    case 'proje6-hls':
+                    case 'proje7-hls':
+                    case 'proje8-hls':
+                        // Aynı HLS yayınını kullanmaya devam ediyorlarsa
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsbeinsports-1%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    // TabiiSpor HLS yayınları
+                    case 'tabiispor1-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-1%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tabiispor2-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-2%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tabiispor3-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-3%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tabiispor4-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-4%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tabiispor5-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-5%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tabiispor6-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftabiispor-6%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    // Tivibu Spor HLS yayınları için durumlar
+                    case 'tivibuspor1-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-1%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tivibuspor2-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-2%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tivibuspor3-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-3%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tivibuspor4-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftivibuspor-4%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    // S Sport HLS yayınları (örnek URL'ler ile)
+                    case 'ssport1-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fssport-1%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'ssport2-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fssport-2%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'ssportplus1-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fssportplus-1%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'ssportplus2-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fssportplus-2%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    // Smart Spor HLS yayınları (örnek URL'ler ile)
+                    case 'smartsport1-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsmartsport-1%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'smartsport2-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fsmartsport-2%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    // TRT SPOR Kanalları HLS yayınları (örnek URL'ler ile)
+                    case 'trt1-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftrt1%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'trtspor-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftrtspor%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'trtspor-yildiz-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftrtspor-yildiz%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    // DİĞER SPOR KANALLARI HLS yayınları (örnek URL'ler ile)
+                    case 'aspor-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Faspor%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tv85-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftv85%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tv8-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftv8%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'real_madrid_tv-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Frealmadridtv%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'tay_tv-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Ftaytv%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'dazn1-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fdazn1%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'dazn2-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fdazn2%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'ufc_fight_pass-hls':
+                        mediaCode = `
+                            <div class="hls-player-wrapper">
+                                <div class="aspect-ratio-box">
+                                    <iframe src="https://www.livereacting.com/tools/hls-player-embed?url=https%3A%2F%2Falpha.cf-worker-d1c30c92978e.workers.dev%2Flive%2Fufcfightpass%2Fplaylist.m3u8"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    default:
+                        mediaCode = '<p>Medya içeriği bulunamadı.</p>';
+                }
+
+                contentElement.innerHTML = mediaCode;
+                containerElement.classList.add('active');
             }
         });
+
+        // Medya oynatıcıyı kapatma fonksiyonu (hangi oynatıcı ID'sinin kapatılacağını belirtir)
+        function closeMediaPlayer(playerTargetId) {
+            const mediaPlayerContainer = document.getElementById(playerTargetId);
+            if (mediaPlayerContainer) { // Elemanın varlığını kontrol et
+                const mediaPlayerContent = mediaPlayerContainer.querySelector('.media-player-content-inner');
+                mediaPlayerContainer.classList.remove('active');
+                mediaPlayerContent.innerHTML = ''; // İçeriği temizle
+            }
+        }
     </script>
 </body>
-                    </html>
+    </html>

@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HLS Yayın Portalı</title>
     
-    <!-- Tailwind CSS'i CDN üzerinden ekliyoruz -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- HLS.js kütüphanesini CDN üzerinden ekliyoruz -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    
-    <!-- Google Fonts'tan Inter font ailesini ekliyoruz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,12 +24,21 @@
             overflow: hidden;
             transition: all 0.3s ease-in-out;
         }
-        #video-player {
+        /* Video player yerine iframe kullandığımız için video-player stilini kaldırabiliriz */
+        /* #video-player {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+        } */
+        #iframe-player { /* Yeni iframe için stil */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none; /* Çerçeveyi kaldırır */
         }
         .channel-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -51,29 +55,26 @@
 </head>
 <body class="bg-gray-900 text-gray-200 antialiased">
 
-    <!-- Ana Konteyner -->
     <div class="container mx-auto p-4 md:p-8">
         
-        <!-- Başlık Bölümü -->
         <header class="text-center mb-8">
              <h1 class="text-4xl md:text-5xl font-bold text-white">Yayın Portalı</h1>
              <p class="mt-3 text-lg text-gray-400">İzlemek istediğiniz kanalı seçin.</p>
         </header>
 
-        <!-- Video Oynatıcı ve Durum Mesajı -->
         <div class="mb-8">
             <div id="player-wrapper" class="video-container shadow-2xl">
-                <video id="video-player" controls poster="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..."></video>
+                <div id="player-content-area">
+                    <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="Placeholder" class="w-full h-full object-cover">
+                </div>
             </div>
             <div id="statusMessage" class="mt-3 text-center text-sm text-yellow-400 h-5"></div>
         </div>
 
-        <!-- Kanal Listesi -->
         <main>
             <h2 class="text-2xl font-bold text-white mb-6">Kanal Listesi</h2>
             <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
-                <!-- Kanal kartları JavaScript ile buraya eklenecek -->
-            </div>
+                </div>
         </main>
 
     </div>
@@ -81,28 +82,34 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- KANAL LİSTENİZİ BURAYA EKLEYİN ---
-            // ÖNEMLİ: Telif hakları nedeniyle size doğrudan bir yayın linki veremiyoruz.
-            // Lütfen 'streamUrl' kısımlarına kendi yasal HLS yayın linklerinizi ekleyin.
+            // 'type' özelliği eklendi: 'hls' için .m3u8, 'iframe' için iframe URL'si kullanılacak.
             const channels = [
                 {
-                    name: 'beIN SPORTS 1',
+                    name: 'beIN SPORTS 1 (iframe)',
                     logo: 'https://placehold.co/200x100/5a2d82/ffffff?text=beIN+SPORTS+1',
-                    // BURAYI KENDİ YASAL YAYIN LİNKİNİZLE DEĞİŞTİRİN
-                    streamUrl: 'https://bs.arectv33.sbs/static/bs1.m3u8' 
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinstar', // Senin verdiğin iframe linki
+                    type: 'iframe' // Bu bir iframe yayını
                 },
                 {
-                    name: 'Star TV',
+                    name: 'Star TV (HLS Test)',
                     logo: 'https://placehold.co/200x100/007bff/ffffff?text=Star+TV',
-                    // BURAYI KENDİ YASAL YAYIN LİNKİNİZLE DEĞİŞTİRİN
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb2' // Örnek test yayını
+                    streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', // Örnek HLS test yayını
+                    type: 'hls' // Bu bir HLS yayını
+                },
+                // Başka bir iframe örneği (varsayımsal)
+                {
+                    name: 'Kanal X (iframe)',
+                    logo: 'https://placehold.co/200x100/FFA500/ffffff?text=Kanal+X',
+                    streamUrl: 'https://example.com/another-channel-player.html', 
+                    type: 'iframe'
                 }
             ];
 
             // DOM elementlerini seçme
-            const video = document.getElementById('video-player');
+            const playerContentArea = document.getElementById('player-content-area'); // Yeni içerik alanı
             const statusMessage = document.getElementById('statusMessage');
             const channelGrid = document.getElementById('channel-grid');
-            let hls = null;
+            let currentHls = null; // HLS.js örneğini saklamak için
             let activeCard = null;
 
             // Kanal listesini ekrana çiz
@@ -111,7 +118,10 @@
                 channels.forEach((channel, index) => {
                     const card = document.createElement('div');
                     card.className = 'channel-card bg-gray-800 rounded-lg p-3 cursor-pointer flex flex-col items-center justify-center text-center';
+                    
+                    // Veriyi dataset'e ekliyoruz
                     card.dataset.streamUrl = channel.streamUrl;
+                    card.dataset.streamType = channel.type;
                     
                     card.innerHTML = `
                         <img src="${channel.logo}" alt="${channel.name} Logo" class="w-full h-auto object-contain rounded-md mb-3 bg-black" onerror="this.onerror=null;this.src='https://placehold.co/200x100/1f2937/9ca3af?text=Logo+Bulunamadı';">
@@ -119,7 +129,7 @@
                     `;
                     
                     card.addEventListener('click', () => {
-                        loadStream(channel.streamUrl);
+                        loadStream(channel.streamUrl, channel.type);
                         // Aktif kart stilini ayarla
                         if (activeCard) {
                             activeCard.classList.remove('active');
@@ -132,61 +142,86 @@
                 });
             }
 
-            // Yayın yükleme fonksiyonu
-            function loadStream(streamUrl) {
-                if (!streamUrl || streamUrl.includes('YASAL_')) {
-                    setStatus('Lütfen kod içerisinden geçerli bir yayın URL\'si ekleyin.', 'error');
-                    return;
+            // Yayın yükleme fonksiyonu (şimdi hem HLS hem iframe destekliyor)
+            function loadStream(streamUrl, streamType) {
+                // Önceki içeriği temizle
+                playerContentArea.innerHTML = ''; 
+
+                // Mevcut HLS instance varsa yok et
+                if (currentHls) {
+                    currentHls.destroy();
+                    currentHls = null;
                 }
 
-                if (hls) {
-                    hls.destroy();
-                }
+                if (streamType === 'iframe') {
+                    setStatus('İframe yayını yükleniyor...', 'info');
+                    const iframe = document.createElement('iframe');
+                    iframe.id = 'iframe-player';
+                    iframe.src = streamUrl;
+                    iframe.setAttribute('allowfullscreen', '');
+                    iframe.setAttribute('frameborder', '0');
+                    // iframe'in yüklendiğini kontrol etmek zor olduğu için basitleştirilmiş durum
+                    iframe.onload = () => {
+                        setStatus('İframe yayını yüklendi.', 'success');
+                    };
+                    iframe.onerror = () => {
+                         setStatus('İframe yayını yüklenirken hata oluştu. URL\'yi kontrol edin.', 'error');
+                    };
+                    playerContentArea.appendChild(iframe);
 
-                if (Hls.isSupported()) {
-                    setStatus('Yayın yükleniyor...', 'info');
-                    hls = new Hls({
-                         // Düşük gecikme için ayarlar (isteğe bağlı)
-                        lowLatencyMode: true,
-                        backBufferLength: 90,
-                    });
-                    hls.loadSource(streamUrl);
-                    hls.attachMedia(video);
-                    
-                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                        setStatus('Yayın başarıyla yüklendi.', 'success');
-                        video.play().catch(e => console.error("Oynatma hatası:", e));
-                    });
+                } else if (streamType === 'hls') {
+                    setStatus('HLS yayını yükleniyor...', 'info');
+                    const video = document.createElement('video');
+                    video.id = 'video-player'; // Eski ID'yi kullanmaya devam edebiliriz
+                    video.controls = true;
+                    video.poster = "https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yükleniyor...";
+                    playerContentArea.appendChild(video);
 
-                    hls.on(Hls.Events.ERROR, (event, data) => {
-                        if (data.fatal) {
-                            switch (data.type) {
-                                case Hls.ErrorTypes.NETWORK_ERROR:
-                                    setStatus('Network hatası. URL\'yi veya internet bağlantınızı kontrol edin.', 'error');
-                                    break;
-                                case Hls.ErrorTypes.MEDIA_ERROR:
-                                    setStatus('Medya hatası. Video çözümlenemedi.', 'error');
-                                    hls.recoverMediaError();
-                                    break;
-                                default:
-                                    setStatus('Bilinmeyen bir yayın hatası oluştu.', 'error');
-                                    hls.destroy();
-                                    break;
+                    if (Hls.isSupported()) {
+                        currentHls = new Hls({
+                            lowLatencyMode: true,
+                            backBufferLength: 90,
+                        });
+                        currentHls.loadSource(streamUrl);
+                        currentHls.attachMedia(video);
+                        
+                        currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+                            setStatus('HLS yayını başarıyla yüklendi.', 'success');
+                            video.play().catch(e => console.error("Oynatma hatası:", e));
+                        });
+
+                        currentHls.on(Hls.Events.ERROR, (event, data) => {
+                            if (data.fatal) {
+                                switch (data.type) {
+                                    case Hls.ErrorTypes.NETWORK_ERROR:
+                                        setStatus('Network hatası. URL\'yi veya internet bağlantınızı kontrol edin.', 'error');
+                                        break;
+                                    case Hls.ErrorTypes.MEDIA_ERROR:
+                                        setStatus('Medya hatası. Video çözümlenemedi.', 'error');
+                                        currentHls.recoverMediaError();
+                                        break;
+                                    default:
+                                        setStatus('Bilinmeyen bir yayın hatası oluştu.', 'error');
+                                        currentHls.destroy();
+                                        break;
+                                }
                             }
-                        }
-                    });
+                        });
 
-                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                    video.src = streamUrl;
-                    video.addEventListener('loadedmetadata', () => {
-                        setStatus('Yayın başarıyla yüklendi.', 'success');
-                        video.play();
-                    });
-                     video.addEventListener('error', () => {
-                        setStatus('Yayın yüklenemedi. URL\'yi kontrol edin.', 'error');
-                    });
+                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                        video.src = streamUrl;
+                        video.addEventListener('loadedmetadata', () => {
+                            setStatus('HLS yayını başarıyla yüklendi.', 'success');
+                            video.play();
+                        });
+                        video.addEventListener('error', () => {
+                            setStatus('HLS yayını yüklenemedi. URL\'yi kontrol edin.', 'error');
+                        });
+                    } else {
+                        setStatus('Tarayıcınız HLS yayınlarını desteklemiyor.', 'error');
+                    }
                 } else {
-                    setStatus('Tarayıcınız HLS yayınlarını desteklemiyor.', 'error');
+                    setStatus('Geçersiz yayın tipi belirtildi.', 'error');
                 }
             }
 
@@ -204,4 +239,4 @@
         });
     </script>
 </body>
-</html>
+</html> 

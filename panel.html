@@ -115,7 +115,7 @@
             line-height: 1.3; /* Satır yüksekliği */
         }
 
-        /* --- SEKME MENÜSÜ --- */
+        /* --- SEKME MENÜSÜ (Başlıklar kaldırıldığı için sadece "Canlı Yayınlar" kalabilir veya tamamen kaldırılabilir) --- */
         .tab-menu {
             display: flex;
             background-color: #2d3748;
@@ -142,7 +142,8 @@
             color: #edf2f7;
         }
         .tab-item:not(:last-child) {
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            /* Başlıklar kaldırıldığı için border-right'a gerek kalmayabilir, eğer tek bir tab kalırsa */
+            /* border-right: 1px solid rgba(255, 255, 255, 0.1); */
         }
 
         /* --- ARAMA ÇUBUĞU --- */
@@ -214,10 +215,8 @@
 
 
         <div class="tab-menu">
-            <div class="tab-item active-tab" data-tab="list">Tüm Kanallar</div>
-            <div class="tab-item" data-tab="live">Canlı Yayınlar</div>
-            <div class="tab-item" data-tab="popular">Popüler</div>
-        </div>
+            <div class="tab-item active-tab" data-tab="live">Canlı Yayınlar</div>
+            </div>
 
         <div class="search-container">
             <input type="text" id="searchInput" class="search-input" placeholder="Kanal ara...">
@@ -675,20 +674,22 @@
                     tab.classList.add('active-tab');
 
                     const selectedTab = tab.dataset.tab;
-                    if (selectedTab === 'list') {
-                        displayedChannels = [...allChannels]; // Tüm kanalları göster
-                    } else if (selectedTab === 'live') {
-                        displayedChannels = allChannels.filter(c => c.isLive); // Sadece canlı olanları göster (isLive özelliğini ekledim)
-                    } else if (selectedTab === 'popular') {
-                        displayedChannels = allChannels.filter(c => c.isPopular); // Sadece popüler olanları göster (isPopular özelliğini ekledim)
+                    // Sadece 'live' sekmesi kaldığı için diğer filtreleme koşullarını güncelledik.
+                    if (selectedTab === 'live') {
+                        displayedChannels = allChannels.filter(c => c.isLive); // Sadece canlı olanları göster
+                    } else {
+                        // Eğer 'live' dışında bir sekme seçilirse (ki artık yok), tüm kanalları göster
+                        displayedChannels = [...allChannels];
                     }
                     renderChannelGrid(searchInput.value); // Yeni filtrelenmiş listeyi arama metniyle tekrar çiz
                 });
             });
 
-            // Başlangıç
-            renderChannelGrid();
+            // Başlangıçta aktif sekme "Canlı Yayınlar" olsun ve ona göre kanalları filtrele
+            // Sayfa yüklendiğinde varsayılan olarak sadece canlı kanalları göster
+            displayedChannels = allChannels.filter(c => c.isLive);
+            renderChannelGrid(); // Başlangıçta arama çubuğu boş olduğu için parametre vermiyoruz
         });
     </script>
 </body>
-</html>
+</html> 

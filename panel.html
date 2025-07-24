@@ -4,586 +4,349 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HLS Yayın Portalı</title>
-
+    
     <script src="https://cdn.tailwindcss.com"></script>
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* Koyu arka plan */
-            color: #e2e8f0; /* Açık yazı rengi */
-        }
-        .container {
-            max-width: 1200px; /* Daha geniş ekranlarda merkeze toplamak için */
-        }
-
-        /* --- MEDIAPLAYER GÖRSEL AYARLARI --- */
-        .player-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #2d3748; /* Oynatıcı header arka planı */
-            padding: 0.75rem 1rem;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            color: #edf2f7;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .cinema-mode-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #cbd5e0;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        .cinema-mode-btn:hover {
-            color: #a0aec0;
         }
         .video-container {
             position: relative;
             width: 100%;
             padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            background-color: #000; /* Video alanı arka planı */
-            border-bottom-left-radius: 8px; /* Alt köşeler */
-            border-bottom-right-radius: 8px; /* Alt köşeler */
+            background-color: #000;
+            border-radius: 0.75rem;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            /* Sadece video kısmı için değil, tüm wrapper için radius uygulansın */
-            border-radius: 0; /* Player-header'dan dolayı kaldırdık */
+            transition: all 0.3s ease-in-out;
         }
-        #video-player {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* Video içeriğini çerçeveye sığdır */
-            background-color: #000; /* Video arkaplanı siyah */
-        }
-        #iframe-player {
+        #iframe-player { 
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border: none;
+            border: none; 
         }
-        /* Player dışındaki boş alanın arkaplanı */
-        .player-wrapper-outer {
-            background-color: #2d3748; /* Oynatıcının tamamının arka planı */
-            border-radius: 8px; /* Tüm oynatıcı bloğuna uygulansın */
-            overflow: hidden; /* İçerik taşmasını engelle */
-            margin-bottom: 1.5rem; /* Alt boşluk */
-        }
-
-        /* --- BUTONLARI ESKİ HALİNE GETİRME --- */
         .channel-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            background-color: #2d3748; /* bg-gray-700 benzeri */
-            border-radius: 8px; /* Daha yuvarlak köşeler */
-            padding: 0.75rem; /* İç boşluk */
-            display: flex;
-            flex-direction: column; /* İçeriği dikey sırala */
-            align-items: center; /* Yatayda ortala */
-            justify-content: center; /* Dikeyde ortala */
-            text-align: center;
-            height: 120px; /* Sabit bir yükseklik verelim */
-            border: 1px solid transparent; /* Varsayılan şeffaf kenarlık */
+            /* Logo kalktığı için ortalamayı daha iyi hale getirebiliriz */
+            display: flex; /* Flexbox kullan */
+            align-items: center; /* Dikeyde ortala */
+            justify-content: center; /* Yatayda ortala */
+            height: 100px; /* Kartların sabit bir yüksekliği olabilir */
         }
         .channel-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3), 0 4px 6px -2px rgba(239, 68, 68, 0.2);
-            background-color: #4a5568; /* Hoverda biraz koyulaşsın */
         }
         .channel-card.active {
-             outline: 3px solid #ef4444; /* Kırmızı renk */
-             transform: scale(1.02); /* Hafif büyüsün */
-             box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4), 0 4px 6px -2px rgba(239, 68, 68, 0.3);
-        }
-        .channel-card img {
-            width: 60px; /* Logo boyutu */
-            height: 60px; /* Logo boyutu */
-            object-fit: contain;
-            margin-bottom: 0.5rem; /* Logo ve yazı arası boşluk */
-        }
-        .channel-card p {
-            font-size: 0.85rem; /* Yazı boyutu */
-            font-weight: 600; /* Yazı kalınlığı */
-            color: #edf2f7; /* Yazı rengi */
+             outline: 3px solid #ef4444;
+             transform: scale(1.05);
         }
 
-        /* --- SEKME MENÜSÜ (ÖNCEKİ HALİNDEN KALDI) --- */
-        .tab-menu {
-            display: flex;
-            background-color: #2d3748;
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 1rem;
-        }
-        .tab-item {
-            flex: 1;
-            text-align: center;
-            padding: 8px 12px;
-            color: #cbd5e0;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-        }
-        .tab-item.active-tab {
-            background-color: #4a5568;
-            color: #edf2f7;
-        }
-        .tab-item:hover:not(.active-tab) {
-            background-color: #4a5568;
-            color: #edf2f7;
-        }
-        .tab-item:not(:last-child) {
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* --- ARAMA ÇUBUĞU (ÖNCEKİ HALİNDEN KALDI) --- */
-        .search-container {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        .search-input {
-            flex-grow: 1;
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid #4a5568;
-            background-color: #2d3748;
-            color: #edf2f7;
-            font-size: 1rem;
-            outline: none;
-        }
-        .search-input::placeholder {
-            color: #a0aec0;
-        }
-        .search-input:focus {
-            border-color: #63b3ed;
-        }
-        .search-button {
-            padding: 10px 16px;
-            border-radius: 8px;
-            background-color: #48bb78;
+        /* Tam ekran düğmesi için stil */
+        #fullscreen-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
-            font-weight: 600;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            z-index: 10; 
+            font-size: 14px;
+            display: none; /* Varsayılan olarak gizli, JS ile gösterilecek */
         }
-        .search-button:hover {
-            background-color: #38a169;
-        }
-        .search-button i {
-            font-size: 1rem;
+        #fullscreen-btn:hover {
+            background-color: rgba(0, 0, 0, 0.7);
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="bg-gray-900 text-gray-200 antialiased">
 
     <div class="container mx-auto p-4 md:p-8">
-
+        
         <header class="text-center mb-8">
              <h1 class="text-4xl md:text-5xl font-bold text-white">Yayın Portalı</h1>
              <p class="mt-3 text-lg text-gray-400">İzlemek istediğiniz kanalı seçin.</p>
         </header>
 
-        <div class="player-wrapper-outer">
-            <div class="player-header">
-                <span id="currentChannelName">Kanal Seçilmedi</span>
-                <span id="cinemaModeBtn" class="cinema-mode-btn">
-                    <i class="fa-solid fa-expand"></i> Sinema Modu
-                </span>
-            </div>
-            <div id="player-wrapper" class="video-container">
+        <div class="mb-8">
+            <div id="player-wrapper" class="video-container shadow-2xl">
                 <div id="player-content-area">
-                    <img src="https://i.ibb.co/v4b2383/yay-n-ba-l-yor.png" alt="Yayın Başlıyor" class="w-full h-full object-contain bg-black">
+                    <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="Placeholder" class="w-full h-full object-cover">
                 </div>
-                </div>
-        </div>
-        <div id="statusMessage" class="mt-3 text-center text-sm text-yellow-400 h-5"></div>
-
-
-        <div class="tab-menu">
-            <div class="tab-item active-tab" data-tab="list">Liste</div>
-            <div class="tab-item" data-tab="24-7">7/24 Kanallar</div>
-            <div class="tab-item" data-tab="multi-screen">Çoklu Ekran</div>
-        </div>
-
-        <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="Kanal ara...">
-            <button id="searchButton" class="search-button">
-                <i class="fa-solid fa-magnifying-glass"></i> Ara
-            </button>
+                <button id="fullscreen-btn" title="Tam Ekran Yap">Tam Ekran</button>
+            </div>
+            <div id="statusMessage" class="mt-3 text-center text-sm text-yellow-400 h-5"></div>
         </div>
 
         <main>
-            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <h2 class="text-2xl font-bold text-white mb-6">Kanal Listesi</h2>
+            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
                 </div>
         </main>
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- KANAL LİSTENİZİ BURAYA EKLEYİN ---
+            // ÖNEMLİ: Telif hakları nedeniyle size doğrudan bir yayın linki veremiyoruz.
+            // Lütfen 'streamUrl' kısımlarına kendi yasal HLS yayın linklerinizi veya iframe URL'lerinizi ekleyin.
             const channels = [
                 {
-                    name: 'BEIN SPORTS 1',
-                    logo: 'https://i.imgur.com/example_logo_bein1.png', // Örnek logo URL'si
-                    streamUrl: 'YASAL_BEINSPORTS1_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'iframe' // Veya 'hls'
+                    name: 'beIN SPORTS 1 (iframe)',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinstar', 
+                    type: 'iframe' 
                 },
                 {
-                    name: 'BEIN SPORTS 3',
-                    logo: 'https://i.imgur.com/example_logo_bein3.png',
-                    streamUrl: 'YASAL_BEINSPORTS3_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls'
+                    name: 'Star TV (HLS Test)',
+                    streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', 
+                    type: 'hls' 
                 },
                 {
-                    name: 'BEIN SPORTS 4',
-                    logo: 'https://i.imgur.com/example_logo_bein4.png',
-                    streamUrl: 'YASAL_BEINSPORTS4_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls'
-                },
-                {
-                    name: 'BEIN SPORTS 5',
-                    logo: 'https://i.imgur.com/example_logo_bein5.png',
-                    streamUrl: 'YASAL_BEINSPORTS5_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls'
-                },
-                {
-                    name: 'BEIN SPORTS MAX 1',
-                    logo: 'https://i.imgur.com/example_logo_beinmax1.png',
-                    streamUrl: 'YASAL_BEINSPORTSMAX1_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls'
-                },
-                {
-                    name: 'BEIN SPORTS MAX 2',
-                    logo: 'https://i.imgur.com/example_logo_beinmax2.png',
-                    streamUrl: 'YASAL_BEINSPORTSMAX2_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls'
-                },
-                {
-                    name: 'S SPORT',
-                    logo: 'https://i.imgur.com/example_logo_ssport.png',
-                    streamUrl: 'YASAL_SSPORT_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls'
-                },
-                {
-                    name: 'SportSmart',
-                    logo: 'https://i.imgur.com/example_logo_sportsmart.png',
-                    streamUrl: 'YASAL_SPORTSMART_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls'
-                },
-                {
-                    name: 'Fenercell TV',
-                    logo: 'https://i.imgur.com/example_logo_fenercell.png',
-                    streamUrl: 'YASAL_FENERCELLTV_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls'
-                },
-                 {
-                    name: 'Kanal D',
-                    logo: 'https://i.imgur.com/example_logo_kanald.png',
+                    name: 'Kanal D (HLS)',
                     streamUrl: 'YASAL_KANALD_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'ATV',
-                    logo: 'https://i.imgur.com/example_logo_atv.png',
+                    name: 'ATV (HLS)',
                     streamUrl: 'YASAL_ATV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Show TV',
-                    logo: 'https://i.imgur.com/example_logo_showtv.png',
+                    name: 'Show TV (HLS)',
                     streamUrl: 'YASAL_SHOWTV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'TRT 1',
-                    logo: 'https://i.imgur.com/example_logo_trt1.png',
+                    name: 'TRT 1 (HLS)',
                     streamUrl: 'YASAL_TRT1_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'TV8',
-                    logo: 'https://i.imgur.com/example_logo_tv8.png',
+                    name: 'TV8 (HLS)',
                     streamUrl: 'YASAL_TV8_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'FOX',
-                    logo: 'https://i.imgur.com/example_logo_fox.png',
+                    name: 'FOX (HLS)',
                     streamUrl: 'YASAL_FOX_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'NTV',
-                    logo: 'https://i.imgur.com/example_logo_ntv.png',
+                    name: 'NTV (HLS)',
                     streamUrl: 'YASAL_NTV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'CNN Türk',
-                    logo: 'https://i.imgur.com/example_logo_cnnturk.png',
+                    name: 'CNN Türk (HLS)',
                     streamUrl: 'YASAL_CNNTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Habertürk',
-                    logo: 'https://i.imgur.com/example_logo_haberturk.png',
+                    name: 'Habertürk (HLS)',
                     streamUrl: 'YASAL_HABERTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'A Haber',
-                    logo: 'https://i.imgur.com/example_logo_ahaber.png',
+                    name: 'A Haber (HLS)',
                     streamUrl: 'YASAL_AHABER_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'TRT Spor',
-                    logo: 'https://i.imgur.com/example_logo_trtspor.png',
+                    name: 'TRT Spor (HLS)',
                     streamUrl: 'YASAL_TRTSPOR_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'TLC',
-                    logo: 'https://i.imgur.com/example_logo_tlc.png',
+                    name: 'S Sport (iframe)',
+                    streamUrl: 'YASAL_SSPORT_IFRAME_LINKINIZI_BURAYA_YAPISTIRIN', 
+                    type: 'iframe'
+                },
+                {
+                    name: 'TLC (HLS)',
                     streamUrl: 'YASAL_TLC_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'DMAX',
-                    logo: 'https://i.imgur.com/example_logo_dmax.png',
+                    name: 'DMAX (HLS)',
                     streamUrl: 'YASAL_DMAX_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'National Geographic',
-                    logo: 'https://i.imgur.com/example_logo_natgeo.png',
+                    name: 'National Geographic (HLS)',
                     streamUrl: 'YASAL_NATGEO_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Discovery Channel',
-                    logo: 'https://i.imgur.com/example_logo_discovery.png',
+                    name: 'Discovery Channel (HLS)',
                     streamUrl: 'YASAL_DISCOVERY_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Eurosport 1',
-                    logo: 'https://i.imgur.com/example_logo_eurosport.png',
+                    name: 'Eurosport 1 (iframe)',
                     streamUrl: 'YASAL_EUROSPORT1_IFRAME_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'iframe'
                 },
                 {
-                    name: 'PowerTürk TV',
-                    logo: 'https://i.imgur.com/example_logo_powerturk.png',
+                    name: 'PowerTürk TV (HLS)',
                     streamUrl: 'YASAL_POWERTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Dream Türk',
-                    logo: 'https://i.imgur.com/example_logo_dreamturk.png',
+                    name: 'Dream Türk (HLS)',
                     streamUrl: 'YASAL_DREAMTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Bloomberg HT',
-                    logo: 'https://i.imgur.com/example_logo_bloomberg.png',
+                    name: 'Bloomberg HT (HLS)',
                     streamUrl: 'YASAL_BLOOMBERGHT_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'TRT Haber',
-                    logo: 'https://i.imgur.com/example_logo_trthaber.png',
+                    name: 'TRT Haber (HLS)',
                     streamUrl: 'YASAL_TRTHABER_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Haber Global',
-                    logo: 'https://i.imgur.com/example_logo_haberglobal.png',
+                    name: 'Haber Global (HLS)',
                     streamUrl: 'YASAL_HABERGLOBAL_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Beyaz TV',
-                    logo: 'https://i.imgur.com/example_logo_beyaztv.png',
+                    name: 'Beyaz TV (HLS)',
                     streamUrl: 'YASAL_BEYAZTV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'TGRT Haber',
-                    logo: 'https://i.imgur.com/example_logo_tgrthaber.png',
+                    name: 'TGRT Haber (HLS)',
                     streamUrl: 'YASAL_TGRTHABER_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Ülke TV',
-                    logo: 'https://i.imgur.com/example_logo_ulketv.png',
+                    name: 'Ülke TV (HLS)',
                     streamUrl: 'YASAL_ULKETV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: '24 TV',
-                    logo: 'https://i.imgur.com/example_logo_24tv.png',
+                    name: '24 TV (HLS)',
                     streamUrl: 'YASAL_24TV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Sports TV',
-                    logo: 'https://i.imgur.com/example_logo_sportstv.png',
+                    name: 'Sports TV (iframe)',
                     streamUrl: 'YASAL_SPORTSTV_IFRAME_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'iframe'
                 },
                 {
-                    name: 'NTV Spor',
-                    logo: 'https://i.imgur.com/example_logo_ntvspor.png',
+                    name: 'NTV Spor (HLS)',
                     streamUrl: 'YASAL_NTVSPOR_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'TRT Çocuk',
-                    logo: 'https://i.imgur.com/example_logo_trtococuk.png',
+                    name: 'TRT Çocuk (HLS)',
                     streamUrl: 'YASAL_TRTCOCUK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Minika Çocuk',
-                    logo: 'https://i.imgur.com/example_logo_minikacocuk.png',
+                    name: 'Minika Çocuk (HLS)',
                     streamUrl: 'YASAL_MINIKACOCU_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
-                    name: 'Minika Go',
-                    logo: 'https://i.imgur.com/example_logo_minikago.png',
+                    name: 'Minika Go (HLS)',
                     streamUrl: 'YASAL_MINIKAGO_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 }
             ];
 
             // DOM elementlerini seçme
-            const playerContentArea = document.getElementById('player-content-area');
+            const playerContentArea = document.getElementById('player-content-area'); 
             const statusMessage = document.getElementById('statusMessage');
             const channelGrid = document.getElementById('channel-grid');
-            const playerWrapper = document.getElementById('player-wrapper');
-            const currentChannelName = document.getElementById('currentChannelName');
-            const cinemaModeBtn = document.getElementById('cinemaModeBtn'); // Yeni Sinema Modu butonu
-            const searchInput = document.getElementById('searchInput');
-            const searchButton = document.getElementById('searchButton');
-            const tabItems = document.querySelectorAll('.tab-item');
-
-            let currentHls = null;
+            const playerWrapper = document.getElementById('player-wrapper'); 
+            const fullscreenBtn = document.getElementById('fullscreen-btn'); 
+            
+            let currentHls = null; 
             let activeCard = null;
-            let allChannels = [...channels];
-            let displayedChannels = [...channels];
 
             // Kanal listesini ekrana çiz
-            function renderChannelGrid(filterText = '') {
-                channelGrid.innerHTML = '';
-
-                const filteredChannels = displayedChannels.filter(channel =>
-                    channel.name.toLowerCase().includes(filterText.toLowerCase())
-                );
-
-                if (filteredChannels.length === 0) {
-                    channelGrid.innerHTML = '<p class="text-gray-400 text-center col-span-full py-8">Hiç kanal bulunamadı.</p>';
-                    return;
-                }
-
-                filteredChannels.forEach((channel) => {
+            function renderChannelGrid() {
+                channelGrid.innerHTML = ''; 
+                channels.forEach((channel) => { // 'index' parametresi artık kullanılmıyor
                     const card = document.createElement('div');
-                    card.className = 'channel-card';
+                    card.className = 'channel-card bg-gray-800 rounded-lg p-3 cursor-pointer flex items-center justify-center text-center'; 
                     card.dataset.streamUrl = channel.streamUrl;
                     card.dataset.streamType = channel.type;
-                    card.dataset.channelName = channel.name; // Kanal adını data attribute olarak ekle
-
-                    // Logo ve kanal adını içeren eski HTML yapısını geri getir
-                    card.innerHTML = `
-                        ${channel.logo ? `<img src="${channel.logo}" alt="${channel.name} Logo" class="mb-2">` : ''}
-                        <p class="text-sm font-semibold text-gray-300">${channel.name}</p>
-                    `;
-
+                    
+                    // Sadece kanal adını gösteriyoruz, logo yok
+                    card.innerHTML = `<p class="text-sm font-semibold text-gray-300">${channel.name}</p>`;
+                    
                     card.addEventListener('click', () => {
-                        loadStream(channel.streamUrl, channel.type, channel.name); // Kanal adını da gönder
+                        loadStream(channel.streamUrl, channel.type);
                         if (activeCard) {
                             activeCard.classList.remove('active');
                         }
                         card.classList.add('active');
                         activeCard = card;
                     });
-
+                    
                     channelGrid.appendChild(card);
                 });
             }
 
-            // Yayın yükleme fonksiyonu
-            function loadStream(streamUrl, streamType, name) {
-                playerContentArea.innerHTML = '';
+            // Yayın yükleme fonksiyonu (hem HLS hem iframe destekliyor)
+            function loadStream(streamUrl, streamType) {
+                playerContentArea.innerHTML = ''; 
 
                 if (currentHls) {
                     currentHls.destroy();
                     currentHls = null;
                 }
 
-                // Oynatıcı başlığını güncelle
-                currentChannelName.textContent = name;
-
-                // Tam ekran düğmesini başlangıçta gizle (Sinema modu butonu var)
-                // fullscreenBtn.style.display = 'none'; // Artık cinemaModeBtn kullanılacak
+                // Tam ekran düğmesini başlangıçta gizle
+                fullscreenBtn.style.display = 'none';
 
                 if (streamType === 'iframe') {
                     if (!streamUrl || streamUrl.includes('YASAL_')) {
                         setStatus('Lütfen kod içerisinden geçerli bir iframe URL\'si ekleyin.', 'error');
-                        // Poster görselini tekrar göster
-                        playerContentArea.innerHTML = '<img src="https://i.ibb.co/v4b2383/yay-n-ba-l-yor.png" alt="Yayın Başlıyor" class="w-full h-full object-contain bg-black">';
                         return;
                     }
                     setStatus('İframe yayını yükleniyor...', 'info');
                     const iframe = document.createElement('iframe');
                     iframe.id = 'iframe-player';
                     iframe.src = streamUrl;
-                    iframe.setAttribute('allowfullscreen', '');
+                    iframe.setAttribute('allowfullscreen', ''); 
                     iframe.setAttribute('frameborder', '0');
                     iframe.onload = () => {
                         setStatus('İframe yayını yüklendi.', 'success');
-                        // fullscreenBtn.style.display = 'block';
+                        fullscreenBtn.style.display = 'block'; 
                     };
                     iframe.onerror = () => {
                          setStatus('İframe yayını yüklenirken hata oluştu. URL\'yi kontrol edin.', 'error');
-                         // Poster görselini tekrar göster
-                         playerContentArea.innerHTML = '<img src="https://i.ibb.co/v4b2383/yay-n-ba-l-yor.png" alt="Yayın Başlıyor" class="w-full h-full object-contain bg-black">';
                     };
                     playerContentArea.appendChild(iframe);
 
                 } else if (streamType === 'hls') {
                     if (!streamUrl || streamUrl.includes('YASAL_')) {
                         setStatus('Lütfen kod içerisinden geçerli bir HLS URL\'si ekleyin.', 'error');
-                        // Poster görselini tekrar göster
-                        playerContentArea.innerHTML = '<img src="https://i.ibb.co/v4b2383/yay-n-ba-l-yor.png" alt="Yayın Başlıyor" class="w-full h-full object-contain bg-black">';
                         return;
                     }
                     setStatus('HLS yayını yükleniyor...', 'info');
                     const video = document.createElement('video');
-                    video.id = 'video-player';
-                    video.controls = true;
-                    // Poster görselini video yüklenirken de kullanabiliriz, ancak video başladığında kalkacak
-                    video.poster = "https://i.ibb.co/v4b2383/yay-n-ba-l-yor.png";
+                    video.id = 'video-player'; 
+                    video.controls = true; 
+                    video.poster = "https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yükleniyor...";
                     playerContentArea.appendChild(video);
 
                     if (Hls.isSupported()) {
@@ -593,11 +356,11 @@
                         });
                         currentHls.loadSource(streamUrl);
                         currentHls.attachMedia(video);
-
+                        
                         currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
                             setStatus('HLS yayını başarıyla yüklendi.', 'success');
                             video.play().catch(e => console.error("Oynatma hatası:", e));
-                            // fullscreenBtn.style.display = 'block';
+                            fullscreenBtn.style.display = 'block';
                         });
 
                         currentHls.on(Hls.Events.ERROR, (event, data) => {
@@ -615,8 +378,6 @@
                                         currentHls.destroy();
                                         break;
                                 }
-                                // Hata durumunda posteri tekrar göster
-                                playerContentArea.innerHTML = '<img src="https://i.ibb.co/v4b2383/yay-n-ba-l-yor.png" alt="Yayın Başlıyor" class="w-full h-full object-contain bg-black">';
                             }
                         });
 
@@ -625,22 +386,16 @@
                         video.addEventListener('loadedmetadata', () => {
                             setStatus('HLS yayını başarıyla yüklendi.', 'success');
                             video.play();
-                            // fullscreenBtn.style.display = 'block';
+                            fullscreenBtn.style.display = 'block';
                         });
                         video.addEventListener('error', () => {
                             setStatus('HLS yayını yüklenemedi. URL\'yi kontrol edin.', 'error');
-                            // Hata durumunda posteri tekrar göster
-                            playerContentArea.innerHTML = '<img src="https://i.ibb.co/v4b2383/yay-n-ba-l-yor.png" alt="Yayın Başlıyor" class="w-full h-full object-contain bg-black">';
                         });
                     } else {
                         setStatus('Tarayıcınız HLS yayınlarını desteklemiyor.', 'error');
-                        // Poster görselini tekrar göster
-                        playerContentArea.innerHTML = '<img src="https://i.ibb.co/v4b2383/yay-n-ba-l-yor.png" alt="Yayın Başlıyor" class="w-full h-full object-contain bg-black">';
                     }
                 } else {
                     setStatus('Geçersiz yayın tipi belirtildi.', 'error');
-                    // Poster görselini tekrar göster
-                    playerContentArea.innerHTML = '<img src="https://i.ibb.co/v4b2383/yay-n-ba-l-yor.png" alt="Yayın Başlıyor" class="w-full h-full object-contain bg-black">';
                 }
             }
 
@@ -653,58 +408,27 @@
                 else statusMessage.classList.add('text-yellow-400');
             }
 
-            // Sinema Modu İşlevselliği (Tam Ekran)
-            cinemaModeBtn.addEventListener('click', () => {
-                const elem = playerWrapper;
-
+            // Tam Ekran İşlevselliği
+            fullscreenBtn.addEventListener('click', () => {
+                const elem = playerWrapper; 
+                
                 if (!document.fullscreenElement) {
                     if (elem.requestFullscreen) {
                         elem.requestFullscreen();
-                    } else if (elem.webkitRequestFullscreen) {
+                    } else if (elem.webkitRequestFullscreen) { 
                         elem.webkitRequestFullscreen();
-                    } else if (elem.msRequestFullscreen) {
+                    } else if (elem.msRequestFullscreen) { 
                         elem.msRequestFullscreen();
                     }
-                } else {
+                } else { 
                     if (document.exitFullscreen) {
                         document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
+                    } else if (document.webkitExitFullscreen) { 
                         document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) {
+                    } else if (document.msExitFullscreen) { 
                         document.msExitFullscreen();
                     }
                 }
-            });
-
-            // Arama fonksiyonu
-            searchInput.addEventListener('input', () => {
-                renderChannelGrid(searchInput.value);
-            });
-
-            searchButton.addEventListener('click', () => {
-                renderChannelGrid(searchInput.value);
-            });
-
-            // Sekme menüsü işlevselliği
-            tabItems.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabItems.forEach(item => item.classList.remove('active-tab'));
-                    tab.classList.add('active-tab');
-
-                    const selectedTab = tab.dataset.tab;
-                    if (selectedTab === 'list') {
-                        displayedChannels = [...allChannels];
-                    } else if (selectedTab === '24-7') {
-                        // "7/24 Kanallar" sekmesi için filtreleme (eğer kanallarınızın bir "is247" veya benzeri bir özelliği varsa)
-                        // Şimdilik, sadece isimde "7/24" geçenleri örnek olarak filtreleyelim.
-                        // Daha iyi bir yaklaşım için channel objelerinize 'is247: true' gibi bir özellik eklemeniz gerekebilir.
-                        displayedChannels = allChannels.filter(c => c.name.includes('7/24') || c.name.includes('TRT Çocuk')); // Örnek filtre, gerçek bir özelliğe göre yapın
-                    } else if (selectedTab === 'multi-screen') {
-                        displayedChannels = [...allChannels]; // Çoklu ekran için farklı bir mantık gerekebilir
-                        setStatus('Çoklu Ekran özelliği henüz aktif değil.', 'info');
-                    }
-                    renderChannelGrid(searchInput.value);
-                });
             });
 
             // Başlangıç

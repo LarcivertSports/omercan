@@ -3,224 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sosyal Medya Bayilik Paneli - Takipçi, Beğeni ve İzlenme Hizmetleri</title>
+    <title>HLS Yayın Portalı</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS'i CDN üzerinden ekliyoruz -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter -->
+    <!-- HLS.js kütüphanesini CDN üzerinden ekliyoruz -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
+    <!-- Google Fonts'tan Inter font ailesini ekliyoruz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Custom Styles -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Slate 900 */
-            color: #e2e8f0; /* Slate 200 */
         }
-        .gradient-text {
-            background: linear-gradient(90deg, #38bdf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background-color: #000;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
         }
-        .card-bg {
-            background-color: #1e293b; /* Slate 800 */
-            border: 1px solid #334155; /* Slate 700 */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        #video-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-        .card-bg:hover {
+        .channel-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .channel-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3), 0 4px 6px -2px rgba(239, 68, 68, 0.2);
         }
-        .btn-primary {
-            background: linear-gradient(90deg, #38bdf8, #a78bfa);
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(56, 189, 248, 0.3), 0 4px 6px -2px rgba(167, 139, 250, 0.2);
-        }
-        .feature-icon {
-            background: linear-gradient(145deg, #1e293b, #334155);
-            color: #38bdf8;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        .channel-card.active {
+             outline: 3px solid #ef4444;
+             transform: scale(1.05);
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="bg-gray-900 text-gray-200 antialiased">
 
-    <!-- Header -->
-    <header class="py-4 px-6 md:px-12 lg:px-24 flex justify-between items-center bg-slate-900/70 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-700">
-        <div class="text-2xl font-bold">
-            <a href="#" class="flex items-center gap-2">
-                <i class="fa-solid fa-rocket text-sky-400"></i>
-                <span class="gradient-text">PanelAdınız</span>
-            </a>
-        </div>
-        <nav class="hidden md:flex items-center gap-6 text-slate-300">
-            <a href="#services" class="hover:text-sky-400 transition-colors">Hizmetler</a>
-            <a href="#how-it-works" class="hover:text-sky-400 transition-colors">Nasıl Çalışır?</a>
-            <a href="#pricing" class="hover:text-sky-400 transition-colors">Fiyatlar</a>
-        </nav>
-        <div class="hidden md:flex items-center gap-4">
-            <a href="#" class="text-slate-300 hover:text-white font-medium transition-colors">Giriş Yap</a>
-            <a href="#" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                Kayıt Ol
-            </a>
-        </div>
-        <button class="md:hidden text-slate-300">
-            <i class="fa-solid fa-bars text-xl"></i>
-        </button>
-    </header>
-
-    <main>
-        <!-- Hero Section -->
-        <section class="text-center py-20 md:py-32 px-4">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6">
-                    Sosyal Medyada <span class="gradient-text">Zirveye</span> Oynayın
-                </h1>
-                <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10">
-                    Türkiye'nin en hızlı ve güvenilir SMM paneli ile tanışın. Takipçi, beğeni, izlenme ve daha birçok hizmetle sosyal medya hesaplarınızı uçuşa geçirin.
-                </p>
-                <a href="#" class="btn-primary text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg">
-                    Hemen Başla
-                </a>
-                <div class="mt-8 flex justify-center items-center gap-6 text-slate-500">
-                    <i class="fa-brands fa-instagram text-3xl"></i>
-                    <i class="fa-brands fa-tiktok text-3xl"></i>
-                    <i class="fa-brands fa-youtube text-3xl"></i>
-                    <i class="fa-brands fa-twitter text-3xl"></i>
-                    <i class="fa-brands fa-facebook text-3xl"></i>
-                </div>
-            </div>
-        </section>
-
-        <!-- How It Works Section -->
-        <section id="how-it-works" class="py-20 px-6 md:px-12 lg:px-24 bg-slate-900">
-            <div class="max-w-5xl mx-auto">
-                <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-12">Sadece 3 Kolay Adım</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                    <!-- Step 1 -->
-                    <div class="card-bg p-8 rounded-2xl">
-                        <div class="w-16 h-16 rounded-full feature-icon flex items-center justify-center mx-auto mb-4 text-3xl">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-white mb-2">Hesap Oluştur</h3>
-                        <p class="text-slate-400">Birkaç saniye içinde ücretsiz kayıt olun ve paneli keşfetmeye başlayın.</p>
-                    </div>
-                    <!-- Step 2 -->
-                    <div class="card-bg p-8 rounded-2xl">
-                        <div class="w-16 h-16 rounded-full feature-icon flex items-center justify-center mx-auto mb-4 text-3xl">
-                            <i class="fa-solid fa-wallet"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-white mb-2">Bakiye Yükle</h3>
-                        <p class="text-slate-400">PayTR, Shopier gibi güvenli ödeme yöntemleriyle hesabınıza kolayca bakiye ekleyin.</p>
-                    </div>
-                    <!-- Step 3 -->
-                    <div class="card-bg p-8 rounded-2xl">
-                        <div class="w-16 h-16 rounded-full feature-icon flex items-center justify-center mx-auto mb-4 text-3xl">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-white mb-2">Sipariş Ver</h3>
-                        <p class="text-slate-400">İhtiyacınız olan hizmeti seçin, linki girin ve siparişinizi anında oluşturun.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Services Section -->
-        <section id="services" class="py-20 px-6 md:px-12 lg:px-24">
-            <div class="max-w-6xl mx-auto">
-                <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-12">Popüler Hizmetlerimiz</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Service Card -->
-                    <div class="card-bg p-6 rounded-xl text-center">
-                        <i class="fa-brands fa-instagram text-5xl mb-4 text-purple-400"></i>
-                        <h3 class="text-lg font-bold text-white">Instagram Takipçi</h3>
-                        <p class="text-slate-400 text-sm mt-1">Türk & Global, Garantili</p>
-                    </div>
-                     <!-- Service Card -->
-                    <div class="card-bg p-6 rounded-xl text-center">
-                        <i class="fa-brands fa-tiktok text-5xl mb-4 text-sky-300"></i>
-                        <h3 class="text-lg font-bold text-white">TikTok Beğeni</h3>
-                        <p class="text-slate-400 text-sm mt-1">Keşfet Etkili, Anında Başlar</p>
-                    </div>
-                     <!-- Service Card -->
-                    <div class="card-bg p-6 rounded-xl text-center">
-                        <i class="fa-brands fa-youtube text-5xl mb-4 text-red-500"></i>
-                        <h3 class="text-lg font-bold text-white">YouTube İzlenme</h3>
-                        <p class="text-slate-400 text-sm mt-1">4000 Saat Uyumlu, Kalıcı</p>
-                    </div>
-                     <!-- Service Card -->
-                    <div class="card-bg p-6 rounded-xl text-center">
-                        <i class="fa-solid fa-users text-5xl mb-4 text-green-400"></i>
-                        <h3 class="text-lg font-bold text-white">Tüm Hizmetler</h3>
-                        <p class="text-slate-400 text-sm mt-1">Yüzlerce servisimiz var</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <!-- Ana Konteyner -->
+    <div class="container mx-auto p-4 md:p-8">
         
-        <!-- Why Us Section -->
-        <section class="py-20 px-6 md:px-12 lg:px-24 bg-slate-900">
-            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Neden Bizi Seçmelisiniz?</h2>
-                    <p class="text-slate-400 mb-8">Müşteri memnuniyetini ön planda tutarak, sektördeki en kaliteli hizmeti en uygun fiyatlarla sunuyoruz. Otomatik sistemimiz sayesinde siparişleriniz anında işleme alınır.</p>
-                    <ul class="space-y-4">
-                        <li class="flex items-center gap-3">
-                            <i class="fa-solid fa-bolt-lightning text-sky-400 text-xl"></i>
-                            <span class="text-slate-300">Anında Teslimat ve Otomatik Sistem</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fa-solid fa-shield-halved text-sky-400 text-xl"></i>
-                            <span class="text-slate-300">Güvenli Ödeme Altyapısı (3D Secure)</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fa-solid fa-headset text-sky-400 text-xl"></i>
-                            <span class="text-slate-300">7/24 Aktif Canlı Destek ve Ticket Sistemi</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fa-solid fa-hand-holding-dollar text-sky-400 text-xl"></i>
-                            <span class="text-slate-300">En Uygun Fiyat Garantisi</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-bg p-8 rounded-2xl text-center">
-                    <h3 class="text-2xl font-bold text-white">Hala Emin Değil misiniz?</h3>
-                    <p class="text-slate-400 my-4">Hemen ücretsiz kayıt olun, sistemimizi ve servis kalitemizi kendiniz test edin. Pişman olmayacaksınız!</p>
-                    <a href="#" class="btn-primary text-white font-bold py-3 px-6 rounded-full text-lg shadow-lg inline-block">
-                        Ücretsiz Kayıt Ol
-                    </a>
-                </div>
-            </div>
-        </section>
+        <!-- Başlık Bölümü -->
+        <header class="text-center mb-8">
+             <h1 class="text-4xl md:text-5xl font-bold text-white">Yayın Portalı</h1>
+             <p class="mt-3 text-lg text-gray-400">İzlemek istediğiniz kanalı seçin.</p>
+        </header>
 
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 border-t border-slate-800">
-        <div class="max-w-6xl mx-auto py-12 px-6 md:px-12 lg:px-24 text-center">
-            <p class="text-slate-400">Tüm sosyal medya platformları için en kaliteli hizmetler.</p>
-            <div class="flex justify-center gap-4 my-6">
-                <a href="#" class="text-slate-500 hover:text-white"><i class="fa-brands fa-instagram text-2xl"></i></a>
-                <a href="#" class="text-slate-500 hover:text-white"><i class="fa-brands fa-whatsapp text-2xl"></i></a>
-                <a href="#" class="text-slate-500 hover:text-white"><i class="fa-brands fa-telegram text-2xl"></i></a>
+        <!-- Video Oynatıcı ve Durum Mesajı -->
+        <div class="mb-8">
+            <div id="player-wrapper" class="video-container shadow-2xl">
+                <video id="video-player" controls poster="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..."></video>
             </div>
-            <div class="text-slate-500 text-sm flex flex-col md:flex-row justify-center gap-2 md:gap-4">
-                 <a href="#" class="hover:text-sky-400">Gizlilik Politikası</a>
-                 <a href="#" class="hover:text-sky-400">Hizmet Şartları</a>
-                 <a href="#" class="hover:text-sky-400">Bize Ulaşın</a>
-            </div>
-            <p class="text-slate-600 mt-8 text-sm">&copy; 2025 PanelAdınız. Tüm hakları saklıdır.</p>
+            <div id="statusMessage" class="mt-3 text-center text-sm text-yellow-400 h-5"></div>
         </div>
-    </footer>
 
+        <!-- Kanal Listesi -->
+        <main>
+            <h2 class="text-2xl font-bold text-white mb-6">Kanal Listesi</h2>
+            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+                <!-- Kanal kartları JavaScript ile buraya eklenecek -->
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- KANAL LİSTENİZİ BURAYA EKLEYİN ---
+            // ÖNEMLİ: Telif hakları nedeniyle size doğrudan bir yayın linki veremiyoruz.
+            // Lütfen 'streamUrl' kısımlarına kendi yasal HLS yayın linklerinizi ekleyin.
+            const channels = [
+                {
+                    name: 'beIN SPORTS 1',
+                    logo: 'https://placehold.co/200x100/5a2d82/ffffff?text=beIN+SPORTS+1',
+                    // BURAYI KENDİ YASAL YAYIN LİNKİNİZLE DEĞİŞTİRİN
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinstar' 
+                },
+                {
+                    name: 'beIN SPORTS 2',
+                    logo: 'https://placehold.co/200x100/5a2d82/ffffff?text=beIN+SPORTS+2',
+                    // BURAYI KENDİ YASAL YAYIN LİNKİNİZLE DEĞİŞTİRİN
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb2#amp=1' // Örnek test yayını
+                }
+            ];
+
+            // DOM elementlerini seçme
+            const video = document.getElementById('video-player');
+            const statusMessage = document.getElementById('statusMessage');
+            const channelGrid = document.getElementById('channel-grid');
+            let hls = null;
+            let activeCard = null;
+
+            // Kanal listesini ekrana çiz
+            function renderChannelGrid() {
+                channelGrid.innerHTML = ''; // Mevcut gridi temizle
+                channels.forEach((channel, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'channel-card bg-gray-800 rounded-lg p-3 cursor-pointer flex flex-col items-center justify-center text-center';
+                    card.dataset.streamUrl = channel.streamUrl;
+                    
+                    card.innerHTML = `
+                        <img src="${channel.logo}" alt="${channel.name} Logo" class="w-full h-auto object-contain rounded-md mb-3 bg-black" onerror="this.onerror=null;this.src='https://placehold.co/200x100/1f2937/9ca3af?text=Logo+Bulunamadı';">
+                        <p class="text-sm font-semibold text-gray-300">${channel.name}</p>
+                    `;
+                    
+                    card.addEventListener('click', () => {
+                        loadStream(channel.streamUrl);
+                        // Aktif kart stilini ayarla
+                        if (activeCard) {
+                            activeCard.classList.remove('active');
+                        }
+                        card.classList.add('active');
+                        activeCard = card;
+                    });
+                    
+                    channelGrid.appendChild(card);
+                });
+            }
+
+            // Yayın yükleme fonksiyonu
+            function loadStream(streamUrl) {
+                if (!streamUrl) {
+                    setStatus('Lütfen kod içerisinden geçerli bir yayın URL\'si ekleyin.', 'error');
+                    return;
+                }
+
+                if (hls) {
+                    hls.destroy();
+                }
+
+                if (Hls.isSupported()) {
+                    setStatus('Yayın yükleniyor...', 'info');
+                    hls = new Hls({
+                         // Düşük gecikme için ayarlar (isteğe bağlı)
+                        lowLatencyMode: true,
+                        backBufferLength: 90,
+                    });
+                    hls.loadSource(streamUrl);
+                    hls.attachMedia(video);
+                    
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        setStatus('Yayın başarıyla yüklendi.', 'success');
+                        video.play().catch(e => console.error("Oynatma hatası:", e));
+                    });
+
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        if (data.fatal) {
+                            switch (data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    setStatus('Network hatası. URL\'yi veya internet bağlantınızı kontrol edin.', 'error');
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    setStatus('Medya hatası. Video çözümlenemedi.', 'error');
+                                    hls.recoverMediaError();
+                                    break;
+                                default:
+                                    setStatus('Bilinmeyen bir yayın hatası oluştu.', 'error');
+                                    hls.destroy();
+                                    break;
+                            }
+                        }
+                    });
+
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = streamUrl;
+                    video.addEventListener('loadedmetadata', () => {
+                        setStatus('Yayın başarıyla yüklendi.', 'success');
+                        video.play();
+                    });
+                     video.addEventListener('error', () => {
+                        setStatus('Yayın yüklenemedi. URL\'yi kontrol edin.', 'error');
+                    });
+                } else {
+                    setStatus('Tarayıcınız HLS yayınlarını desteklemiyor.', 'error');
+                }
+            }
+
+            // Durum mesajı fonksiyonu
+            function setStatus(message, type = 'info') {
+                statusMessage.textContent = message;
+                statusMessage.className = 'mt-3 text-center text-sm h-5 ';
+                if (type === 'success') statusMessage.classList.add('text-green-400');
+                else if (type === 'error') statusMessage.classList.add('text-red-400');
+                else statusMessage.classList.add('text-yellow-400');
+            }
+
+            // Başlangıç
+            renderChannelGrid();
+        });
+    </script>
 </body>
-</html>
+</html> 

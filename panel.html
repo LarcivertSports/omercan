@@ -91,10 +91,10 @@
                     streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinstar' 
                 },
                 {
-                    name: 'beIN SPORTS 2',
-                    logo: 'https://placehold.co/200x100/5a2d82/ffffff?text=beIN+SPORTS+2',
+                    name: 'Star TV',
+                    logo: 'https://placehold.co/200x100/007bff/ffffff?text=Star+TV',
                     // BURAYI KENDİ YASAL YAYIN LİNKİNİZLE DEĞİŞTİRİN
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb2#amp=1' // Örnek test yayını
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb2' // Örnek test yayını
                 }
             ];
 
@@ -134,7 +134,7 @@
 
             // Yayın yükleme fonksiyonu
             function loadStream(streamUrl) {
-                if (!streamUrl) {
+                if (!streamUrl || streamUrl.includes('YASAL_')) {
                     setStatus('Lütfen kod içerisinden geçerli bir yayın URL\'si ekleyin.', 'error');
                     return;
                 }
@@ -204,4 +204,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

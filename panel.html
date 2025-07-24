@@ -34,6 +34,11 @@
         }
         .channel-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            /* Logo kalktığı için ortalamayı daha iyi hale getirebiliriz */
+            display: flex; /* Flexbox kullan */
+            align-items: center; /* Dikeyde ortala */
+            justify-content: center; /* Yatayda ortala */
+            height: 100px; /* Kartların sabit bir yüksekliği olabilir */
         }
         .channel-card:hover {
             transform: translateY(-5px);
@@ -55,7 +60,7 @@
             padding: 8px 12px;
             border-radius: 5px;
             cursor: pointer;
-            z-index: 10; /* Oynatıcının üzerinde kalmasını sağlar */
+            z-index: 10; 
             font-size: 14px;
             display: none; /* Varsayılan olarak gizli, JS ile gösterilecek */
         }
@@ -95,202 +100,171 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- KANAL LİSTENİZİ BURAYA EKLEYİN ---
+            // ÖNEMLİ: Telif hakları nedeniyle size doğrudan bir yayın linki veremiyoruz.
+            // Lütfen 'streamUrl' kısımlarına kendi yasal HLS yayın linklerinizi veya iframe URL'lerinizi ekleyin.
             const channels = [
                 {
                     name: 'beIN SPORTS 1 (iframe)',
-                    logo: 'https://placehold.co/200x100/5a2d82/ffffff?text=beIN+SPORTS+1',
                     streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinstar', 
                     type: 'iframe' 
                 },
                 {
                     name: 'Star TV (HLS Test)',
-                    logo: 'https://placehold.co/200x100/007bff/ffffff?text=Star+TV',
                     streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', 
                     type: 'hls' 
                 },
                 {
                     name: 'Kanal D (HLS)',
-                    logo: 'https://placehold.co/200x100/008080/ffffff?text=Kanal+D',
                     streamUrl: 'YASAL_KANALD_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'ATV (HLS)',
-                    logo: 'https://placehold.co/200x100/DC143C/ffffff?text=ATV',
                     streamUrl: 'YASAL_ATV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Show TV (HLS)',
-                    logo: 'https://placehold.co/200x100/800080/ffffff?text=Show+TV',
                     streamUrl: 'YASAL_SHOWTV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'TRT 1 (HLS)',
-                    logo: 'https://placehold.co/200x100/006400/ffffff?text=TRT+1',
                     streamUrl: 'YASAL_TRT1_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'TV8 (HLS)',
-                    logo: 'https://placehold.co/200x100/FFD700/000000?text=TV8',
                     streamUrl: 'YASAL_TV8_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'FOX (HLS)',
-                    logo: 'https://placehold.co/200x100/FF4500/ffffff?text=FOX',
                     streamUrl: 'YASAL_FOX_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'NTV (HLS)',
-                    logo: 'https://placehold.co/200x100/36454F/ffffff?text=NTV',
                     streamUrl: 'YASAL_NTV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'CNN Türk (HLS)',
-                    logo: 'https://placehold.co/200x100/8B0000/ffffff?text=CNN+Türk',
                     streamUrl: 'YASAL_CNNTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Habertürk (HLS)',
-                    logo: 'https://placehold.co/200x100/4B0082/ffffff?text=Habertürk',
                     streamUrl: 'YASAL_HABERTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'A Haber (HLS)',
-                    logo: 'https://placehold.co/200x100/8B4513/ffffff?text=A+Haber',
                     streamUrl: 'YASAL_AHABER_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'TRT Spor (HLS)',
-                    logo: 'https://placehold.co/200x100/2F4F4F/ffffff?text=TRT+Spor',
                     streamUrl: 'YASAL_TRTSPOR_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'S Sport (iframe)',
-                    logo: 'https://placehold.co/200x100/4682B4/ffffff?text=S+Sport',
                     streamUrl: 'YASAL_SSPORT_IFRAME_LINKINIZI_BURAYA_YAPISTIRIN', 
                     type: 'iframe'
                 },
                 {
                     name: 'TLC (HLS)',
-                    logo: 'https://placehold.co/200x100/FF6347/ffffff?text=TLC',
                     streamUrl: 'YASAL_TLC_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'DMAX (HLS)',
-                    logo: 'https://placehold.co/200x100/6A5ACD/ffffff?text=DMAX',
                     streamUrl: 'YASAL_DMAX_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'National Geographic (HLS)',
-                    logo: 'https://placehold.co/200x100/FF8C00/ffffff?text=Nat+Geo',
                     streamUrl: 'YASAL_NATGEO_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Discovery Channel (HLS)',
-                    logo: 'https://placehold.co/200x100/483D8B/ffffff?text=Discovery',
                     streamUrl: 'YASAL_DISCOVERY_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Eurosport 1 (iframe)',
-                    logo: 'https://placehold.co/200x100/B22222/ffffff?text=Eurosport+1',
                     streamUrl: 'YASAL_EUROSPORT1_IFRAME_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'iframe'
                 },
                 {
                     name: 'PowerTürk TV (HLS)',
-                    logo: 'https://placehold.co/200x100/FF00FF/ffffff?text=PowerTürk',
                     streamUrl: 'YASAL_POWERTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Dream Türk (HLS)',
-                    logo: 'https://placehold.co/200x100/808000/ffffff?text=Dream+Türk',
                     streamUrl: 'YASAL_DREAMTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Bloomberg HT (HLS)',
-                    logo: 'https://placehold.co/200x100/00008B/ffffff?text=Bloomberg+HT',
                     streamUrl: 'YASAL_BLOOMBERGHT_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'TRT Haber (HLS)',
-                    logo: 'https://placehold.co/200x100/5F9EA0/ffffff?text=TRT+Haber',
                     streamUrl: 'YASAL_TRTHABER_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Haber Global (HLS)',
-                    logo: 'https://placehold.co/200x100/CD853F/ffffff?text=Haber+Global',
                     streamUrl: 'YASAL_HABERGLOBAL_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Beyaz TV (HLS)',
-                    logo: 'https://placehold.co/200x100/F0F8FF/000000?text=Beyaz+TV',
                     streamUrl: 'YASAL_BEYAZTV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'TGRT Haber (HLS)',
-                    logo: 'https://placehold.co/200x100/DAA520/ffffff?text=TGRT+Haber',
                     streamUrl: 'YASAL_TGRTHABER_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Ülke TV (HLS)',
-                    logo: 'https://placehold.co/200x100/7CFC00/000000?text=Ülke+TV',
                     streamUrl: 'YASAL_ULKETV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: '24 TV (HLS)',
-                    logo: 'https://placehold.co/200x100/ADFF2F/000000?text=24+TV',
                     streamUrl: 'YASAL_24TV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Sports TV (iframe)',
-                    logo: 'https://placehold.co/200x100/6B8E23/ffffff?text=Sports+TV',
                     streamUrl: 'YASAL_SPORTSTV_IFRAME_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'iframe'
                 },
                 {
                     name: 'NTV Spor (HLS)',
-                    logo: 'https://placehold.co/200x100/4169E1/ffffff?text=NTV+Spor',
                     streamUrl: 'YASAL_NTVSPOR_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'TRT Çocuk (HLS)',
-                    logo: 'https://placehold.co/200x100/FFA07A/000000?text=TRT+Çocuk',
                     streamUrl: 'YASAL_TRTCOCUK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Minika Çocuk (HLS)',
-                    logo: 'https://placehold.co/200x100/DA70D6/ffffff?text=Minika+Çocuk',
                     streamUrl: 'YASAL_MINIKACOCU_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 },
                 {
                     name: 'Minika Go (HLS)',
-                    logo: 'https://placehold.co/200x100/9370DB/ffffff?text=Minika+Go',
                     streamUrl: 'YASAL_MINIKAGO_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls'
                 }
@@ -300,8 +274,8 @@
             const playerContentArea = document.getElementById('player-content-area'); 
             const statusMessage = document.getElementById('statusMessage');
             const channelGrid = document.getElementById('channel-grid');
-            const playerWrapper = document.getElementById('player-wrapper'); // Tam ekran için ana sarıcı
-            const fullscreenBtn = document.getElementById('fullscreen-btn'); // Tam ekran düğmesi
+            const playerWrapper = document.getElementById('player-wrapper'); 
+            const fullscreenBtn = document.getElementById('fullscreen-btn'); 
             
             let currentHls = null; 
             let activeCard = null;
@@ -309,17 +283,14 @@
             // Kanal listesini ekrana çiz
             function renderChannelGrid() {
                 channelGrid.innerHTML = ''; 
-                channels.forEach((channel, index) => {
+                channels.forEach((channel) => { // 'index' parametresi artık kullanılmıyor
                     const card = document.createElement('div');
-                    card.className = 'channel-card bg-gray-800 rounded-lg p-3 cursor-pointer flex flex-col items-center justify-center text-center';
-                    
+                    card.className = 'channel-card bg-gray-800 rounded-lg p-3 cursor-pointer flex items-center justify-center text-center'; 
                     card.dataset.streamUrl = channel.streamUrl;
                     card.dataset.streamType = channel.type;
                     
-                    card.innerHTML = `
-                        <img src="${channel.logo}" alt="${channel.name} Logo" class="w-full h-auto object-contain rounded-md mb-3 bg-black" onerror="this.onerror=null;this.src='https://placehold.co/200x100/1f2937/9ca3af?text=Logo+Bulunamadı';">
-                        <p class="text-sm font-semibold text-gray-300">${channel.name}</p>
-                    `;
+                    // Sadece kanal adını gösteriyoruz, logo yok
+                    card.innerHTML = `<p class="text-sm font-semibold text-gray-300">${channel.name}</p>`;
                     
                     card.addEventListener('click', () => {
                         loadStream(channel.streamUrl, channel.type);
@@ -334,7 +305,7 @@
                 });
             }
 
-            // Yayın yükleme fonksiyonu (şimdi hem HLS hem iframe destekliyor)
+            // Yayın yükleme fonksiyonu (hem HLS hem iframe destekliyor)
             function loadStream(streamUrl, streamType) {
                 playerContentArea.innerHTML = ''; 
 
@@ -355,12 +326,10 @@
                     const iframe = document.createElement('iframe');
                     iframe.id = 'iframe-player';
                     iframe.src = streamUrl;
-                    iframe.setAttribute('allowfullscreen', ''); // iframe'in kendisinin tam ekran moduna girmesine izin verir
+                    iframe.setAttribute('allowfullscreen', ''); 
                     iframe.setAttribute('frameborder', '0');
-                    // iframe'in yüklendiğini kontrol etmek zor olduğu için basitleştirilmiş durum
                     iframe.onload = () => {
                         setStatus('İframe yayını yüklendi.', 'success');
-                        // iframe yüklendiğinde tam ekran düğmesini göster
                         fullscreenBtn.style.display = 'block'; 
                     };
                     iframe.onerror = () => {
@@ -376,7 +345,7 @@
                     setStatus('HLS yayını yükleniyor...', 'info');
                     const video = document.createElement('video');
                     video.id = 'video-player'; 
-                    video.controls = true; // Tarayıcının kendi kontrollerini gösterir (tam ekran düğmesi dahil)
+                    video.controls = true; 
                     video.poster = "https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yükleniyor...";
                     playerContentArea.appendChild(video);
 
@@ -391,7 +360,6 @@
                         currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
                             setStatus('HLS yayını başarıyla yüklendi.', 'success');
                             video.play().catch(e => console.error("Oynatma hatası:", e));
-                            // HLS yüklendiğinde tam ekran düğmesini göster
                             fullscreenBtn.style.display = 'block';
                         });
 
@@ -418,7 +386,6 @@
                         video.addEventListener('loadedmetadata', () => {
                             setStatus('HLS yayını başarıyla yüklendi.', 'success');
                             video.play();
-                            // HLS (yerel) yüklendiğinde tam ekran düğmesini göster
                             fullscreenBtn.style.display = 'block';
                         });
                         video.addEventListener('error', () => {
@@ -443,22 +410,22 @@
 
             // Tam Ekran İşlevselliği
             fullscreenBtn.addEventListener('click', () => {
-                const elem = playerWrapper; // player-wrapper divini tam ekran yaparız
+                const elem = playerWrapper; 
                 
-                if (!document.fullscreenElement) { // Eğer tam ekran modunda değilsek
+                if (!document.fullscreenElement) {
                     if (elem.requestFullscreen) {
                         elem.requestFullscreen();
-                    } else if (elem.webkitRequestFullscreen) { /* Safari */
+                    } else if (elem.webkitRequestFullscreen) { 
                         elem.webkitRequestFullscreen();
-                    } else if (elem.msRequestFullscreen) { /* IE11 */
+                    } else if (elem.msRequestFullscreen) { 
                         elem.msRequestFullscreen();
                     }
-                } else { // Eğer tam ekran modundaysak, çık
+                } else { 
                     if (document.exitFullscreen) {
                         document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) { /* Safari */
+                    } else if (document.webkitExitFullscreen) { 
                         document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) { /* IE11 */
+                    } else if (document.msExitFullscreen) { 
                         document.msExitFullscreen();
                     }
                 }
@@ -469,4 +436,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

@@ -11,21 +11,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Koyu arka plan */
+            color: #e2e8f0; /* Açık yazı rengi */
         }
+        .container {
+            max-width: 900px; /* Daha geniş ekranlarda merkeze toplamak için */
+        }
+
         .video-container {
             position: relative;
             width: 100%;
             padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            background-color: #000;
-            border-radius: 0.75rem;
+            background-color: #2d3748; /* Oynatıcı arka planı */
+            border-radius: 8px;
             overflow: hidden;
-            transition: all 0.3s ease-in-out;
-            /* Görseldeki gibi daha koyu ve hafif köşeli */
-            background-color: #2D3748; /* bg-gray-700 benzeri */
-            border-radius: 8px; /* Hafif yuvarlak köşeler */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         #iframe-player { 
             position: absolute;
@@ -35,135 +40,155 @@
             height: 100%;
             border: none; 
         }
-        
-        /* Kanal Kartları için özel stil güncellemeleri */
-        .channel-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* İçerikleri sağa ve sola yasla */
-            height: auto; /* İçeriğe göre yükseklik */
-            padding: 1rem 1.25rem; /* Daha fazla padding */
-            background-color: #2D3748; /* bg-gray-700 benzeri */
-            border-radius: 8px; /* Daha yuvarlak köşeler */
-            color: #E2E8F0; /* Yazı rengi */
-            font-size: 1rem; /* Yazı boyutu */
-            line-height: 1.5rem; /* Satır yüksekliği */
-            box-shadow: none; /* Varsayılan gölgeyi kaldır */
-            border: 1px solid #4A5568; /* Hafif bir kenarlık */
-            flex-wrap: wrap; /* Küçük ekranlarda sarmalama */
-        }
-        .channel-card:hover {
-            transform: translateY(-2px); /* Daha az kayma */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Hafif gölge */
-            background-color: #4A5568; /* Hover'da daha koyu */
-        }
-        .channel-card.active {
-             outline: 3px solid #63B3ED; /* Aktif rengini mavi yapalım */
-             transform: scale(1); /* Ölçeklemeyi kaldır, sadece outline olsun */
-             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Aktifte de gölge */
-        }
 
-        /* Tam ekran düğmesi için stil */
-        #fullscreen-btn {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 10; 
-            font-size: 14px;
-            display: none; 
-        }
-        #fullscreen-btn:hover {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        /* Yeni eklenen tab menü stilleri */
+        /* Sekme Menüsü */
         .tab-menu {
             display: flex;
-            background-color: #2D3748; /* bg-gray-700 benzeri */
+            background-color: #2d3748; /* Sekme menüsü arka planı */
             border-radius: 8px;
-            padding: 0.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 4px; /* Sekmeler arası boşluk için daha az padding */
+            margin-bottom: 1rem;
         }
         .tab-item {
             flex: 1;
             text-align: center;
-            padding: 0.75rem 1rem;
-            color: #E2E8F0;
+            padding: 8px 12px;
+            color: #cbd5e0; /* Varsayılan sekme yazısı rengi */
             font-weight: 500;
             cursor: pointer;
             border-radius: 6px;
             transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
         }
-        .tab-item:hover {
-            background-color: #4A5568; /* Hover rengi */
-        }
         .tab-item.active-tab {
-            background-color: #4C51BF; /* Mor renk gibi */
-            color: white;
+            background-color: #4a5568; /* Aktif sekme arka planı (Görseldeki mavi gri gibi) */
+            color: #edf2f7; /* Aktif sekme yazısı rengi */
+        }
+        .tab-item:hover:not(.active-tab) {
+            background-color: #4a5568; /* Hover rengi, aktif olmayanlar için */
+            color: #edf2f7;
+        }
+        /* Sekmeler arası ince çizgi efekti */
+        .tab-item:not(:last-child) {
+            border-right: 1px solid rgba(255, 255, 255, 0.1); /* İnce bir ayırıcı */
         }
 
-        /* Arama çubuğu ve butonu */
+
+        /* Arama Çubuğu */
         .search-container {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem; /* Arama kutusu ve buton arası boşluk */
             margin-bottom: 1.5rem;
         }
         .search-input {
             flex-grow: 1;
-            padding: 0.75rem 1rem;
+            padding: 10px 14px;
             border-radius: 8px;
-            border: 1px solid #4A5568;
-            background-color: #2D3748;
-            color: #E2E8F0;
+            border: 1px solid #4a5568; /* İnce kenarlık */
+            background-color: #2d3748; /* Arama kutusu arka planı */
+            color: #edf2f7;
             font-size: 1rem;
+            outline: none; /* Odaklandığında varsayılan outline'ı kaldır */
         }
         .search-input::placeholder {
-            color: #A0AEC0; /* placeholder rengi */
+            color: #a0aec0;
         }
+        .search-input:focus {
+            border-color: #63b3ed; /* Odaklandığında kenarlık rengi */
+        }
+
         .search-button {
-            padding: 0.75rem 1.5rem;
+            padding: 10px 16px;
             border-radius: 8px;
-            background-color: #48BB78; /* Yeşil renk */
+            background-color: #48bb78; /* Yeşil buton rengi */
             color: white;
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px; /* İkon ve yazı arası boşluk */
         }
         .search-button:hover {
-            background-color: #38A169; /* Koyu yeşil hover */
+            background-color: #38a169; /* Koyu yeşil hover */
+        }
+        .search-button i {
+            font-size: 1rem; /* İkon boyutu */
         }
 
-        /* "7/24" ve "CANLI" etiketleri için */
+        /* Kanal Kartları */
+        .channel-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Tek sütunlu düzen */
+            gap: 12px; /* Kartlar arası boşluk */
+        }
+        .channel-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* İçerikleri iki yana yasla */
+            padding: 16px 20px; /* Daha fazla padding */
+            background-color: #2d3748; /* Kart arka planı */
+            border-radius: 8px; /* Köşe yuvarlaklığı */
+            border: 1px solid transparent; /* Varsayılan şeffaf kenarlık */
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .channel-card:hover {
+            background-color: #4a5568; /* Hover arka planı */
+            transform: translateY(-2px); /* Hafif yukarı kaydırma */
+        }
+        .channel-card.active {
+            border-color: #63b3ed; /* Aktif kart için mavi kenarlık */
+            background-color: #4a5568; /* Aktif kart arka planı */
+        }
+
         .channel-info {
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Başa hizala */
+            align-items: flex-start;
+        }
+        .channel-name {
+            font-size: 1rem; /* Kanal adı font boyutu */
+            font-weight: 600; /* Daha kalın font */
+            color: #edf2f7; /* Açık renk */
         }
         .channel-time {
-            font-size: 0.875rem; /* Küçük font */
-            color: #A0AEC0; /* Gri tonu */
-            margin-top: 0.25rem; /* Kanal adından biraz boşluk */
+            font-size: 0.8rem; /* "7/24" font boyutu */
+            color: #a0aec0; /* "7/24" gri rengi */
+            margin-top: 4px; /* Üstten boşluk */
         }
+        
         .live-tag {
-            background-color: #48BB78; /* Yeşil arkaplan */
+            background-color: #48bb78; /* Yeşil CANLI etiketi */
             color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px; /* Tam yuvarlak */
-            font-size: 0.75rem;
-            font-weight: 600;
+            padding: 4px 10px; /* Padding */
+            border-radius: 20px; /* Tamamen yuvarlak */
+            font-size: 0.7rem; /* Daha küçük font */
+            font-weight: 700; /* Daha kalın */
             text-transform: uppercase;
+        }
+
+        /* Tam ekran düğmesi */
+        #fullscreen-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.6); /* Hafif şeffaf koyu */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 10; 
+            font-size: 0.9rem;
+            display: none; /* Varsayılan olarak gizli */
+            transition: background-color 0.2s ease-in-out;
+        }
+        #fullscreen-btn:hover {
+            background-color: rgba(0, 0, 0, 0.8);
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-200 antialiased">
+<body class="antialiased">
 
     <div class="container mx-auto p-4 md:p-8">
         
@@ -173,7 +198,7 @@
         </header>
 
         <div class="mb-8">
-            <div id="player-wrapper" class="video-container shadow-2xl">
+            <div id="player-wrapper" class="video-container">
                 <div id="player-content-area">
                     <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="Placeholder" class="w-full h-full object-cover">
                 </div>
@@ -190,11 +215,13 @@
 
         <div class="search-container">
             <input type="text" id="searchInput" class="search-input" placeholder="Maç veya kanal ara...">
-            <button id="searchButton" class="search-button">Q Ara</button>
+            <button id="searchButton" class="search-button">
+                <i class="fa-solid fa-magnifying-glass"></i> Ara
+            </button>
         </div>
 
         <main>
-            <div id="channel-grid" class="grid grid-cols-1 gap-4 md:gap-6">
+            <div id="channel-grid" class="channel-grid">
                 </div>
         </main>
 
@@ -206,7 +233,7 @@
             const channels = [
                 {
                     name: 'BEIN SPORTS 3',
-                    time: '7/24', // Görseldeki gibi süre bilgisi
+                    time: '7/24',
                     streamUrl: 'YASAL_BEINSPORTS3_LINKINIZI_BURAYA_YAPISTIRIN',
                     type: 'hls' 
                 },
@@ -238,7 +265,7 @@
                     name: 'S SPORT',
                     time: '7/24',
                     streamUrl: 'YASAL_SSPORT_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls' // Görselde HLS veya iframe tipi belirtilmemiş, HLS varsaydım.
+                    type: 'hls' 
                 },
                 {
                     name: 'SportSmart',
@@ -446,30 +473,32 @@
 
             let currentHls = null; 
             let activeCard = null;
-            let currentChannels = [...channels]; // Arama için orijinal listeyi sakla
+            let allChannels = [...channels]; // Orijinal kanal listesi
+            let displayedChannels = [...channels]; // Filtrelenmiş kanal listesi için
 
             // Kanal listesini ekrana çiz
             function renderChannelGrid(filterText = '') {
                 channelGrid.innerHTML = ''; 
-                const filteredChannels = currentChannels.filter(channel => 
+                
+                // Görüntülenecek kanalları filtrele
+                const filteredChannels = displayedChannels.filter(channel => 
                     channel.name.toLowerCase().includes(filterText.toLowerCase())
                 );
 
                 if (filteredChannels.length === 0) {
-                    channelGrid.innerHTML = '<p class="text-gray-400 text-center col-span-full">Hiç kanal bulunamadı.</p>';
+                    channelGrid.innerHTML = '<p class="text-gray-400 text-center col-span-full py-8">Hiç kanal bulunamadı.</p>';
                     return;
                 }
 
                 filteredChannels.forEach((channel) => {
                     const card = document.createElement('div');
-                    card.className = 'channel-card'; // Tailwind sınıfları style içinde
-                    
+                    card.className = 'channel-card'; 
                     card.dataset.streamUrl = channel.streamUrl;
                     card.dataset.streamType = channel.type;
                     
                     card.innerHTML = `
                         <div class="channel-info">
-                            <p class="font-semibold text-gray-200">${channel.name}</p>
+                            <p class="channel-name">${channel.name}</p>
                             <p class="channel-time">${channel.time}</p>
                         </div>
                         <span class="live-tag">CANLI</span>
@@ -488,7 +517,7 @@
                 });
             }
 
-            // Yayın yükleme fonksiyonu (hem HLS hem iframe destekliyor)
+            // Yayın yükleme fonksiyonu
             function loadStream(streamUrl, streamType) {
                 playerContentArea.innerHTML = ''; 
 
@@ -614,22 +643,33 @@
             });
 
             // Arama fonksiyonu
-            searchInput.addEventListener('input', (event) => {
-                renderChannelGrid(event.target.value);
+            searchInput.addEventListener('input', () => {
+                renderChannelGrid(searchInput.value);
             });
 
             searchButton.addEventListener('click', () => {
                 renderChannelGrid(searchInput.value);
             });
 
-            // Sekme menüsü işlevselliği (Şu an sadece görsel, gerçek filtreleme yapmıyor)
+            // Sekme menüsü işlevselliği
             tabItems.forEach(tab => {
                 tab.addEventListener('click', () => {
                     tabItems.forEach(item => item.classList.remove('active-tab'));
                     tab.classList.add('active-tab');
-                    // Burada seçilen sekmeye göre kanal listesini filtreleme mantığı eklenebilir.
-                    // Şimdilik sadece görsel bir değişiklik.
-                    // Örneğin: if (tab.dataset.tab === '24-7') { renderChannelGrid('7/24'); } else { renderChannelGrid(''); }
+                    
+                    const selectedTab = tab.dataset.tab;
+                    if (selectedTab === 'list') {
+                        displayedChannels = [...allChannels]; // Tüm kanalları göster
+                    } else if (selectedTab === '24-7') {
+                        displayedChannels = allChannels.filter(c => c.time === '7/24'); // Sadece 7/24 olanları göster
+                    } else if (selectedTab === 'multi-screen') {
+                        // "Çoklu Ekran" için özel bir filtreleme veya farklı bir sayfa/görünüm olabilir.
+                        // Şimdilik boş liste gösterelim ya da tüm kanalları gösterelim.
+                        // displayedChannels = []; // Veya başka bir mantık
+                         displayedChannels = [...allChannels]; // Tüm kanalları göster (şimdilik)
+                         setStatus('Çoklu Ekran özelliği henüz aktif değil.', 'info');
+                    }
+                    renderChannelGrid(searchInput.value); // Yeni filtrelenmiş listeyi arama metniyle tekrar çiz
                 });
             });
 

@@ -36,7 +36,7 @@
             font-weight: 600;
             font-size: 0.95rem;
         }
-        .cinema-mode-btn { /* Çoklu ekran butonu kaldırıldığı için sadece sinema modu kaldı */
+        .cinema-mode-btn {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -44,7 +44,6 @@
             font-size: 0.85rem;
             cursor: pointer;
             transition: color 0.2s ease;
-            /* margin-left: 1rem; Çoklu ekran butonu olmadığı için buna gerek kalmadı */
         }
         .cinema-mode-btn:hover {
             color: #a0aec0;
@@ -60,13 +59,13 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             border-radius: 0; /* Player-header'dan dolayı kaldırıldı */
         }
-        #video-player { /* video-player-2 kaldırıldı */
+        #video-player {
             width: 100%;
             height: 100%;
             object-fit: contain; /* Video içeriğini çerçeveye sığdır */
             background-color: #000; /* Video arkaplanı siyah */
         }
-        #iframe-player { /* iframe-player-2 kaldırıldı */
+        #iframe-player {
             position: absolute;
             top: 0;
             left: 0;
@@ -84,8 +83,6 @@
             margin-bottom: 1.5rem; /* Alt boşluk */
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Gölge efekti */
         }
-
-        /* Çoklu Ekran Modu Stilleri tamamen kaldırıldı */
 
         /* --- BUTONLARIN METİN TABANLI ESKİ HALİNE GETİRİLMESİ --- */
         .channel-card {
@@ -113,8 +110,6 @@
              box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4), 0 4px 6px -2px rgba(239, 68, 68, 0.3);
              background-color: #4a5568; /* Aktifken hover rengi */
         }
-        /* Çoklu ekran moduna özel aktif kart renkleri kaldırıldı */
-
         .channel-card p {
             font-size: 0.95rem; /* Yazı boyutu */
             font-weight: 600; /* Yazı kalınlığı */
@@ -122,7 +117,7 @@
             line-height: 1.3; /* Satır yüksekliği */
         }
 
-        /* --- SEKME MENÜSÜ --- */
+        /* --- SEKME MENÜSÜ (Başlıklar kaldırıldığı için sadece "Canlı Yayınlar" kalabilir veya tamamen kaldırılabilir) --- */
         .tab-menu {
             display: flex;
             background-color: #2d3748;
@@ -149,6 +144,7 @@
             color: #edf2f7;
         }
         .tab-item:not(:last-child) {
+            /* Başlıklar kaldırıldığı için border-right'a gerek kalmayabilir, eğer tek bir tab kalırsa */
             /* border-right: 1px solid rgba(255, 255, 255, 0.1); */
         }
 
@@ -207,17 +203,15 @@
         <div class="player-wrapper-outer">
             <div class="player-header">
                 <span id="currentChannelName">Kanal Seçilmedi</span>
-                <div class="flex items-center">
-                    <span id="cinemaModeBtn" class="cinema-mode-btn">
-                        <i class="fa-solid fa-expand"></i> Sinema Modu
-                    </span>
-                    </div>
+                <span id="cinemaModeBtn" class="cinema-mode-btn">
+                    <i class="fa-solid fa-expand"></i> Sinema Modu
+                </span>
             </div>
             <div id="player-wrapper" class="video-container">
-                <div id="player-content-area" class="w-full h-full relative">
+                <div id="player-content-area">
                     <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">
                 </div>
-                </div>
+            </div>
         </div>
         <div id="statusMessage" class="mt-3 text-center text-sm text-yellow-400 h-5"></div>
 
@@ -246,6 +240,7 @@
             // --- KANAL LİSTENİZİ BURAYA EKLEYİN ---
             // ÖNEMLİ: Telif hakları nedeniyle size doğrudan bir yayın linki veremiyoruz.
             // Lütfen 'streamUrl' kısımlarına kendi yasal HLS yayın linklerinizi veya iframe URL'lerinizi ekleyin.
+            // Bu örnekte 'logo' özelliği kullanılmıyor, sadece kanal adı gösterilecek.
             const channels = [
                 {
                     name: 'beIN SPORTS 1',
@@ -255,218 +250,218 @@
                     isPopular: true
                 },
                 {
-                    name: 'Star TV',
-                    streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', // Örnek HLS URL
-                    type: 'hls',
+                    name: 'beIN SPORTS 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb2#amp=1', // Örnek HLS URL
+                    type: 'iframe',
                     isLive: true,
                     isPopular: false
                 },
                 {
-                    name: 'Kanal D',
-                    streamUrl: 'YASAL_KANALD_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'beIN SPORTS 3',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb3',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: true
                 },
                 {
-                    name: 'ATV',
-                    streamUrl: 'YASAL_ATV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'beIN SPORTS 4',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb4',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: true
                 },
                 {
-                    name: 'Show TV',
-                    streamUrl: 'YASAL_SHOWTV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'beIN SPORTS 5',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb5',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: false
                 },
                 {
-                    name: 'TRT 1',
-                    streamUrl: 'YASAL_TRT1_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'beIN SPORTS Max 1',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm1',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: true
                 },
                 {
-                    name: 'TV8',
-                    streamUrl: 'YASAL_TV8_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'beIN SPORTS Max 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm2',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: true
                 },
                 {
-                    name: 'FOX',
-                    streamUrl: 'YASAL_FOX_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'Tivibu Spor 1',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint1',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: false
                 },
                 {
-                    name: 'NTV',
-                    streamUrl: 'YASAL_NTV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'Tivibu Spor 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint2',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: false
                 },
                 {
-                    name: 'CNN Türk',
-                    streamUrl: 'YASAL_CNNTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'Tivibu Spor 3',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint3',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: false
                 },
                 {
-                    name: 'Habertürk',
-                    streamUrl: 'YASAL_HABERTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'Tivibu Spor 4',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint4',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: false
-                },
-                {
-                    name: 'A Haber',
-                    streamUrl: 'YASAL_AHABER_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TRT Spor',
-                    streamUrl: 'YASAL_TRTSPOR_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: true
                 },
                 {
                     name: 'S Sport',
-                    streamUrl: 'YASAL_SSPORT_IFRAME_LINKINIZI_BURAYA_YAPISTIRIN',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'S Sport 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss2',
                     type: 'iframe',
                     isLive: true,
                     isPopular: true
                 },
                 {
-                    name: 'TLC',
-                    streamUrl: 'YASAL_TLC_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
+                    name: 'S Sport Plus 1',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex2',
+                    type: 'iframe',
                     isLive: true,
-                    isPopular: false
+                    isPopular: true
                 },
                 {
-                    name: 'DMAX',
-                    streamUrl: 'YASAL_DMAX_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'National Geographic',
-                    streamUrl: 'YASAL_NATGEO_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Discovery Channel',
-                    streamUrl: 'YASAL_DISCOVERY_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Eurosport 1',
-                    streamUrl: 'YASAL_EUROSPORT1_IFRAME_LINKINIZI_BURAYA_YAPISTIRIN',
+                    name: 'S Sport Plus 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex1',
                     type: 'iframe',
                     isLive: true,
                     isPopular: false
                 },
                 {
-                    name: 'PowerTürk TV',
-                    streamUrl: 'YASAL_POWERTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Dream Türk',
-                    streamUrl: 'YASAL_DREAMTURK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Bloomberg HT',
-                    streamUrl: 'YASAL_BLOOMBERGHT_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TRT Haber',
-                    streamUrl: 'YASAL_TRTHABER_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Haber Global',
-                    streamUrl: 'YASAL_HABERGLOBAL_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Beyaz TV',
-                    streamUrl: 'YASAL_BEYAZTV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TGRT Haber',
-                    streamUrl: 'YASAL_TGRTHABER_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Ülke TV',
-                    streamUrl: 'YASAL_ULKETV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: '24 TV',
-                    streamUrl: 'YASAL_24TV_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Sports TV',
-                    streamUrl: 'YASAL_SPORTSTV_IFRAME_LINKINIZI_BURAYA_YAPISTIRIN',
+                    name: 'Smart Spor',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsmarts',
                     type: 'iframe',
                     isLive: true,
                     isPopular: false
                 },
                 {
-                    name: 'NTV Spor',
-                    streamUrl: 'YASAL_NTVSPOR_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
+                    name: 'Smart Spor 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsms2',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'A Spor',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinas',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'TV 8,5',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv85',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'TV 8',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv8',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'TRT1',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'TRT SPOR',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrtspor',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'TRT SPOR YILDIZ',
+                    streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8',
                     type: 'hls',
                     isLive: true,
                     isPopular: false
                 },
                 {
-                    name: 'TRT Çocuk',
-                    streamUrl: 'YASAL_TRTCOCUK_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
+                    name: 'Tabii TV',
+                    streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg&bvr_flags=10&bvr_ch=tabiitv&bvr_bw=2800000',
                     type: 'hls',
                     isLive: true,
                     isPopular: false
                 },
                 {
-                    name: 'Minika Çocuk',
-                    streamUrl: 'YASAL_MINIKACOCU_HLS_LINKINIZI_BURAYA_YAPISTIRIN',
+                    name: 'TABİİ SPOR 1',
+                    streamUrl: 'https://tv-trtspor1.medya.trt.com.tr/master_1080.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'Tabii SPOR 2',
+                    streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'Tabii SPOR 3',
+                    streamUrl: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'TABİİ SPOR 4',
+                    streamUrl: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'Tabii SPOR 5',
+                    streamUrl: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'Tabii SPOR 6',
+                    streamUrl: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'Tabii SPOR 7',
+                    streamUrl: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false
+                },
+                {
+                    name: 'Tabii SPOR',
+                    streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8',
                     type: 'hls',
                     isLive: true,
                     isPopular: false
@@ -481,22 +476,20 @@
             ];
 
             // DOM elementlerini seçme
-            const playerContentArea1 = document.getElementById('player-content-area');
+            const playerContentArea = document.getElementById('player-content-area');
             const statusMessage = document.getElementById('statusMessage');
             const channelGrid = document.getElementById('channel-grid');
             const playerWrapper = document.getElementById('player-wrapper');
-            const currentChannelName = document.getElementById('currentChannelName');
-            const cinemaModeBtn = document.getElementById('cinemaModeBtn');
-            // const multiScreenBtn = document.getElementById('multiScreenBtn'); // Kaldırıldı
+            const currentChannelName = document.getElementById('currentChannelName'); // Kanal adı için yeni element
+            const cinemaModeBtn = document.getElementById('cinemaModeBtn'); // Sinema modu butonu
             const searchInput = document.getElementById('searchInput');
             const searchButton = document.getElementById('searchButton');
             const tabItems = document.querySelectorAll('.tab-item');
 
-            let currentHls1 = null; // Sadece tek bir HLS nesnesi kaldı
-            let activeCard = null; // Tekli mod için aktif kart
-
-            let allChannels = [...channels];
-            let displayedChannels = [...channels];
+            let currentHls = null;
+            let activeCard = null;
+            let allChannels = [...channels]; // Orijinal kanal listesi
+            let displayedChannels = [...channels]; // Filtrelenmiş kanal listesi için
 
             // Kanal listesini ekrana çiz
             function renderChannelGrid(filterText = '') {
@@ -516,17 +509,13 @@
                     card.className = 'channel-card';
                     card.dataset.streamUrl = channel.streamUrl;
                     card.dataset.streamType = channel.type;
-                    card.dataset.channelName = channel.name;
+                    card.dataset.channelName = channel.name; // Kanal adını data attribute olarak ekle
 
+                    // Sadece kanal adını gösteriyoruz (logo yok)
                     card.innerHTML = `<p>${channel.name}</p>`;
 
-                    // Mevcut aktif kartı koru
-                    if (activeCard === card) {
-                        card.classList.add('active');
-                    }
-
                     card.addEventListener('click', () => {
-                        loadStream(channel.streamUrl, channel.type, channel.name, playerContentArea1); // Her zaman 1. player'a yükle
+                        loadStream(channel.streamUrl, channel.type, channel.name); // Kanal adını da gönder
                         if (activeCard) {
                             activeCard.classList.remove('active');
                         }
@@ -539,19 +528,22 @@
             }
 
             // Yayın yükleme fonksiyonu
-            function loadStream(streamUrl, streamType, name, targetPlayerArea) { // Sadece tek bir player alanı parametresi
-                targetPlayerArea.innerHTML = ''; // İçeriği temizle
+            function loadStream(streamUrl, streamType, name) {
+                playerContentArea.innerHTML = ''; // İçeriği temizle
 
-                if (currentHls1) { // Sadece currentHls1 kontrol ediliyor
-                    currentHls1.destroy();
-                    currentHls1 = null;
+                if (currentHls) {
+                    currentHls.destroy();
+                    currentHls = null;
                 }
 
-                currentChannelName.textContent = name; // Başlığı güncelle
+                // Oynatıcı başlığını güncelle
+                currentChannelName.textContent = name;
 
+                // Geçerli yayın URL'si kontrolü
                 if (!streamUrl || streamUrl.includes('YASAL_')) {
                     setStatus('Lütfen kod içerisinden geçerli bir yayın URL\'si ekleyin.', 'error');
-                    targetPlayerArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
+                    // Poster görselini tekrar göster
+                    playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
                     return;
                 }
 
@@ -559,7 +551,7 @@
 
                 if (streamType === 'iframe') {
                     const iframe = document.createElement('iframe');
-                    iframe.id = 'iframe-player'; // Tek ID
+                    iframe.id = 'iframe-player';
                     iframe.src = streamUrl;
                     iframe.setAttribute('allowfullscreen', '');
                     iframe.setAttribute('frameborder', '0');
@@ -568,31 +560,32 @@
                     };
                     iframe.onerror = () => {
                          setStatus('İframe yayını yüklenirken hata oluştu. URL\'yi kontrol edin.', 'error');
-                         targetPlayerArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
+                         // Poster görselini tekrar göster
+                         playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
                     };
-                    targetPlayerArea.appendChild(iframe);
+                    playerContentArea.appendChild(iframe);
 
                 } else if (streamType === 'hls') {
                     const video = document.createElement('video');
-                    video.id = 'video-player'; // Tek ID
+                    video.id = 'video-player';
                     video.controls = true;
-                    video.poster = "https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yükleniyor...";
-                    targetPlayerArea.appendChild(video);
+                    video.poster = "https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yükleniyor..."; // Yüklenirken gösterilecek poster
+                    playerContentArea.appendChild(video);
 
                     if (Hls.isSupported()) {
-                        currentHls1 = new Hls({ // Sadece currentHls1 kullanılıyor
+                        currentHls = new Hls({
                             lowLatencyMode: true,
                             backBufferLength: 90,
                         });
-                        currentHls1.loadSource(streamUrl);
-                        currentHls1.attachMedia(video);
+                        currentHls.loadSource(streamUrl);
+                        currentHls.attachMedia(video);
 
-                        currentHls1.on(Hls.Events.MANIFEST_PARSED, () => {
+                        currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
                             setStatus('HLS yayını başarıyla yüklendi.', 'success');
                             video.play().catch(e => console.error("Oynatma hatası:", e));
                         });
 
-                        currentHls1.on(Hls.Events.ERROR, (event, data) => {
+                        currentHls.on(Hls.Events.ERROR, (event, data) => {
                             if (data.fatal) {
                                 switch (data.type) {
                                     case Hls.ErrorTypes.NETWORK_ERROR:
@@ -600,14 +593,15 @@
                                         break;
                                     case Hls.ErrorTypes.MEDIA_ERROR:
                                         setStatus('Medya hatası. Video çözümlenemedi.', 'error');
-                                        currentHls1.recoverMediaError();
+                                        currentHls.recoverMediaError();
                                         break;
                                     default:
                                         setStatus('Bilinmeyen bir yayın hatası oluştu.', 'error');
-                                        currentHls1.destroy();
+                                        currentHls.destroy();
                                         break;
                                 }
-                                targetPlayerArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
+                                // Hata durumunda posteri tekrar göster
+                                playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
                             }
                         });
 
@@ -619,15 +613,18 @@
                         });
                         video.addEventListener('error', () => {
                             setStatus('HLS yayını yüklenemedi. URL\'yi kontrol edin.', 'error');
-                            targetPlayerArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
+                            // Hata durumunda posteri tekrar göster
+                            playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
                         });
                     } else {
                         setStatus('Tarayıcınız HLS yayınlarını desteklemiyor.', 'error');
-                        targetPlayerArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
+                        // Poster görselini tekrar göster
+                        playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
                     }
                 } else {
                     setStatus('Geçersiz yayın tipi belirtildi.', 'error');
-                    targetPlayerArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
+                    // Poster görselini tekrar göster
+                    playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
                 }
             }
 
@@ -642,7 +639,7 @@
 
             // Sinema Modu İşlevselliği (Tam Ekran)
             cinemaModeBtn.addEventListener('click', () => {
-                const elem = playerWrapper;
+                const elem = playerWrapper; // Video kapsayıcısı
 
                 if (!document.fullscreenElement) {
                     if (elem.requestFullscreen) {
@@ -680,11 +677,11 @@
 
                     const selectedTab = tab.dataset.tab;
                     if (selectedTab === 'live') {
-                        displayedChannels = allChannels.filter(c => c.isLive);
+                        displayedChannels = allChannels.filter(c => c.isLive); // Sadece canlı olanları göster
                     } else {
-                        displayedChannels = [...allChannels];
+                        displayedChannels = [...allChannels]; // Diğer durumda tüm kanalları göster (şu an sadece 'live' var)
                     }
-                    renderChannelGrid(searchInput.value);
+                    renderChannelGrid(searchInput.value); // Yeni filtrelenmiş listeyi arama metniyle tekrar çiz
                 });
             });
 
@@ -694,4 +691,4 @@
         });
     </script>
 </body>
-    </html>
+</html> 

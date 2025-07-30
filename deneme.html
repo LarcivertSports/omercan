@@ -36,19 +36,21 @@
             font-weight: 600;
             font-size: 0.95rem;
         }
-        .header-controls { /* Yeni eklenen div için stil */
+        .header-controls {
             display: flex;
             align-items: center;
             gap: 1.5rem; /* Butonlar ve izleyici sayısı arasındaki boşluk */
         }
-        .cinema-mode-btn, .viewer-count-display { /* .viewer-count-display de eklendi */
+        .cinema-mode-btn, .viewer-count-display {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             color: #cbd5e0;
             font-size: 0.85rem;
-            cursor: pointer;
             transition: color 0.2s ease;
+        }
+        .cinema-mode-btn {
+            cursor: pointer;
         }
         .cinema-mode-btn:hover {
             color: #a0aec0;
@@ -113,7 +115,7 @@
         }
         .channel-card:hover {
             transform: translateY(-2px); /* Hafif yukarı kaydırma */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Daha belirgin gölge */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1uler-1px rgba(0, 0, 0, 0.06); /* Daha belirgin gölge */
             background-color: #4a5568; /* Hoverda biraz koyulaşsın */
         }
         .channel-card.active {
@@ -211,7 +213,8 @@
         <div class="player-wrapper-outer">
             <div class="player-header">
                 <span id="currentChannelName">Kanal Seçilmedi</span>
-                <div class="header-controls"> <span id="cinemaModeBtn" class="cinema-mode-btn">
+                <div class="header-controls">
+                    <span id="cinemaModeBtn" class="cinema-mode-btn">
                         <i class="fa-solid fa-expand"></i> Sinema Modu
                     </span>
                     <span id="viewerCountDisplay" class="viewer-count-display">
@@ -220,7 +223,7 @@
                 </div>
             </div>
             <div id="player-wrapper" class="video-container">
-                <div id="player-content-area">
+                <div id="player-content-area" class="w-full h-full relative">
                     <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">
                 </div>
             </div>
@@ -491,7 +494,7 @@
             const playerWrapper = document.getElementById('player-wrapper');
             const currentChannelName = document.getElementById('currentChannelName');
             const cinemaModeBtn = document.getElementById('cinemaModeBtn');
-            const viewerCountDisplay = document.getElementById('viewerCount'); // Yeni: İzleyici sayısı elementi
+            const viewerCountSpan = document.getElementById('viewerCount'); // Doğru ID'yi kullandık
             const searchInput = document.getElementById('searchInput');
             const searchButton = document.getElementById('searchButton');
             const tabItems = document.querySelectorAll('.tab-item');
@@ -500,24 +503,50 @@
             let activeCard = null;
             let allChannels = [...channels];
             let displayedChannels = [...channels];
-            let currentChannelViewerCountInterval; // İzleyici sayacı interval'ini tutmak için
+            let viewerCountIntervalId = null; // Interval ID'yi tutmak için yeni değişken
 
             // Rastgele izleyici sayısı üretme fonksiyonu (gerçek veri yoksa)
             function generateRandomViewerCount() {
-                // Her 5 saniyede bir hafif dalgalanma için
-                let baseCount = parseInt(viewerCountDisplay.textContent || 0);
-                if (baseCount === 0) baseCount = 1000; // İlk yüklemede başlangıç değeri
+                // Sadece aktif bir kanal varsa sayıyı güncelle
+                if (currentChannelName.textContent !== 'Kanal Seçilmedi') {
+                    let baseCount = parseInt(viewerCountSpan.textContent.replace(/\./g, '') || 0); // Noktaları kaldır
+                    if (isNaN(baseCount) || baseCount === 0) {
+                        baseCount = Math.floor(Math.random() * (5000 - 1000 + 1) + 1000); // İlk başlangıç değeri
+                    }
 
-                const minChange = -20;
-                const maxChange = 20;
-                const change = Math.floor(Math.random() * (maxChange - minChange + 1)) + minChange;
-                let newCount = baseCount + change;
+                    const minChange = -20;
+                    const maxChange = 20;
+                    const change = Math.floor(Math.random() * (maxChange - minChange + 1)) + minChange;
+                    let newCount = baseCount + change;
 
-                // Sayıların çok düşmesini veya sıfır olmasını engelle
-                if (newCount < 50) newCount = 50 + Math.floor(Math.random() * 50); // Minimum 50-100 arasında
-                if (newCount > 10000) newCount = 9900; // Çok yükselmesini engelle (opsiyonel)
+                    // Sayıların çok düşmesini veya sıfır olmasını engelle
+                    if (newCount < 50) newCount = 50 + Math.floor(Math.random() * 50); // Minimum 50-100 arasında
+                    if (newCount > 10000) newCount = 9900; // Çok yükselmesini engelle (opsiyonel)
 
-                viewerCountDisplay.textContent = newCount.toLocaleString('tr-TR'); // Binlik ayracı ekle
+                    viewerCountSpan.textContent = newCount.toLocaleString('tr-TR'); // Binlik ayracı ekle
+                } else {
+                    viewerCountSpan.textContent = '0'; // Kanal seçilmediyse 0 göster
+                }
+            }
+
+            // İzleyici sayacını başlatan fonksiyon
+            function startViewerCountUpdate() {
+                // Önceki interval'i temizle
+                if (viewerCountIntervalId) {
+                    clearInterval(viewerCountIntervalId);
+                }
+                // Yeni bir başlangıç değeri ayarla ve interval'i başlat
+                generateRandomViewerCount(); // İlk güncellemeyi hemen yap
+                viewerCountIntervalId = setInterval(generateRandomViewerCount, 5000); // Her 5 saniyede bir güncelle
+            }
+
+            // İzleyici sayacını durduran fonksiyon
+            function stopViewerCountUpdate() {
+                if (viewerCountIntervalId) {
+                    clearInterval(viewerCountIntervalId);
+                    viewerCountIntervalId = null;
+                }
+                viewerCountSpan.textContent = '0'; // Kanal seçili değilken 0 göster
             }
 
             // Kanal listesini ekrana çiz
@@ -542,11 +571,12 @@
 
                     card.innerHTML = `<p>${channel.name}</p>`;
 
-                    if (activeCard && activeCard.dataset.channelName === channel.name) { // Eğer bu kart zaten aktifse
+                    // Eğer aktif bir kart varsa ve bu kanalın kartıysa 'active' sınıfını ekle
+                    if (activeCard && activeCard.dataset.channelName === channel.name) {
                         card.classList.add('active');
-                        activeCard = card; // DOM'daki yeni referansı ata
+                        // activeCard referansını da DOM'daki yeni karta güncelle
+                        activeCard = card;
                     }
-
 
                     card.addEventListener('click', () => {
                         loadStream(channel.streamUrl, channel.type, channel.name);
@@ -555,43 +585,22 @@
                         }
                         card.classList.add('active');
                         activeCard = card;
-
-                        // Kanal seçildiğinde izleyici sayacını başlat/sıfırla
-                        startViewerCountUpdate();
                     });
 
                     channelGrid.appendChild(card);
                 });
             }
 
-            // İzleyici sayacını başlatan/durduran fonksiyon
-            function startViewerCountUpdate() {
-                if (currentChannelViewerCountInterval) {
-                    clearInterval(currentChannelViewerCountInterval);
-                }
-                // İlk değeri ayarla (Örnek: 1000 ile 5000 arasında rastgele)
-                viewerCountDisplay.textContent = Math.floor(Math.random() * (5000 - 1000 + 1) + 1000).toLocaleString('tr-TR');
-                currentChannelViewerCountInterval = setInterval(generateRandomViewerCount, 5000); // Her 5 saniyede bir güncelle
-            }
-
-            function stopViewerCountUpdate() {
-                if (currentChannelViewerCountInterval) {
-                    clearInterval(currentChannelViewerCountInterval);
-                    currentChannelViewerCountInterval = null;
-                }
-                viewerCountDisplay.textContent = '0'; // Kanal seçili değilken 0 göster
-            }
-
             // Yayın yükleme fonksiyonu
             function loadStream(streamUrl, streamType, name) {
-                playerContentArea.innerHTML = '';
+                playerContentArea.innerHTML = ''; // İçeriği temizle
 
                 if (currentHls) {
                     currentHls.destroy();
                     currentHls = null;
                 }
 
-                currentChannelName.textContent = name;
+                currentChannelName.textContent = name; // Oynatıcı başlığını güncelle
 
                 if (!streamUrl || streamUrl.includes('YASAL_')) {
                     setStatus('Lütfen kod içerisinden geçerli bir yayın URL\'si ekleyin.', 'error');
@@ -608,6 +617,7 @@
                     iframe.src = streamUrl;
                     iframe.setAttribute('allowfullscreen', '');
                     iframe.setAttribute('frameborder', '0');
+                    // iframe yüklendiğinde ve hata verdiğinde olayları dinle
                     iframe.onload = () => {
                         setStatus('İframe yayını yüklendi.', 'success');
                         startViewerCountUpdate(); // Yayın yüklendiğinde sayacı başlat
@@ -623,6 +633,7 @@
                     const video = document.createElement('video');
                     video.id = 'video-player';
                     video.controls = true;
+                    video.autoplay = true; // Otomatik oynatma dene
                     video.poster = "https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yükleniyor...";
                     playerContentArea.appendChild(video);
 
@@ -636,8 +647,14 @@
 
                         currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
                             setStatus('HLS yayını başarıyla yüklendi.', 'success');
-                            video.play().catch(e => console.error("Oynatma hatası:", e));
-                            startViewerCountUpdate(); // Yayın yüklendiğinde sayacı başlat
+                            video.play().then(() => {
+                                startViewerCountUpdate(); // Yayın yüklendiğinde ve oynatıldığında sayacı başlat
+                            }).catch(e => {
+                                console.error("Video oynatma hatası (autoplay engellenmiş olabilir):", e);
+                                setStatus('Video otomatik oynatılamadı. Oynatmak için tıklayın.', 'info');
+                                // Hata olsa bile sayacı başlatmayı dene, kullanıcı tıklarsa yayın devam eder
+                                startViewerCountUpdate();
+                            });
                         });
 
                         currentHls.on(Hls.Events.ERROR, (event, data) => {
@@ -664,8 +681,13 @@
                         video.src = streamUrl;
                         video.addEventListener('loadedmetadata', () => {
                             setStatus('HLS yayını başarıyla yüklendi.', 'success');
-                            video.play();
-                            startViewerCountUpdate(); // Yayın yüklendiğinde sayacı başlat
+                            video.play().then(() => {
+                                startViewerCountUpdate(); // Yayın yüklendiğinde ve oynatıldığında sayacı başlat
+                            }).catch(e => {
+                                console.error("Video oynatma hatası (autoplay engellenmiş olabilir):", e);
+                                setStatus('Video otomatik oynatılamadı. Oynatmak için tıklayın.', 'info');
+                                startViewerCountUpdate();
+                            });
                         });
                         video.addEventListener('error', () => {
                             setStatus('HLS yayını yüklenemedi. URL\'yi kontrol edin.', 'error');
@@ -695,7 +717,7 @@
 
             // Sinema Modu İşlevselliği (Tam Ekran)
             cinemaModeBtn.addEventListener('click', () => {
-                const elem = playerWrapper;
+                const elem = playerWrapper; // Video kapsayıcısı
 
                 if (!document.fullscreenElement) {
                     if (elem.requestFullscreen) {
@@ -741,13 +763,12 @@
                 });
             });
 
-            // İlk yüklemede ve kanal seçilmediğinde izleyici sayacını durdur
+            // Sayfa yüklendiğinde veya kanal seçilmediğinde izleyici sayacını durdur
             stopViewerCountUpdate();
-
             // Başlangıçta sadece canlı kanalları göster ve gridi oluştur
             displayedChannels = allChannels.filter(c => c.isLive);
             renderChannelGrid();
         });
     </script>
 </body>
-    </html> 
+</html>

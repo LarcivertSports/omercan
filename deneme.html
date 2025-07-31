@@ -3,771 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HLS Yayın Portalı</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <title>The Ömercan Film Sitesi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-dark: #121212;
+            --background-light: #1e1e1e;
+            --text-color: #e0e0e0;
+            --card-background: #2a2a2a;
+            --card-hover-bg: #3b3b3b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* Koyu arka plan */
-            color: #e2e8f0; /* Açık yazı rengi */
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease;
         }
+
         .container {
-            max-width: 1200px; /* Daha geniş ekranlarda merkeze toplamak için */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
-        /* --- MEDIAPLAYER GÖRSEL AYARLARI --- */
-        .player-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #2d3748; /* Oynatıcı header arka planı */
-            padding: 0.75rem 1rem;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            color: #edf2f7;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem; /* Butonlar ve izleyici sayısı arasındaki boşluk */
-        }
-        .cinema-mode-btn, .viewer-count-display {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #cbd5e0;
-            font-size: 0.85rem;
-            transition: color 0.2s ease;
-        }
-        .cinema-mode-btn {
-            cursor: pointer;
-        }
-        .cinema-mode-btn:hover {
-            color: #a0aec0;
-        }
-        .viewer-count-display {
-            cursor: default; /* İzleyici sayısı tıklanabilir olmasın */
-        }
-        .viewer-count-display i {
-            color: #ef4444; /* Kırmızı kalp ikonu */
-        }
-
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            background-color: #000; /* Video alanı arka planı */
-            border-bottom-left-radius: 8px; /* Alt köşeler */
-            border-bottom-right-radius: 8px; /* Alt köşeler */
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border-radius: 0; /* Player-header'dan dolayı kaldırıldı */
-        }
-        #video-player {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* Video içeriğini çerçeveye sığdır */
-            background-color: #000; /* Video arkaplanı siyah */
-        }
-        #iframe-player {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            object-fit: contain; /* iframe içeriğini çerçeveye sığdır*/
-            background-color: #000; /* iframe arkaplanı siyah*/
-        }
-        /* Player dışındaki boş alanın arkaplanı */
-        .player-wrapper-outer {
-            background-color: #2d3748; /* Oynatıcının tamamının arka planı */
-            border-radius: 8px; /* Tüm oynatıcı bloğuna uygulansın */
-            overflow: hidden; /* İçerik taşmasını engelle */
-            margin-bottom: 1.5rem; /* Alt boşluk */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Gölge efekti */
-        }
-
-        /* --- BUTONLARIN METİN TABANLI ESKİ HALİNE GETİRİLMESİ --- */
-        .channel-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
-            background-color: #2d3748; /* Arka plan rengi */
-            border-radius: 8px; /* Yuvarlak köşeler */
-            padding: 0.75rem; /* İç boşluk */
-            display: flex;
-            align-items: center; /* Dikeyde ortala */
-            justify-content: center; /* Yatayda ortala */
+        header {
+            background-color: var(--background-light);
+            padding: 20px;
             text-align: center;
-            height: 80px; /* Sabit bir yükseklik */
-            border: 1px solid transparent; /* Varsayılan şeffaf kenarlık */
-            cursor: pointer;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Hafif gölge */
-        }
-        .channel-card:hover {
-            transform: translateY(-2px); /* Hafif yukarı kaydırma */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1uler-1px rgba(0, 0, 0, 0.06); /* Daha belirgin gölge */
-            background-color: #4a5568; /* Hoverda biraz koyulaşsın */
-        }
-        .channel-card.active {
-             border: 2px solid #ef4444; /* Kırmızı renkli kenarlık */
-             transform: scale(1.02); /* Hafif büyüsün */
-             box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4), 0 4px 6px -2px rgba(239, 68, 68, 0.3);
-             background-color: #4a5568; /* Aktifken hover rengi */
-        }
-        .channel-card p {
-            font-size: 0.95rem; /* Yazı boyutu */
-            font-weight: 600; /* Yazı kalınlığı */
-            color: #edf2f7; /* Yazı rengi */
-            line-height: 1.3; /* Satır yüksekliği */
+            border-bottom: 2px solid var(--primary-color);
         }
 
-        /* --- SEKME MENÜSÜ --- */
-        .tab-menu {
-            display: flex;
-            background-color: #2d3748;
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 1rem;
-        }
-        .tab-item {
-            flex: 1;
-            text-align: center;
-            padding: 8px 12px;
-            color: #cbd5e0;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-        }
-        .tab-item.active-tab {
-            background-color: #4a5568;
-            color: #edf2f7;
-        }
-        .tab-item:hover:not(.active-tab) {
-            background-color: #4a5568;
-            color: #edf2f7;
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
         }
 
-        /* --- ARAMA ÇUBUĞU --- */
-        .search-container {
+        .search-bar {
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        .search-input {
-            flex-grow: 1;
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid #4a5568;
-            background-color: #2d3748;
-            color: #edf2f7;
-            font-size: 1rem;
-            outline: none;
-        }
-        .search-input::placeholder {
-            color: #a0aec0;
-        }
-        .search-input:focus {
-            border-color: #63b3ed;
-        }
-        .search-button {
-            padding: 10px 16px;
-            border-radius: 8px;
-            background-color: #48bb78;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 8px;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
         }
-        .search-button:hover {
-            background-color: #38a169;
-        }
-        .search-button i {
+
+        .search-bar input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: var(--text-color);
             font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        }
+
+        .movie-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .movie-card {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            background-color: var(--card-hover-bg);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .movie-info {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .movie-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-info p {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+        /* Modal Stilleri */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s forwards;
+        }
+
+        .modal-content {
+            background-color: var(--background-light);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--primary-color);
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            animation: slideIn 0.4s forwards;
+        }
+
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            display: flex;
+            gap: 30px;
+        }
+
+        .modal-image img {
+            width: 300px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .modal-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .modal-details h2 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .modal-details p {
+            margin-bottom: 8px;
+        }
+
+        .modal-details p strong {
+            color: var(--primary-color);
+        }
+
+        /* Duyarlı Tasarım */
+        @media (max-width: 768px) {
+            .modal-body {
+                flex-direction: column;
+                align-items: center;
+            }
+            .modal-image img {
+                width: 100%;
+            }
+            .modal-details {
+                text-align: center;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animasyonlar */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
-<body class="antialiased">
+<body>
 
-    <div class="container mx-auto p-4 md:p-8">
-
-        <header class="text-center mb-8">
-             <h1 class="text-4xl md:text-5xl font-bold text-white">Yayın Portalı</h1>
-             <p class="mt-3 text-lg text-gray-400">İzlemek istediğiniz kanalı seçin.</p>
-        </header>
-
-        <div class="player-wrapper-outer">
-            <div class="player-header">
-                <span id="currentChannelName">Kanal Seçilmedi</span>
-                <div class="header-controls">
-                    <span id="cinemaModeBtn" class="cinema-mode-btn">
-                        <i class="fa-solid fa-expand"></i> Sinema Modu
-                    </span>
-                    <span id="viewerCountDisplay" class="viewer-count-display">
-                        <i class="fa-solid fa-heart"></i> <span id="viewerCount">0</span>
-                    </span>
-                </div>
-            </div>
-            <div id="player-wrapper" class="video-container">
-                <div id="player-content-area" class="w-full h-full relative">
-                    <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">
-                </div>
+    <header>
+        <div class="container">
+            <h1>The Ömercan Film Sitesi</h1>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Film ara...">
             </div>
         </div>
-        <div id="statusMessage" class="mt-3 text-center text-sm text-yellow-400 h-5"></div>
+    </header>
 
+    <main class="container">
+        <div class="movie-list" id="movieList">
+            </div>
+    </main>
 
-        <div class="tab-menu">
-            <div class="tab-item active-tab" data-tab="live">Canlı Yayınlar</div>
-        </div>
-
-        <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="Kanal ara...">
-            <button id="searchButton" class="search-button">
-                <i class="fa-solid fa-magnifying-glass"></i> Ara
-            </button>
-        </div>
-
-        <main>
-            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4">
+    <div id="movieModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalImage" src="" alt="Film Posteri">
                 </div>
-        </main>
-
+                <div class="modal-details">
+                    <h2 id="modalTitle"></h2>
+                    <p><strong>Yıl:</strong> <span id="modalYear"></span></p>
+                    <p><strong>Tür:</strong> <span id="modalGenre"></span></p>
+                    <p><strong>Yönetmen:</strong> <span id="modalDirector"></span></p>
+                    <p><strong>Puan:</strong> <span id="modalRating"></span></p>
+                    <p><strong>Özet:</strong> <span id="modalSummary"></span></p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
+        const movies = [
+            {
+                id: 1,
+                title: "Inception",
+                year: "2010",
+                genre: "Bilim Kurgu, Aksiyon",
+                director: "Christopher Nolan",
+                rating: 8.8,
+                summary: "Dom Cobb, başkalarının rüya görürken bilinçaltına girerek fikir çalan yetenekli bir hırsızdır. Bu yeteneği onu kurumsal casusluğun tehlikeli dünyasında aranan bir oyuncu yapsa da, aynı zamanda sevdiği her şeyin kaybedilmesine neden olmuştur. Şimdi ona, bu durumdan kurtulmak için bir şans tanınır. Görevi, fikir çalmak yerine tam tersini yapmaktır: Bir fikri aşılamak. Eğer başarabilirse, bu mükemmel bir suç olacaktır. Ancak, bu tehlikeli görevin içinde, her adımı önceden tahmin eden düşmanlarla karşılaşır ve hiçbir hazırlık onu en derin bilinçaltı düşmanından kurtaramaz.",
+                poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg"
+            },
+            {
+                id: 2,
+                title: "The Matrix",
+                year: "1999",
+                genre: "Bilim Kurgu, Aksiyon",
+                director: "Lana Wachowski, Lilly Wachowski",
+                rating: 8.7,
+                summary: "Thomas Anderson, geceleri 'Neo' takma adıyla bilgisayar korsanlığı yapan, gündüzleri ise sıradan bir yazılım şirketinde çalışan genç bir adamdır. Hayatında bir şeylerin yanlış gittiğini hisseden Neo, Morpheus adında gizemli bir hacker ile tanışır. Morpheus, Neo'ya 'Matrix'in ne olduğunu bilmek isteyip istemediğini sorar. Neo, gerçeğin peşine düşer ve yaşadığı dünyanın aslında insanları köleleştiren bir simülasyon olduğunu keşfeder. Şimdi insanlığın geleceğini kurtarmak için kendisinin seçilmiş kişi, yani 'The One' olup olmadığını öğrenmelidir.",
+                poster: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTE4LWE4NTQtNTEyNTUzMDY0Y2MyXkEyXkFqcGdeQXVyMjUzOTY1NTc@._V1_SX300.jpg"
+            },
+            {
+                id: 3,
+                title: "Pulp Fiction",
+                year: "1994",
+                genre: "Suç, Dram",
+                director: "Quentin Tarantino",
+                rating: 8.9,
+                summary: "Los Angeles'ta geçen film, bir dizi iç içe geçmiş hikayeyi anlatır. Vincent Vega ve Jules Winnfield, patronları Marsellus Wallace için çalışan iki kiralık katildir. Marsellus'un karısı Mia'yı eğlendirmekle görevlendirilen Vincent'ın başı belaya girer. Öte yandan, Marsellus'a ihanet eden bir boksör olan Butch Coolidge, hayatının kaçışını planlamaktadır. Film, bu karakterlerin ve bir çift amatör soyguncunun hikayelerini, doğrusal olmayan bir kurguyla birleştirerek suç dünyasının karanlık ve ironik bir portresini çizer.",
+                poster: "https://m.media-amazon.com/images/M/MV5BNGNhMjM1NTUtYjQ4Ny00M2I3LTgwMGYtYTZiM2RiNGZlMTBiXkEyXkFqcGdeQXVyMjUyNDk2ODc@._V1_SX300.jpg"
+            },
+            {
+                id: 4,
+                title: "The Dark Knight",
+                year: "2008",
+                genre: "Aksiyon, Suç, Dram",
+                director: "Christopher Nolan",
+                rating: 9.0,
+                summary: "Batman, Teğmen Jim Gordon ve yeni bölge savcısı Harvey Dent ile birlikte, Gotham şehrinin sokaklarındaki suç örgütlerini yok etmek için işbirliği yapar. Bu ittifak oldukça etkili olsa da, kısa süre sonra yeni bir suç dehasının ortaya çıkışıyla kaosa sürüklenir: Joker. Joker, Gotham'ı akıl almaz bir anarşiye sürüklerken, Batman, adaleti savunmak için kişisel sınırlarını zorlamak zorunda kalır.",
+                poster: "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODc5MTU1Mw@@._V1_SX300.jpg"
+            },
+            {
+                id: 5,
+                title: "Interstellar",
+                year: "2014",
+                genre: "Bilim Kurgu, Macera, Dram",
+                director: "Christopher Nolan",
+                rating: 8.7,
+                summary: "Dünya, yaşanamaz hale gelmek üzeredir. Eski bir NASA pilotu olan Cooper, insanlığın hayatta kalması için solucan deliklerini kullanarak yeni bir gezegen bulma görevini üstlenir. Bu tehlikeli yolculukta, ailesini arkasında bırakmak zorunda kalır. Zamanın farklı hızlarda aktığı bir evrende, Cooper, insanlığın kaderi ile kendi ailesinin kaderi arasında bir seçim yapmak zorunda kalır.",
+                poster: "https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OTEyLWE2YmMtYWVkZTUyNDg3ZGE2XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg"
+            },
+            {
+                id: 6,
+                title: "Parasite",
+                year: "2019",
+                genre: "Gerilim, Komedi, Dram",
+                director: "Bong Joon Ho",
+                rating: 8.6,
+                summary: "Fakir Kim ailesi, lüks bir yaşam süren Park ailesine sızmak için bir plan yapar. İlk olarak, oğulları Ki-woo, Park ailesinin kızına İngilizce öğretmeni olarak işe başlar. Ardından, diğer aile üyeleri de sahte kimliklerle Park ailesinin evine girmeyi başarır. İki aile arasındaki bu garip ortaklık, beklenmedik ve gerilimli olaylara yol açarak, sınıf farklarının acımasız gerçeklerini ortaya çıkarır.",
+                poster: "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODNlZC00ZTBlLWFhMGEtZWRiNmE4ZTYyYjlkXkEyXkFqcGdeQXVyMTcxODk2OTU@._V1_SX300.jpg"
+            },
+            {
+                id: 7,
+                title: "Joker",
+                year: "2019",
+                genre: "Suç, Dram, Gerilim",
+                director: "Todd Phillips",
+                rating: 8.4,
+                summary: "Film, başarısız bir komedyen olan Arthur Fleck'in hikayesini anlatıyor. Toplum tarafından dışlanan, akıl sağlığı sorunları yaşayan ve hayal kırıklığına uğrayan Arthur, yavaş yavaş Gotham şehrinin en tehlikeli suçlusu Joker'e dönüşür. Film, bir insanın nasıl deliliğe sürüklendiğini ve toplumun bu durumdaki rolünü çarpıcı bir şekilde gözler önüne seriyor.",
+                poster: "https://m.media-amazon.com/images/M/MV5BNGVjNWI4ZGUtNzE0MS00YTJmLWE0ZDctN2ZiYTk2YmI3NTYyXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg"
+            },
+            {
+                id: 8,
+                title: "Whiplash",
+                year: "2014",
+                genre: "Dram, Müzik",
+                director: "Damien Chazelle",
+                rating: 8.5,
+                summary: "Hırslı genç bir davulcu olan Andrew Neiman, saygın bir müzik okulunda öğrenim görmektedir. Efsanevi müzik hocası Terence Fletcher'ın dikkatini çeken Andrew, onun en iyi öğrencisi olmak için acımasız yöntemlerine katlanmak zorunda kalır. Mükemmelliği arayan bu iki karakter arasındaki çatışma, hem fiziksel hem de psikolojik sınırları zorlayarak, sanat ve insan ruhunun karanlık yönlerini keşfeder.",
+                poster: "https://m.media-amazon.com/images/M/MV5BMTY4MjI4NjczNV5BMl5BanBnXkFtZTcwODIxMTk5OQ@@._V1_SX300.jpg"
+            }
+        ];
+
+        const movieListEl = document.getElementById('movieList');
+        const searchInput = document.getElementById('searchInput');
+        const movieModal = document.getElementById('movieModal');
+        const closeBtn = document.querySelector('.close-btn');
+
+        // Filmleri ekrana render etme fonksiyonu
+        function renderMovies(moviesToRender) {
+            movieListEl.innerHTML = '';
+            if (moviesToRender.length === 0) {
+                movieListEl.innerHTML = '<p style="text-align: center; width: 100%; margin-top: 50px;">Aradığınız film bulunamadı.</p>';
+                return;
+            }
+            moviesToRender.forEach(movie => {
+                const movieCard = document.createElement('div');
+                movieCard.className = 'movie-card';
+                movieCard.innerHTML = `
+                    <img src="${movie.poster}" alt="${movie.title} Posteri">
+                    <div class="movie-info">
+                        <h3>${movie.title}</h3>
+                        <p>${movie.year} | Puan: ${movie.rating}</p>
+                    </div>
+                `;
+                movieCard.addEventListener('click', () => showMovieDetails(movie));
+                movieListEl.appendChild(movieCard);
+            });
+        }
+
+        // Arama işlevi
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredMovies = movies.filter(movie => 
+                movie.title.toLowerCase().includes(searchTerm) ||
+                movie.summary.toLowerCase().includes(searchTerm)
+            );
+            renderMovies(filteredMovies);
+        });
+
+        // Modal'ı açma fonksiyonu
+        function showMovieDetails(movie) {
+            document.getElementById('modalImage').src = movie.poster;
+            document.getElementById('modalTitle').textContent = movie.title;
+            document.getElementById('modalYear').textContent = movie.year;
+            document.getElementById('modalGenre').textContent = movie.genre;
+            document.getElementById('modalDirector').textContent = movie.director;
+            document.getElementById('modalRating').textContent = movie.rating;
+            document.getElementById('modalSummary').textContent = movie.summary;
+            movieModal.style.display = 'block';
+        }
+
+        // Modal'ı kapatma işlevi
+        closeBtn.addEventListener('click', () => {
+            movieModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === movieModal) {
+                movieModal.style.display = 'none';
+            }
+        });
+
+        // Sayfa yüklendiğinde filmleri göster
         document.addEventListener('DOMContentLoaded', () => {
-            // --- KANAL LİSTENİZİ BURAYA EKLEYİN ---
-            const channels = [
-                {
-                    name: 'beIN SPORTS 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinstar',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
-                },
-                {
-                    name: 'beIN SPORTS 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb2#amp=1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'beIN SPORTS 3',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb3',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
-                },
-                {
-                    name: 'beIN SPORTS 4',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb4',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
-                },
-                {
-                    name: 'beIN SPORTS 5',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb5',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'beIN SPORTS Max 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
-                },
-                {
-                    name: 'beIN SPORTS Max 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
-                },
-                {
-                    name: 'Tivibu Spor 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tivibu Spor 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tivibu Spor 3',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint3',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tivibu Spor 4',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint4',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'S Sport',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'S Sport 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
-                },
-                {
-                    name: 'S Sport Plus 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
-                },
-                {
-                    name: 'S Sport Plus 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Smart Spor',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsmarts',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Smart Spor 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsms2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'A Spor',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinas',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TV 8,5',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv85',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TV 8',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv8',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TRT1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TRT SPOR',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrtspor',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TRT SPOR YILDIZ',
-                    streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii TV',
-                    streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg&bvr_flags=10&bvr_ch=tabiitv&bvr_bw=2800000',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TABİİ SPOR 1',
-                    streamUrl: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 2',
-                    streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 3',
-                    streamUrl: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TABİİ SPOR 4',
-                    streamUrl: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 5',
-                    streamUrl: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 6',
-                    streamUrl: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 7',
-                    streamUrl: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR',
-                    streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TAY TV',
-                    streamUrl: 'https://tjktv-live.tjk.org/tjktv/tjktv_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                }
-            ];
-
-            // DOM elementlerini seçme
-            const playerContentArea = document.getElementById('player-content-area');
-            const statusMessage = document.getElementById('statusMessage');
-            const channelGrid = document.getElementById('channel-grid');
-            const playerWrapper = document.getElementById('player-wrapper');
-            const currentChannelName = document.getElementById('currentChannelName');
-            const cinemaModeBtn = document.getElementById('cinemaModeBtn');
-            const viewerCountSpan = document.getElementById('viewerCount'); // Doğru ID'yi kullandık
-            const searchInput = document.getElementById('searchInput');
-            const searchButton = document.getElementById('searchButton');
-            const tabItems = document.querySelectorAll('.tab-item');
-
-            let currentHls = null;
-            let activeCard = null;
-            let allChannels = [...channels];
-            let displayedChannels = [...channels];
-            let viewerCountIntervalId = null; // Interval ID'yi tutmak için yeni değişken
-
-            // Rastgele izleyici sayısı üretme fonksiyonu (gerçek veri yoksa)
-            function generateRandomViewerCount() {
-                // Sadece aktif bir kanal varsa sayıyı güncelle
-                if (currentChannelName.textContent !== 'Kanal Seçilmedi') {
-                    let baseCount = parseInt(viewerCountSpan.textContent.replace(/\./g, '') || 0); // Noktaları kaldır
-                    if (isNaN(baseCount) || baseCount === 0) {
-                        baseCount = Math.floor(Math.random() * (5000 - 1000 + 1) + 1000); // İlk başlangıç değeri
-                    }
-
-                    const minChange = -20;
-                    const maxChange = 20;
-                    const change = Math.floor(Math.random() * (maxChange - minChange + 1)) + minChange;
-                    let newCount = baseCount + change;
-
-                    // Sayıların çok düşmesini veya sıfır olmasını engelle
-                    if (newCount < 50) newCount = 50 + Math.floor(Math.random() * 50); // Minimum 50-100 arasında
-                    if (newCount > 10000) newCount = 9900; // Çok yükselmesini engelle (opsiyonel)
-
-                    viewerCountSpan.textContent = newCount.toLocaleString('tr-TR'); // Binlik ayracı ekle
-                } else {
-                    viewerCountSpan.textContent = '0'; // Kanal seçilmediyse 0 göster
-                }
-            }
-
-            // İzleyici sayacını başlatan fonksiyon
-            function startViewerCountUpdate() {
-                // Önceki interval'i temizle
-                if (viewerCountIntervalId) {
-                    clearInterval(viewerCountIntervalId);
-                }
-                // Yeni bir başlangıç değeri ayarla ve interval'i başlat
-                generateRandomViewerCount(); // İlk güncellemeyi hemen yap
-                viewerCountIntervalId = setInterval(generateRandomViewerCount, 5000); // Her 5 saniyede bir güncelle
-            }
-
-            // İzleyici sayacını durduran fonksiyon
-            function stopViewerCountUpdate() {
-                if (viewerCountIntervalId) {
-                    clearInterval(viewerCountIntervalId);
-                    viewerCountIntervalId = null;
-                }
-                viewerCountSpan.textContent = '0'; // Kanal seçili değilken 0 göster
-            }
-
-            // Kanal listesini ekrana çiz
-            function renderChannelGrid(filterText = '') {
-                channelGrid.innerHTML = '';
-
-                const filteredChannels = displayedChannels.filter(channel =>
-                    channel.name.toLowerCase().includes(filterText.toLowerCase())
-                );
-
-                if (filteredChannels.length === 0) {
-                    channelGrid.innerHTML = '<p class="text-gray-400 text-center col-span-full py-8">Hiç kanal bulunamadı.</p>';
-                    return;
-                }
-
-                filteredChannels.forEach((channel) => {
-                    const card = document.createElement('div');
-                    card.className = 'channel-card';
-                    card.dataset.streamUrl = channel.streamUrl;
-                    card.dataset.streamType = channel.type;
-                    card.dataset.channelName = channel.name;
-
-                    card.innerHTML = `<p>${channel.name}</p>`;
-
-                    // Eğer aktif bir kart varsa ve bu kanalın kartıysa 'active' sınıfını ekle
-                    if (activeCard && activeCard.dataset.channelName === channel.name) {
-                        card.classList.add('active');
-                        // activeCard referansını da DOM'daki yeni karta güncelle
-                        activeCard = card;
-                    }
-
-                    card.addEventListener('click', () => {
-                        loadStream(channel.streamUrl, channel.type, channel.name);
-                        if (activeCard) {
-                            activeCard.classList.remove('active');
-                        }
-                        card.classList.add('active');
-                        activeCard = card;
-                    });
-
-                    channelGrid.appendChild(card);
-                });
-            }
-
-            // Yayın yükleme fonksiyonu
-            function loadStream(streamUrl, streamType, name) {
-                playerContentArea.innerHTML = ''; // İçeriği temizle
-
-                if (currentHls) {
-                    currentHls.destroy();
-                    currentHls = null;
-                }
-
-                currentChannelName.textContent = name; // Oynatıcı başlığını güncelle
-
-                if (!streamUrl || streamUrl.includes('YASAL_')) {
-                    setStatus('Lütfen kod içerisinden geçerli bir yayın URL\'si ekleyin.', 'error');
-                    playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
-                    stopViewerCountUpdate(); // Yayın yoksa sayacı durdur
-                    return;
-                }
-
-                setStatus('Yayın yükleniyor...', 'info');
-
-                if (streamType === 'iframe') {
-                    const iframe = document.createElement('iframe');
-                    iframe.id = 'iframe-player';
-                    iframe.src = streamUrl;
-                    iframe.setAttribute('allowfullscreen', '');
-                    iframe.setAttribute('frameborder', '0');
-                    // iframe yüklendiğinde ve hata verdiğinde olayları dinle
-                    iframe.onload = () => {
-                        setStatus('İframe yayını yüklendi.', 'success');
-                        startViewerCountUpdate(); // Yayın yüklendiğinde sayacı başlat
-                    };
-                    iframe.onerror = () => {
-                         setStatus('İframe yayını yüklenirken hata oluştu. URL\'yi kontrol edin.', 'error');
-                         playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
-                         stopViewerCountUpdate(); // Hata varsa sayacı durdur
-                    };
-                    playerContentArea.appendChild(iframe);
-
-                } else if (streamType === 'hls') {
-                    const video = document.createElement('video');
-                    video.id = 'video-player';
-                    video.controls = true;
-                    video.autoplay = true; // Otomatik oynatma dene
-                    video.poster = "https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yükleniyor...";
-                    playerContentArea.appendChild(video);
-
-                    if (Hls.isSupported()) {
-                        currentHls = new Hls({
-                            lowLatencyMode: true,
-                            backBufferLength: 90,
-                        });
-                        currentHls.loadSource(streamUrl);
-                        currentHls.attachMedia(video);
-
-                        currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-                            setStatus('HLS yayını başarıyla yüklendi.', 'success');
-                            video.play().then(() => {
-                                startViewerCountUpdate(); // Yayın yüklendiğinde ve oynatıldığında sayacı başlat
-                            }).catch(e => {
-                                console.error("Video oynatma hatası (autoplay engellenmiş olabilir):", e);
-                                setStatus('Video otomatik oynatılamadı. Oynatmak için tıklayın.', 'info');
-                                // Hata olsa bile sayacı başlatmayı dene, kullanıcı tıklarsa yayın devam eder
-                                startViewerCountUpdate();
-                            });
-                        });
-
-                        currentHls.on(Hls.Events.ERROR, (event, data) => {
-                            if (data.fatal) {
-                                switch (data.type) {
-                                    case Hls.ErrorTypes.NETWORK_ERROR:
-                                        setStatus('Network hatası. URL\'yi veya internet bağlantınızı kontrol edin.', 'error');
-                                        break;
-                                    case Hls.ErrorTypes.MEDIA_ERROR:
-                                        setStatus('Medya hatası. Video çözümlenemedi.', 'error');
-                                        currentHls.recoverMediaError();
-                                        break;
-                                    default:
-                                        setStatus('Bilinmeyen bir yayın hatası oluştu.', 'error');
-                                        currentHls.destroy();
-                                        break;
-                                }
-                                playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
-                                stopViewerCountUpdate(); // Hata varsa sayacı durdur
-                            }
-                        });
-
-                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                        video.src = streamUrl;
-                        video.addEventListener('loadedmetadata', () => {
-                            setStatus('HLS yayını başarıyla yüklendi.', 'success');
-                            video.play().then(() => {
-                                startViewerCountUpdate(); // Yayın yüklendiğinde ve oynatıldığında sayacı başlat
-                            }).catch(e => {
-                                console.error("Video oynatma hatası (autoplay engellenmiş olabilir):", e);
-                                setStatus('Video otomatik oynatılamadı. Oynatmak için tıklayın.', 'info');
-                                startViewerCountUpdate();
-                            });
-                        });
-                        video.addEventListener('error', () => {
-                            setStatus('HLS yayını yüklenemedi. URL\'yi kontrol edin.', 'error');
-                            playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
-                            stopViewerCountUpdate(); // Hata varsa sayacı durdur
-                        });
-                    } else {
-                        setStatus('Tarayıcınız HLS yayınlarını desteklemiyor.', 'error');
-                        playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
-                        stopViewerCountUpdate(); // Tarayıcı desteklemiyorsa sayacı durdur
-                    }
-                } else {
-                    setStatus('Geçersiz yayın tipi belirtildi.', 'error');
-                    playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yok" alt="Yayın Yok" class="w-full h-full object-contain bg-black">';
-                    stopViewerCountUpdate(); // Geçersiz tip ise sayacı durdur
-                }
-            }
-
-            // Durum mesajı fonksiyonu
-            function setStatus(message, type = 'info') {
-                statusMessage.textContent = message;
-                statusMessage.className = 'mt-3 text-center text-sm h-5 ';
-                if (type === 'success') statusMessage.classList.add('text-green-400');
-                else if (type === 'error') statusMessage.classList.add('text-red-400');
-                else statusMessage.classList.add('text-yellow-400');
-            }
-
-            // Sinema Modu İşlevselliği (Tam Ekran)
-            cinemaModeBtn.addEventListener('click', () => {
-                const elem = playerWrapper; // Video kapsayıcısı
-
-                if (!document.fullscreenElement) {
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen();
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen();
-                    } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
-                    }
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                    }
-                }
-            });
-
-            // Arama fonksiyonu
-            searchInput.addEventListener('input', () => {
-                renderChannelGrid(searchInput.value);
-            });
-
-            searchButton.addEventListener('click', () => {
-                renderChannelGrid(searchInput.value);
-            });
-
-            // Sekme menüsü işlevselliği
-            tabItems.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabItems.forEach(item => item.classList.remove('active-tab'));
-                    tab.classList.add('active-tab');
-
-                    const selectedTab = tab.dataset.tab;
-                    if (selectedTab === 'live') {
-                        displayedChannels = allChannels.filter(c => c.isLive);
-                    } else {
-                        displayedChannels = [...allChannels];
-                    }
-                    renderChannelGrid(searchInput.value);
-                });
-            });
-
-            // Sayfa yüklendiğinde veya kanal seçilmediğinde izleyici sayacını durdur
-            stopViewerCountUpdate();
-            // Başlangıçta sadece canlı kanalları göster ve gridi oluştur
-            displayedChannels = allChannels.filter(c => c.isLive);
-            renderChannelGrid();
+            renderMovies(movies);
         });
     </script>
 </body>

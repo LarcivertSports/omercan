@@ -3,692 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HLS Yayın Portalı</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <title>Film İzleme Platformu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* Koyu arka plan */
-            color: #e2e8f0; /* Açık yazı rengi */
-        }
-        .container {
-            max-width: 1200px; /* Daha geniş ekranlarda merkeze toplamak için */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #2c3e50;
+            --background-color: #121212;
+            --card-background: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-color-light: #b0b0b0;
+            --border-color: #333;
         }
 
-        /* --- MEDIAPLAYER GÖRSEL AYARLARI --- */
-        .player-header {
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #2d3748; /* Oynatıcı header arka planı */
-            padding: 0.75rem 1rem;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            color: #edf2f7;
-            font-weight: 600;
-            font-size: 0.95rem;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
         }
-        .cinema-mode-btn {
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .search-container {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            color: #cbd5e0;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: color 0.2s ease;
         }
-        .cinema-mode-btn:hover {
-            color: #a0aec0;
+
+        #search-input {
+            width: 300px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-background);
+            color: var(--text-color);
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
         }
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            background-color: #000; /* Video alanı arka planı */
-            border-bottom-left-radius: 8px; /* Alt köşeler */
-            border-bottom-right-radius: 8px; /* Alt köşeler */
+
+        #search-input::placeholder {
+            color: var(--text-color-light);
+        }
+
+        #search-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .movie-card {
+            background-color: var(--card-background);
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border-radius: 0; /* Player-header'dan dolayı kaldırıldı */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
         }
-        #video-player {
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .movie-info {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .movie-info h3 {
+            margin: 0 0 5px;
+            font-size: 1.2em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Modal Stilleri */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Video içeriğini çerçeveye sığdır */
-            background-color: #000; /* Video arkaplanı siyah */
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
         }
-        #iframe-player {
+
+        .modal-content {
+            position: relative;
+            background-color: var(--background-color);
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-button {
+            color: var(--text-color);
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            font-size: 35px;
+            font-weight: bold;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #ccc;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 en boy oranı */
+            height: 0;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .video-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             border: none;
-            object-fit: contain; /* iframe içeriğini çerçeveye sığdır*/
-            background-color: #000; /* iframe arkaplanı siyah*/
         }
-        /* Player dışındaki boş alanın arkaplanı */
-        .player-wrapper-outer {
-            background-color: #2d3748; /* Oynatıcının tamamının arka planı */
-            border-radius: 8px; /* Tüm oynatıcı bloğuna uygulansın */
-            overflow: hidden; /* İçerik taşmasını engelle */
-            margin-bottom: 1.5rem; /* Alt boşluk */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Gölge efekti */
-        }
-
-        /* --- BUTONLARIN METİN TABANLI ESKİ HALİNE GETİRİLMESİ --- */
-        .channel-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
-            background-color: #2d3748; /* Arka plan rengi */
-            border-radius: 8px; /* Yuvarlak köşeler */
-            padding: 0.75rem; /* İç boşluk */
-            display: flex;
-            align-items: center; /* Dikeyde ortala */
-            justify-content: center; /* Yatayda ortala */
+        
+        .no-results {
             text-align: center;
-            height: 80px; /* Sabit bir yükseklik */
-            border: 1px solid transparent; /* Varsayılan şeffaf kenarlık */
-            cursor: pointer;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Hafif gölge */
-        }
-        .channel-card:hover {
-            transform: translateY(-2px); /* Hafif yukarı kaydırma */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Daha belirgin gölge */
-            background-color: #4a5568; /* Hoverda biraz koyulaşsın */
-        }
-        .channel-card.active {
-             border: 2px solid #ef4444; /* Kırmızı renkli kenarlık */
-             transform: scale(1.02); /* Hafif büyüsün */
-             box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4), 0 4px 6px -2px rgba(239, 68, 68, 0.3);
-             background-color: #4a5568; /* Aktifken hover rengi */
-        }
-        .channel-card p {
-            font-size: 0.95rem; /* Yazı boyutu */
-            font-weight: 600; /* Yazı kalınlığı */
-            color: #edf2f7; /* Yazı rengi */
-            line-height: 1.3; /* Satır yüksekliği */
+            padding: 50px;
+            font-size: 1.5em;
+            color: var(--text-color-light);
         }
 
-        /* --- SEKME MENÜSÜ (Başlıklar kaldırıldığı için sadece "Canlı Yayınlar" kalabilir veya tamamen kaldırılabilir) --- */
-        .tab-menu {
-            display: flex;
-            background-color: #2d3748;
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 1rem;
-        }
-        .tab-item {
-            flex: 1;
-            text-align: center;
-            padding: 8px 12px;
-            color: #cbd5e0;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-        }
-        .tab-item.active-tab {
-            background-color: #4a5568;
-            color: #edf2f7;
-        }
-        .tab-item:hover:not(.active-tab) {
-            background-color: #4a5568;
-            color: #edf2f7;
-        }
-        .tab-item:not(:last-child) {
-            /* Başlıklar kaldırıldığı için border-right'a gerek kalmayabilir, eğer tek bir tab kalırsa */
-            /* border-right: 1px solid rgba(255, 255, 255, 0.1); */
-        }
-
-        /* --- ARAMA ÇUBUĞU --- */
-        .search-container {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        .search-input {
-            flex-grow: 1;
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid #4a5568;
-            background-color: #2d3748;
-            color: #edf2f7;
-            font-size: 1rem;
-            outline: none;
-        }
-        .search-input::placeholder {
-            color: #a0aec0;
-        }
-        .search-input:focus {
-            border-color: #63b3ed;
-        }
-        .search-button {
-            padding: 10px 16px;
-            border-radius: 8px;
-            background-color: #48bb78;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .search-button:hover {
-            background-color: #38a169;
-        }
-        .search-button i {
-            font-size: 1rem;
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .search-container {
+                width: 100%;
+                margin-top: 15px;
+            }
+            #search-input {
+                width: 100%;
+            }
         }
     </style>
 </head>
-<body class="antialiased">
+<body>
 
-    <div class="container mx-auto p-4 md:p-8">
-
-        <header class="text-center mb-8">
-             <h1 class="text-4xl md:text-5xl font-bold text-white">Yayın Portalı</h1>
-             <p class="mt-3 text-lg text-gray-400">İzlemek istediğiniz kanalı seçin.</p>
+    <div class="container">
+        <header>
+            <div class="logo">MovieFlix</div>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Film arayın...">
+            </div>
         </header>
 
-        <div class="player-wrapper-outer">
-            <div class="player-header">
-                <span id="currentChannelName">Kanal Seçilmedi</span>
-                <span id="cinemaModeBtn" class="cinema-mode-btn">
-                    <i class="fa-solid fa-expand"></i> Sinema Modu
-                </span>
-            </div>
-            <div id="player-wrapper" class="video-container">
-                <div id="player-content-area">
-                    <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">
-                </div>
-            </div>
-        </div>
-        <div id="statusMessage" class="mt-3 text-center text-sm text-yellow-400 h-5"></div>
-
-
-        <div class="tab-menu">
-            <div class="tab-item active-tab" data-tab="live">Canlı Yayınlar</div>
-        </div>
-
-        <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="Kanal ara...">
-            <button id="searchButton" class="search-button">
-                <i class="fa-solid fa-magnifying-glass"></i> Ara
-            </button>
-        </div>
-
-        <main>
-            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4">
-                </div>
-        </main>
-
+        <main id="movie-list" class="movie-grid"></main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <div id="movie-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="video-wrapper">
+                <iframe id="movie-player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- KANAL LİSTENİZİ BURAYA EKLEYİN ---
-            // ÖNEMLİ: Telif hakları nedeniyle size doğrudan bir yayın linki veremiyoruz.
-            // Lütfen 'streamUrl' kısımlarına kendi yasal HLS yayın linklerinizi veya iframe URL'lerinizi ekleyin.
-            // Bu örnekte 'logo' özelliği kullanılmıyor, sadece kanal adı gösterilecek.
-            const channels = [
+            // LÜTFEN DİKKAT: Aşağıdaki film listesi örnek amaçlıdır.
+            // https://dizi15.life/ sitesinden doğrudan film verisi çekilemediği için
+            // her bir film için **embed linkini manuel olarak bulup** buraya yapıştırmanız gerekmektedir.
+            const movies = [
                 {
-                    name: 'beIN SPORTS 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinstar', // Örnek iframe URL
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
+                    title: "Tenet",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/tenet-turkce-altyazili-film-izle-1.jpg",
+                    embedUrl: "https://example.com/tenet-player-embed-link" // Buraya Tenet'in embed linkini yapıştırın
                 },
                 {
-                    name: 'beIN SPORTS 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb2#amp=1', // Örnek HLS URL
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
+                    title: "Dune",
+                    poster: "https://dizi15.life/wp-content/uploads/2022/01/dune-izle-3-196x300.jpg",
+                    embedUrl: "https://example.com/dune-player-embed-link" // Buraya Dune'un embed linkini yapıştırın
                 },
                 {
-                    name: 'beIN SPORTS 3',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb3',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
+                    title: "Inception",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/inception-baslangic-turkce-altyazili-izle.jpg",
+                    embedUrl: "https://example.com/inception-player-embed-link" // Buraya Inception'ın embed linkini yapıştırın
                 },
                 {
-                    name: 'beIN SPORTS 4',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb4',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
+                    title: "Parasite",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/parazit-film-izle-1.jpg",
+                    embedUrl: "https://example.com/parasite-player-embed-link" // Buraya Parazit'in embed linkini yapıştırın
                 },
                 {
-                    name: 'beIN SPORTS 5',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb5',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
+                    title: "The Matrix",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/matrix-1999-izle-1.jpg",
+                    embedUrl: "https://example.com/matrix-player-embed-link" // Buraya The Matrix'in embed linkini yapıştırın
                 },
                 {
-                    name: 'beIN SPORTS Max 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
+                    title: "Joker",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/joker-2019-film-izle-1.jpg",
+                    embedUrl: "https://example.com/joker-player-embed-link" // Buraya Joker'in embed linkini yapıştırın
+                },
+                 {
+                    title: "Interstellar",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/yildizlararasi-film-izle-1.jpg",
+                    embedUrl: "https://example.com/interstellar-player-embed-link" // Buraya Interstellar'ın embed linkini yapıştırın
                 },
                 {
-                    name: 'beIN SPORTS Max 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
+                    title: "The Irishman",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/the-irishman-film-izle-1.jpg",
+                    embedUrl: "https://example.com/irishman-player-embed-link" // Buraya The Irishman'in embed linkini yapıştırın
                 },
-                {
-                    name: 'Tivibu Spor 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tivibu Spor 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tivibu Spor 3',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint3',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tivibu Spor 4',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint4',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'S Sport',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'S Sport 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
-                },
-                {
-                    name: 'S Sport Plus 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true
-                },
-                {
-                    name: 'S Sport Plus 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Smart Spor',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsmarts',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Smart Spor 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsms2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'A Spor',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinas',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TV 8,5',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv85',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TV 8',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv8',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TRT1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TRT SPOR',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrtspor',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TRT SPOR YILDIZ',
-                    streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii TV',
-                    streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg&bvr_flags=10&bvr_ch=tabiitv&bvr_bw=2800000',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TABİİ SPOR 1',
-                    streamUrl: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 2',
-                    streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 3',
-                    streamUrl: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TABİİ SPOR 4',
-                    streamUrl: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 5',
-                    streamUrl: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 6',
-                    streamUrl: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR 7',
-                    streamUrl: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'Tabii SPOR',
-                    streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                },
-                {
-                    name: 'TAY TV',
-                    streamUrl: 'https://tjktv-live.tjk.org/tjktv/tjktv_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false
-                }
             ];
 
-            // DOM elementlerini seçme
-            const playerContentArea = document.getElementById('player-content-area');
-            const statusMessage = document.getElementById('statusMessage');
-            const channelGrid = document.getElementById('channel-grid');
-            const playerWrapper = document.getElementById('player-wrapper');
-            const currentChannelName = document.getElementById('currentChannelName'); // Kanal adı için yeni element
-            const cinemaModeBtn = document.getElementById('cinemaModeBtn'); // Sinema modu butonu
-            const searchInput = document.getElementById('searchInput');
-            const searchButton = document.getElementById('searchButton');
-            const tabItems = document.querySelectorAll('.tab-item');
+            const movieListElement = document.getElementById('movie-list');
+            const searchInput = document.getElementById('search-input');
+            const movieModal = document.getElementById('movie-modal');
+            const moviePlayer = document.getElementById('movie-player');
+            const closeButton = document.querySelector('.close-button');
 
-            let currentHls = null;
-            let activeCard = null;
-            let allChannels = [...channels]; // Orijinal kanal listesi
-            let displayedChannels = [...channels]; // Filtrelenmiş kanal listesi için
-
-            // Kanal listesini ekrana çiz
-            function renderChannelGrid(filterText = '') {
-                channelGrid.innerHTML = '';
-
-                const filteredChannels = displayedChannels.filter(channel =>
-                    channel.name.toLowerCase().includes(filterText.toLowerCase())
-                );
-
-                if (filteredChannels.length === 0) {
-                    channelGrid.innerHTML = '<p class="text-gray-400 text-center col-span-full py-8">Hiç kanal bulunamadı.</p>';
-                    return;
+            function renderMovies(movieArray) {
+                movieListElement.innerHTML = '';
+                if (movieArray.length === 0) {
+                     movieListElement.innerHTML = '<div class="no-results">Film bulunamadı.</div>';
+                     return;
                 }
-
-                filteredChannels.forEach((channel) => {
-                    const card = document.createElement('div');
-                    card.className = 'channel-card';
-                    card.dataset.streamUrl = channel.streamUrl;
-                    card.dataset.streamType = channel.type;
-                    card.dataset.channelName = channel.name; // Kanal adını data attribute olarak ekle
-
-                    // Sadece kanal adını gösteriyoruz (logo yok)
-                    card.innerHTML = `<p>${channel.name}</p>`;
-
-                    card.addEventListener('click', () => {
-                        loadStream(channel.streamUrl, channel.type, channel.name); // Kanal adını da gönder
-                        if (activeCard) {
-                            activeCard.classList.remove('active');
-                        }
-                        card.classList.add('active');
-                        activeCard = card;
+                movieArray.forEach(movie => {
+                    const movieCard = document.createElement('div');
+                    movieCard.classList.add('movie-card');
+                    movieCard.innerHTML = `
+                        <img src="${movie.poster}" alt="${movie.title} poster">
+                        <div class="movie-info">
+                            <h3>${movie.title}</h3>
+                        </div>
+                    `;
+                    movieCard.addEventListener('click', () => {
+                        openMoviePlayer(movie);
                     });
-
-                    channelGrid.appendChild(card);
+                    movieListElement.appendChild(movieCard);
                 });
             }
 
-            // Yayın yükleme fonksiyonu
-            function loadStream(streamUrl, streamType, name) {
-                playerContentArea.innerHTML = ''; // İçeriği temizle
-
-                if (currentHls) {
-                    currentHls.destroy();
-                    currentHls = null;
-                }
-
-                // Oynatıcı başlığını güncelle
-                currentChannelName.textContent = name;
-
-                // Geçerli yayın URL'si kontrolü
-                if (!streamUrl || streamUrl.includes('YASAL_')) {
-                    setStatus('Lütfen kod içerisinden geçerli bir yayın URL\'si ekleyin.', 'error');
-                    // Poster görselini tekrar göster
-                    playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
-                    return;
-                }
-
-                setStatus('Yayın yükleniyor...', 'info');
-
-                if (streamType === 'iframe') {
-                    const iframe = document.createElement('iframe');
-                    iframe.id = 'iframe-player';
-                    iframe.src = streamUrl;
-                    iframe.setAttribute('allowfullscreen', '');
-                    iframe.setAttribute('frameborder', '0');
-                    iframe.onload = () => {
-                        setStatus('İframe yayını yüklendi.', 'success');
-                    };
-                    iframe.onerror = () => {
-                         setStatus('İframe yayını yüklenirken hata oluştu. URL\'yi kontrol edin.', 'error');
-                         // Poster görselini tekrar göster
-                         playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
-                    };
-                    playerContentArea.appendChild(iframe);
-
-                } else if (streamType === 'hls') {
-                    const video = document.createElement('video');
-                    video.id = 'video-player';
-                    video.controls = true;
-                    video.poster = "https://placehold.co/1920x1080/000000/FFFFFF?text=Yayın+Yükleniyor..."; // Yüklenirken gösterilecek poster
-                    playerContentArea.appendChild(video);
-
-                    if (Hls.isSupported()) {
-                        currentHls = new Hls({
-                            lowLatencyMode: true,
-                            backBufferLength: 90,
-                        });
-                        currentHls.loadSource(streamUrl);
-                        currentHls.attachMedia(video);
-
-                        currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
-                            setStatus('HLS yayını başarıyla yüklendi.', 'success');
-                            video.play().catch(e => console.error("Oynatma hatası:", e));
-                        });
-
-                        currentHls.on(Hls.Events.ERROR, (event, data) => {
-                            if (data.fatal) {
-                                switch (data.type) {
-                                    case Hls.ErrorTypes.NETWORK_ERROR:
-                                        setStatus('Network hatası. URL\'yi veya internet bağlantınızı kontrol edin.', 'error');
-                                        break;
-                                    case Hls.ErrorTypes.MEDIA_ERROR:
-                                        setStatus('Medya hatası. Video çözümlenemedi.', 'error');
-                                        currentHls.recoverMediaError();
-                                        break;
-                                    default:
-                                        setStatus('Bilinmeyen bir yayın hatası oluştu.', 'error');
-                                        currentHls.destroy();
-                                        break;
-                                }
-                                // Hata durumunda posteri tekrar göster
-                                playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
-                            }
-                        });
-
-                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                        video.src = streamUrl;
-                        video.addEventListener('loadedmetadata', () => {
-                            setStatus('HLS yayını başarıyla yüklendi.', 'success');
-                            video.play();
-                        });
-                        video.addEventListener('error', () => {
-                            setStatus('HLS yayını yüklenemedi. URL\'yi kontrol edin.', 'error');
-                            // Hata durumunda posteri tekrar göster
-                            playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
-                        });
-                    } else {
-                        setStatus('Tarayıcınız HLS yayınlarını desteklemiyor.', 'error');
-                        // Poster görselini tekrar göster
-                        playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
-                    }
-                } else {
-                    setStatus('Geçersiz yayın tipi belirtildi.', 'error');
-                    // Poster görselini tekrar göster
-                    playerContentArea.innerHTML = '<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">';
-                }
+            function openMoviePlayer(movie) {
+                // iframe'in src'sine doğrudan video oynatıcısının embed linkini ekleyin.
+                moviePlayer.src = movie.embedUrl;
+                movieModal.style.display = 'flex';
             }
 
-            // Durum mesajı fonksiyonu
-            function setStatus(message, type = 'info') {
-                statusMessage.textContent = message;
-                statusMessage.className = 'mt-3 text-center text-sm h-5 ';
-                if (type === 'success') statusMessage.classList.add('text-green-400');
-                else if (type === 'error') statusMessage.classList.add('text-red-400');
-                else statusMessage.classList.add('text-yellow-400');
+            function closeMoviePlayer() {
+                moviePlayer.src = '';
+                movieModal.style.display = 'none';
             }
-
-            // Sinema Modu İşlevselliği (Tam Ekran)
-            cinemaModeBtn.addEventListener('click', () => {
-                const elem = playerWrapper; // Video kapsayıcısı
-
-                if (!document.fullscreenElement) {
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen();
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen();
-                    } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
-                    }
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                    }
-                }
-            });
 
             // Arama fonksiyonu
-            searchInput.addEventListener('input', () => {
-                renderChannelGrid(searchInput.value);
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredMovies = movies.filter(movie =>
+                    movie.title.toLowerCase().includes(searchTerm)
+                );
+                renderMovies(filteredMovies);
             });
 
-            searchButton.addEventListener('click', () => {
-                renderChannelGrid(searchInput.value);
+            closeButton.addEventListener('click', closeMoviePlayer);
+            window.addEventListener('click', (e) => {
+                if (e.target === movieModal) {
+                    closeMoviePlayer();
+                }
             });
 
-            // Sekme menüsü işlevselliği
-            tabItems.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabItems.forEach(item => item.classList.remove('active-tab'));
-                    tab.classList.add('active-tab');
-
-                    const selectedTab = tab.dataset.tab;
-                    if (selectedTab === 'live') {
-                        displayedChannels = allChannels.filter(c => c.isLive); // Sadece canlı olanları göster
-                    } else {
-                        displayedChannels = [...allChannels]; // Diğer durumda tüm kanalları göster (şu an sadece 'live' var)
-                    }
-                    renderChannelGrid(searchInput.value); // Yeni filtrelenmiş listeyi arama metniyle tekrar çiz
-                });
-            });
-
-            // Başlangıçta sadece canlı kanalları göster
-            displayedChannels = allChannels.filter(c => c.isLive);
-            renderChannelGrid();
+            // Sayfa yüklendiğinde filmleri göster
+            renderMovies(movies);
         });
     </script>
 </body>
-</html> 
+</html>

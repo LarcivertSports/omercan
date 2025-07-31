@@ -218,47 +218,49 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Örnek film verileri
+            // Örnek film verileri. Lütfen kendi film listenizi ve doğru embed linklerini buraya ekleyin.
+            // https://dizi15.life/ sitesinden filmleri çekmek, tarayıcı güvenlik politikaları nedeniyle doğrudan mümkün değildir.
+            // Bu nedenle kendi verilerinizi kullanmanız gerekmektedir.
             const movies = [
                 {
                     title: "Tenet",
                     poster: "https://dizi15.life/wp-content/uploads/2021/04/tenet-turkce-altyazili-film-izle-1.jpg",
-                    embedUrl: "https://dizi15.life/film/tenet-al-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                    embedUrl: "https://www.mersotv1.com/channel.html?id=yayinstar" // Örnek bir embed linki. Kendi linkinizle değiştirin.
                 },
                 {
                     title: "Dune",
                     poster: "https://dizi15.life/wp-content/uploads/2022/01/dune-izle-3-196x300.jpg",
-                    embedUrl: "https://dizi15.life/film/dune-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                    embedUrl: "https://www.mersotv1.com/channel.html?id=yayinb2#amp=1" // Örnek bir embed linki. Kendi linkinizle değiştirin.
                 },
                 {
                     title: "Inception",
                     poster: "https://dizi15.life/wp-content/uploads/2021/04/inception-baslangic-turkce-altyazili-izle.jpg",
-                    embedUrl: "https://dizi15.life/film/baslangic-izle-2010/" // Buraya filmin gerçek embed linkini gireceksiniz
+                    embedUrl: "https://www.example.com/embed/inception-film" // Örnek bir embed linki. Kendi linkinizle değiştirin.
                 },
                 {
                     title: "Parasite",
                     poster: "https://dizi15.life/wp-content/uploads/2021/04/parazit-film-izle-1.jpg",
-                    embedUrl: "https://dizi15.life/film/parazit-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                    embedUrl: "https://www.example.com/embed/parasite-film" // Örnek bir embed linki. Kendi linkinizle değiştirin.
                 },
                 {
                     title: "The Matrix",
                     poster: "https://dizi15.life/wp-content/uploads/2021/04/matrix-1999-izle-1.jpg",
-                    embedUrl: "https://dizi15.life/film/matrix-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                    embedUrl: "https://www.example.com/embed/matrix-film" // Örnek bir embed linki. Kendi linkinizle değiştirin.
                 },
                 {
                     title: "Joker",
                     poster: "https://dizi15.life/wp-content/uploads/2021/04/joker-2019-film-izle-1.jpg",
-                    embedUrl: "https://dizi15.life/film/joker-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                    embedUrl: "https://www.example.com/embed/joker-film" // Örnek bir embed linki. Kendi linkinizle değiştirin.
                 },
                  {
                     title: "Interstellar",
                     poster: "https://dizi15.life/wp-content/uploads/2021/04/yildizlararasi-film-izle-1.jpg",
-                    embedUrl: "https://dizi15.life/film/yildizlararasi-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                    embedUrl: "https://www.example.com/embed/interstellar-film" // Örnek bir embed linki. Kendi linkinizle değiştirin.
                 },
                 {
                     title: "The Irishman",
                     poster: "https://dizi15.life/wp-content/uploads/2021/04/the-irishman-film-izle-1.jpg",
-                    embedUrl: "https://dizi15.life/film/the-irishman-turkce-dublaj-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                    embedUrl: "https://www.example.com/embed/irishman-film" // Örnek bir embed linki. Kendi linkinizle değiştirin.
                 },
             ];
 
@@ -269,7 +271,7 @@
             const closeButton = document.querySelector('.close-button');
 
             function renderMovies(movieArray) {
-                movieListElement.innerHTML = ''; // Listeyi temizle
+                movieListElement.innerHTML = '';
                 if (movieArray.length === 0) {
                      movieListElement.innerHTML = '<div class="no-results">Film bulunamadı.</div>';
                      return;
@@ -291,12 +293,14 @@
             }
 
             function openMoviePlayer(movie) {
+                // Burada iframe'in src'sine doğrudan video oynatıcısının embed linkini eklemelisiniz.
+                // Örneğin: "https://player.site.com/video/movie-id"
                 moviePlayer.src = movie.embedUrl;
                 movieModal.style.display = 'flex';
             }
 
             function closeMoviePlayer() {
-                moviePlayer.src = ''; // Videoyu durdurmak için iframe src'sini temizle
+                moviePlayer.src = '';
                 movieModal.style.display = 'none';
             }
 

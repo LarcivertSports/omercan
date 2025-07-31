@@ -3,32 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ömercan Film Sitesi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Film İzleme Platformu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
             --primary-color: #007bff;
-            --secondary-color: #6c757d;
-            --background-dark: #121212;
-            --background-light: #1e1e1e;
+            --secondary-color: #2c3e50;
+            --background-color: #121212;
+            --card-background: #1e1e1e;
             --text-color: #e0e0e0;
-            --card-background: #2a2a2a;
-            --card-hover-bg: #3b3b3b;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            --text-color-light: #b0b0b0;
+            --border-color: #333;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--background-dark);
+            background-color: var(--background-color);
             color: var(--text-color);
-            line-height: 1.6;
-            transition: background-color 0.3s ease;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
@@ -38,69 +32,68 @@
         }
 
         header {
-            background-color: var(--background-light);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 2px solid var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
         }
 
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .logo {
+            font-size: 1.8em;
+            font-weight: 600;
             color: var(--primary-color);
         }
 
-        .search-bar {
+        .search-container {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 10px;
-            margin-top: 20px;
         }
 
-        .search-bar input {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px 20px;
-            border-radius: 25px;
-            border: 1px solid #444;
-            background-color: #333;
+        #search-input {
+            width: 300px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-background);
             color: var(--text-color);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .search-bar input:focus {
+            font-size: 1em;
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+            transition: border-color 0.3s;
         }
 
-        .movie-list {
+        #search-input::placeholder {
+            color: var(--text-color-light);
+        }
+
+        #search-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .movie-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
         }
 
         .movie-card {
             background-color: var(--card-background);
-            border-radius: 15px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
         }
 
         .movie-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-            background-color: var(--card-hover-bg);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
         .movie-card img {
             width: 100%;
-            height: 350px;
+            height: 300px;
             object-fit: cover;
             display: block;
         }
@@ -111,303 +104,219 @@
         }
 
         .movie-info h3 {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
+            margin: 0 0 5px;
+            font-size: 1.2em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-
-        .movie-info p {
-            font-size: 0.9rem;
-            color: var(--secondary-color);
         }
 
         /* Modal Stilleri */
         .modal {
             display: none;
             position: fixed;
-            z-index: 100;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s forwards;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
         }
 
         .modal-content {
-            background-color: var(--background-light);
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--primary-color);
-            max-width: 800px;
-            width: 90%;
             position: relative;
-            animation: slideIn 0.4s forwards;
+            background-color: var(--background-color);
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
 
-        .close-btn {
-            color: #aaa;
+        .close-button {
+            color: var(--text-color);
             position: absolute;
-            top: 15px;
+            top: 10px;
             right: 25px;
-            font-size: 2.5rem;
+            font-size: 35px;
             font-weight: bold;
-            transition: color 0.3s ease;
+            transition: color 0.3s;
+            cursor: pointer;
         }
 
-        .close-btn:hover,
-        .close-btn:focus {
-            color: var(--primary-color);
+        .close-button:hover,
+        .close-button:focus {
+            color: #ccc;
             text-decoration: none;
             cursor: pointer;
         }
 
-        .modal-body {
-            display: flex;
-            gap: 30px;
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 en boy oranı */
+            height: 0;
+            overflow: hidden;
+            margin-top: 20px;
         }
 
-        .modal-image img {
-            width: 300px;
-            height: auto;
-            border-radius: 10px;
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5em;
+            color: var(--text-color-light);
         }
 
-        .modal-details {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .modal-details h2 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            color: var(--primary-color);
-        }
-
-        .modal-details p {
-            margin-bottom: 8px;
-        }
-
-        .modal-details p strong {
-            color: var(--primary-color);
-        }
-
-        /* Duyarlı Tasarım */
         @media (max-width: 768px) {
-            .modal-body {
+            header {
                 flex-direction: column;
-                align-items: center;
+                align-items: flex-start;
             }
-            .modal-image img {
+            .search-container {
+                width: 100%;
+                margin-top: 15px;
+            }
+            #search-input {
                 width: 100%;
             }
-            .modal-details {
-                text-align: center;
-            }
-            header h1 {
-                font-size: 2rem;
-            }
-        }
-
-        /* Animasyonlar */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <h1>The Ömercan Film Sitesi</h1>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Film ara...">
+    <div class="container">
+        <header>
+            <div class="logo">MovieFlix</div>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Film arayın...">
             </div>
-        </div>
-    </header>
+        </header>
 
-    <main class="container">
-        <div class="movie-list" id="movieList">
-            </div>
-    </main>
+        <main id="movie-list" class="movie-grid"></main>
+    </div>
 
-    <div id="movieModal" class="modal">
+    <div id="movie-modal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <div class="modal-body">
-                <div class="modal-image">
-                    <img id="modalImage" src="" alt="Film Posteri">
-                </div>
-                <div class="modal-details">
-                    <h2 id="modalTitle"></h2>
-                    <p><strong>Yıl:</strong> <span id="modalYear"></span></p>
-                    <p><strong>Tür:</strong> <span id="modalGenre"></span></p>
-                    <p><strong>Yönetmen:</strong> <span id="modalDirector"></span></p>
-                    <p><strong>Puan:</strong> <span id="modalRating"></span></p>
-                    <p><strong>Özet:</strong> <span id="modalSummary"></span></p>
-                </div>
+            <span class="close-button">&times;</span>
+            <div class="video-wrapper">
+                <iframe id="movie-player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
     </div>
 
     <script>
-        const movies = [
-            {
-                id: 1,
-                title: "Inception",
-                year: "2010",
-                genre: "Bilim Kurgu, Aksiyon",
-                director: "Christopher Nolan",
-                rating: 8.8,
-                summary: "Dom Cobb, başkalarının rüya görürken bilinçaltına girerek fikir çalan yetenekli bir hırsızdır. Bu yeteneği onu kurumsal casusluğun tehlikeli dünyasında aranan bir oyuncu yapsa da, aynı zamanda sevdiği her şeyin kaybedilmesine neden olmuştur. Şimdi ona, bu durumdan kurtulmak için bir şans tanınır. Görevi, fikir çalmak yerine tam tersini yapmaktır: Bir fikri aşılamak. Eğer başarabilirse, bu mükemmel bir suç olacaktır. Ancak, bu tehlikeli görevin içinde, her adımı önceden tahmin eden düşmanlarla karşılaşır ve hiçbir hazırlık onu en derin bilinçaltı düşmanından kurtaramaz.",
-                poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg"
-            },
-            {
-                id: 2,
-                title: "The Matrix",
-                year: "1999",
-                genre: "Bilim Kurgu, Aksiyon",
-                director: "Lana Wachowski, Lilly Wachowski",
-                rating: 8.7,
-                summary: "Thomas Anderson, geceleri 'Neo' takma adıyla bilgisayar korsanlığı yapan, gündüzleri ise sıradan bir yazılım şirketinde çalışan genç bir adamdır. Hayatında bir şeylerin yanlış gittiğini hisseden Neo, Morpheus adında gizemli bir hacker ile tanışır. Morpheus, Neo'ya 'Matrix'in ne olduğunu bilmek isteyip istemediğini sorar. Neo, gerçeğin peşine düşer ve yaşadığı dünyanın aslında insanları köleleştiren bir simülasyon olduğunu keşfeder. Şimdi insanlığın geleceğini kurtarmak için kendisinin seçilmiş kişi, yani 'The One' olup olmadığını öğrenmelidir.",
-                poster: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTE4LWE4NTQtNTEyNTUzMDY0Y2MyXkEyXkFqcGdeQXVyMjUzOTY1NTc@._V1_SX300.jpg"
-            },
-            {
-                id: 3,
-                title: "Pulp Fiction",
-                year: "1994",
-                genre: "Suç, Dram",
-                director: "Quentin Tarantino",
-                rating: 8.9,
-                summary: "Los Angeles'ta geçen film, bir dizi iç içe geçmiş hikayeyi anlatır. Vincent Vega ve Jules Winnfield, patronları Marsellus Wallace için çalışan iki kiralık katildir. Marsellus'un karısı Mia'yı eğlendirmekle görevlendirilen Vincent'ın başı belaya girer. Öte yandan, Marsellus'a ihanet eden bir boksör olan Butch Coolidge, hayatının kaçışını planlamaktadır. Film, bu karakterlerin ve bir çift amatör soyguncunun hikayelerini, doğrusal olmayan bir kurguyla birleştirerek suç dünyasının karanlık ve ironik bir portresini çizer.",
-                poster: "https://m.media-amazon.com/images/M/MV5BNGNhMjM1NTUtYjQ4Ny00M2I3LTgwMGYtYTZiM2RiNGZlMTBiXkEyXkFqcGdeQXVyMjUyNDk2ODc@._V1_SX300.jpg"
-            },
-            {
-                id: 4,
-                title: "The Dark Knight",
-                year: "2008",
-                genre: "Aksiyon, Suç, Dram",
-                director: "Christopher Nolan",
-                rating: 9.0,
-                summary: "Batman, Teğmen Jim Gordon ve yeni bölge savcısı Harvey Dent ile birlikte, Gotham şehrinin sokaklarındaki suç örgütlerini yok etmek için işbirliği yapar. Bu ittifak oldukça etkili olsa da, kısa süre sonra yeni bir suç dehasının ortaya çıkışıyla kaosa sürüklenir: Joker. Joker, Gotham'ı akıl almaz bir anarşiye sürüklerken, Batman, adaleti savunmak için kişisel sınırlarını zorlamak zorunda kalır.",
-                poster: "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODc5MTU1Mw@@._V1_SX300.jpg"
-            },
-            {
-                id: 5,
-                title: "Interstellar",
-                year: "2014",
-                genre: "Bilim Kurgu, Macera, Dram",
-                director: "Christopher Nolan",
-                rating: 8.7,
-                summary: "Dünya, yaşanamaz hale gelmek üzeredir. Eski bir NASA pilotu olan Cooper, insanlığın hayatta kalması için solucan deliklerini kullanarak yeni bir gezegen bulma görevini üstlenir. Bu tehlikeli yolculukta, ailesini arkasında bırakmak zorunda kalır. Zamanın farklı hızlarda aktığı bir evrende, Cooper, insanlığın kaderi ile kendi ailesinin kaderi arasında bir seçim yapmak zorunda kalır.",
-                poster: "https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OTEyLWE2YmMtYWVkZTUyNDg3ZGE2XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg"
-            },
-            {
-                id: 6,
-                title: "Parasite",
-                year: "2019",
-                genre: "Gerilim, Komedi, Dram",
-                director: "Bong Joon Ho",
-                rating: 8.6,
-                summary: "Fakir Kim ailesi, lüks bir yaşam süren Park ailesine sızmak için bir plan yapar. İlk olarak, oğulları Ki-woo, Park ailesinin kızına İngilizce öğretmeni olarak işe başlar. Ardından, diğer aile üyeleri de sahte kimliklerle Park ailesinin evine girmeyi başarır. İki aile arasındaki bu garip ortaklık, beklenmedik ve gerilimli olaylara yol açarak, sınıf farklarının acımasız gerçeklerini ortaya çıkarır.",
-                poster: "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODNlZC00ZTBlLWFhMGEtZWRiNmE4ZTYyYjlkXkEyXkFqcGdeQXVyMTcxODk2OTU@._V1_SX300.jpg"
-            },
-            {
-                id: 7,
-                title: "Joker",
-                year: "2019",
-                genre: "Suç, Dram, Gerilim",
-                director: "Todd Phillips",
-                rating: 8.4,
-                summary: "Film, başarısız bir komedyen olan Arthur Fleck'in hikayesini anlatıyor. Toplum tarafından dışlanan, akıl sağlığı sorunları yaşayan ve hayal kırıklığına uğrayan Arthur, yavaş yavaş Gotham şehrinin en tehlikeli suçlusu Joker'e dönüşür. Film, bir insanın nasıl deliliğe sürüklendiğini ve toplumun bu durumdaki rolünü çarpıcı bir şekilde gözler önüne seriyor.",
-                poster: "https://m.media-amazon.com/images/M/MV5BNGVjNWI4ZGUtNzE0MS00YTJmLWE0ZDctN2ZiYTk2YmI3NTYyXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_SX300.jpg"
-            },
-            {
-                id: 8,
-                title: "Whiplash",
-                year: "2014",
-                genre: "Dram, Müzik",
-                director: "Damien Chazelle",
-                rating: 8.5,
-                summary: "Hırslı genç bir davulcu olan Andrew Neiman, saygın bir müzik okulunda öğrenim görmektedir. Efsanevi müzik hocası Terence Fletcher'ın dikkatini çeken Andrew, onun en iyi öğrencisi olmak için acımasız yöntemlerine katlanmak zorunda kalır. Mükemmelliği arayan bu iki karakter arasındaki çatışma, hem fiziksel hem de psikolojik sınırları zorlayarak, sanat ve insan ruhunun karanlık yönlerini keşfeder.",
-                poster: "https://m.media-amazon.com/images/M/MV5BMTY4MjI4NjczNV5BMl5BanBnXkFtZTcwODIxMTk5OQ@@._V1_SX300.jpg"
+        document.addEventListener('DOMContentLoaded', () => {
+            // Örnek film verileri
+            const movies = [
+                {
+                    title: "Tenet",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/tenet-turkce-altyazili-film-izle-1.jpg",
+                    embedUrl: "https://dizi15.life/film/tenet-al-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                },
+                {
+                    title: "Dune",
+                    poster: "https://dizi15.life/wp-content/uploads/2022/01/dune-izle-3-196x300.jpg",
+                    embedUrl: "https://dizi15.life/film/dune-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                },
+                {
+                    title: "Inception",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/inception-baslangic-turkce-altyazili-izle.jpg",
+                    embedUrl: "https://dizi15.life/film/baslangic-izle-2010/" // Buraya filmin gerçek embed linkini gireceksiniz
+                },
+                {
+                    title: "Parasite",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/parazit-film-izle-1.jpg",
+                    embedUrl: "https://dizi15.life/film/parazit-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                },
+                {
+                    title: "The Matrix",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/matrix-1999-izle-1.jpg",
+                    embedUrl: "https://dizi15.life/film/matrix-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                },
+                {
+                    title: "Joker",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/joker-2019-film-izle-1.jpg",
+                    embedUrl: "https://dizi15.life/film/joker-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                },
+                 {
+                    title: "Interstellar",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/yildizlararasi-film-izle-1.jpg",
+                    embedUrl: "https://dizi15.life/film/yildizlararasi-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                },
+                {
+                    title: "The Irishman",
+                    poster: "https://dizi15.life/wp-content/uploads/2021/04/the-irishman-film-izle-1.jpg",
+                    embedUrl: "https://dizi15.life/film/the-irishman-turkce-dublaj-izle/" // Buraya filmin gerçek embed linkini gireceksiniz
+                },
+            ];
+
+            const movieListElement = document.getElementById('movie-list');
+            const searchInput = document.getElementById('search-input');
+            const movieModal = document.getElementById('movie-modal');
+            const moviePlayer = document.getElementById('movie-player');
+            const closeButton = document.querySelector('.close-button');
+
+            function renderMovies(movieArray) {
+                movieListElement.innerHTML = ''; // Listeyi temizle
+                if (movieArray.length === 0) {
+                     movieListElement.innerHTML = '<div class="no-results">Film bulunamadı.</div>';
+                     return;
+                }
+                movieArray.forEach(movie => {
+                    const movieCard = document.createElement('div');
+                    movieCard.classList.add('movie-card');
+                    movieCard.innerHTML = `
+                        <img src="${movie.poster}" alt="${movie.title} poster">
+                        <div class="movie-info">
+                            <h3>${movie.title}</h3>
+                        </div>
+                    `;
+                    movieCard.addEventListener('click', () => {
+                        openMoviePlayer(movie);
+                    });
+                    movieListElement.appendChild(movieCard);
+                });
             }
-        ];
 
-        const movieListEl = document.getElementById('movieList');
-        const searchInput = document.getElementById('searchInput');
-        const movieModal = document.getElementById('movieModal');
-        const closeBtn = document.querySelector('.close-btn');
-
-        // Filmleri ekrana render etme fonksiyonu
-        function renderMovies(moviesToRender) {
-            movieListEl.innerHTML = '';
-            if (moviesToRender.length === 0) {
-                movieListEl.innerHTML = '<p style="text-align: center; width: 100%; margin-top: 50px;">Aradığınız film bulunamadı.</p>';
-                return;
+            function openMoviePlayer(movie) {
+                moviePlayer.src = movie.embedUrl;
+                movieModal.style.display = 'flex';
             }
-            moviesToRender.forEach(movie => {
-                const movieCard = document.createElement('div');
-                movieCard.className = 'movie-card';
-                movieCard.innerHTML = `
-                    <img src="${movie.poster}" alt="${movie.title} Posteri">
-                    <div class="movie-info">
-                        <h3>${movie.title}</h3>
-                        <p>${movie.year} | Puan: ${movie.rating}</p>
-                    </div>
-                `;
-                movieCard.addEventListener('click', () => showMovieDetails(movie));
-                movieListEl.appendChild(movieCard);
-            });
-        }
 
-        // Arama işlevi
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filteredMovies = movies.filter(movie => 
-                movie.title.toLowerCase().includes(searchTerm) ||
-                movie.summary.toLowerCase().includes(searchTerm)
-            );
-            renderMovies(filteredMovies);
-        });
-
-        // Modal'ı açma fonksiyonu
-        function showMovieDetails(movie) {
-            document.getElementById('modalImage').src = movie.poster;
-            document.getElementById('modalTitle').textContent = movie.title;
-            document.getElementById('modalYear').textContent = movie.year;
-            document.getElementById('modalGenre').textContent = movie.genre;
-            document.getElementById('modalDirector').textContent = movie.director;
-            document.getElementById('modalRating').textContent = movie.rating;
-            document.getElementById('modalSummary').textContent = movie.summary;
-            movieModal.style.display = 'block';
-        }
-
-        // Modal'ı kapatma işlevi
-        closeBtn.addEventListener('click', () => {
-            movieModal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === movieModal) {
+            function closeMoviePlayer() {
+                moviePlayer.src = ''; // Videoyu durdurmak için iframe src'sini temizle
                 movieModal.style.display = 'none';
             }
-        });
 
-        // Sayfa yüklendiğinde filmleri göster
-        document.addEventListener('DOMContentLoaded', () => {
+            // Arama fonksiyonu
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredMovies = movies.filter(movie =>
+                    movie.title.toLowerCase().includes(searchTerm)
+                );
+                renderMovies(filteredMovies);
+            });
+
+            closeButton.addEventListener('click', closeMoviePlayer);
+            window.addEventListener('click', (e) => {
+                if (e.target === movieModal) {
+                    closeMoviePlayer();
+                }
+            });
+
+            // Sayfa yüklendiğinde filmleri göster
             renderMovies(movies);
         });
     </script>

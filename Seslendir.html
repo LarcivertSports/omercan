@@ -13,6 +13,7 @@
             --background-color: #1a1a1a;
             --container-bg: #2d2d2d;
             --text-color: #e0e0e0;
+            --text-color-light: #b0b0b0;
             --input-bg: #3c3c3c;
             --input-border: #555;
             --box-shadow: rgba(0, 0, 0, 0.4);
@@ -65,6 +66,22 @@
         textarea:focus {
             outline: none;
             border-color: var(--primary-color);
+        }
+        
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .speed-control label {
+            font-weight: 600;
+        }
+        
+        #rate-input {
+            width: 150px;
         }
 
         .controls {
@@ -129,6 +146,10 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+            
+            .speed-control {
+                flex-direction: column;
+            }
 
             select {
                 max-width: 100%;
@@ -141,6 +162,12 @@
     <div class="container">
         <h1>Metin Seslendirme Aracı</h1>
         <textarea id="text-input" placeholder="Lütfen seslendirmek istediğiniz metni buraya girin..."></textarea>
+
+        <div class="speed-control">
+            <label for="rate-input">Okuma Hızı:</label>
+            <input type="range" id="rate-input" min="0.5" max="2" value="1" step="0.1">
+            <span id="rate-value">1.0</span>
+        </div>
         
         <div class="controls">
             <select id="voice-select"></select>
@@ -158,6 +185,8 @@
             const playButton = document.getElementById('play-button');
             const stopButton = document.getElementById('stop-button');
             const statusMessage = document.getElementById('status-message');
+            const rateInput = document.getElementById('rate-input');
+            const rateValueSpan = document.getElementById('rate-value');
 
             const synth = window.speechSynthesis;
             let voices = [];
@@ -181,19 +210,37 @@
                     return 0;
                 });
                 voiceSelect.innerHTML = '';
+                let maleVoiceFound = false;
+
                 voices.forEach(voice => {
                     const option = document.createElement('option');
                     option.textContent = `${voice.name} (${voice.lang})`;
                     option.setAttribute('data-name', voice.name);
                     option.setAttribute('data-lang', voice.lang);
                     voiceSelect.appendChild(option);
+                    
+                    // Erkek ses tonunu bulmaya çalış
+                    if (voice.name.toLowerCase().includes('male') || voice.name.toLowerCase().includes('erkek')) {
+                        option.selected = true; // Bulunan ilk erkek sesini varsayılan yap
+                        maleVoiceFound = true;
+                    }
                 });
+
+                // Eğer erkek sesi bulunamazsa, ilk sesi varsayılan yap
+                if (!maleVoiceFound && voices.length > 0) {
+                     voiceSelect.options[0].selected = true;
+                }
             }
 
             populateVoiceList();
             if (synth.onvoiceschanged !== undefined) {
                 synth.onvoiceschanged = populateVoiceList;
             }
+            
+            // Okuma hızı değiştiğinde değeri güncelle
+            rateInput.addEventListener('input', () => {
+                rateValueSpan.textContent = rateInput.value;
+            });
 
             // Oynat butonuna tıklandığında
             playButton.addEventListener('click', () => {
@@ -207,8 +254,9 @@
                 }
 
                 const utterThis = new SpeechSynthesisUtterance(textInput.value);
-                const selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
-                utterThis.voice = voices.find(voice => voice.name === selectedOption);
+                const selectedOptionName = voiceSelect.selectedOptions[0].getAttribute('data-name');
+                utterThis.voice = voices.find(voice => voice.name === selectedOptionName);
+                utterThis.rate = rateInput.value; // Hız ayarını uygula
                 
                 synth.speak(utterThis);
 

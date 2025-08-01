@@ -101,7 +101,7 @@
         }
         .channel-card:hover {
             transform: translateY(-2px); /* Hafif yukarı kaydırma */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Daha belirgin gölge */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06); /* Daha belirgin gölge */
             background-color: #4a5568; /* Hoverda biraz koyulaşsın */
         }
         .channel-card.active {
@@ -247,11 +247,61 @@
             border-bottom: 2px solid #4a5568;
             padding-bottom: 0.5rem;
         }
-        #favorite-channels-grid .channel-card, #last-watched-grid .channel-card {
-            height: auto; /* İçerik yüksekliğine göre ayarlanması için */
+        #favorite-channels-grid .channel-card, #last-watched-grid .channel-card, #upcoming-events-grid .event-card {
+            height: auto;
             flex-direction: column;
             gap: 0.5rem;
         }
+        
+        /* Etkinlik kartı stili */
+        .event-card {
+            background-color: #2d3748;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            position: relative;
+        }
+        .event-card:hover {
+            transform: translateY(-2px);
+            background-color: #4a5568;
+        }
+        .event-card .event-time {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #a0aec0;
+            margin-top: 0.25rem;
+        }
+        .event-card .event-channel {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #edf2f7;
+            margin-bottom: 0.5rem;
+        }
+        .event-card .event-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ef4444;
+            line-height: 1.2;
+            margin-top: 0.5rem;
+        }
+        .event-card .event-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .event-card .event-info .channel-name {
+            font-weight: 500;
+            color: #cbd5e0;
+        }
+
     </style>
 </head>
 <body class="antialiased">
@@ -278,6 +328,12 @@
         </div>
         <div id="statusMessage" class="mt-3 text-center text-sm text-yellow-400 h-5"></div>
         
+        <div class="mb-8">
+            <h2 class="section-header">Yaklaşan Etkinlikler</h2>
+            <div id="upcoming-events-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <p class="text-gray-400 text-center col-span-full py-4">Yaklaşan bir etkinlik yok.</p>
+            </div>
+        </div>
         <div class="mb-8">
             <h2 class="section-header">Son İzlenen</h2>
             <div id="last-watched-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4">
@@ -319,7 +375,11 @@
                     type: 'iframe',
                     isLive: true,
                     isPopular: true,
-                    category: 'Futbol'
+                    category: 'Futbol',
+                    events: [
+                        { name: 'Süper Lig: Fenerbahçe - Galatasaray', date: '2025-08-02', time: '21:00' },
+                        { name: 'Şampiyonlar Ligi: Final Maçı', date: '2025-08-05', time: '22:00' }
+                    ]
                 },
                 {
                     name: 'beIN SPORTS 2',
@@ -327,7 +387,10 @@
                     type: 'iframe',
                     isLive: true,
                     isPopular: false,
-                    category: 'Futbol'
+                    category: 'Futbol',
+                    events: [
+                        { name: 'İtalya Serie A: Juventus - Inter', date: '2025-08-03', time: '19:30' }
+                    ]
                 },
                 {
                     name: 'beIN SPORTS 3',
@@ -335,55 +398,8 @@
                     type: 'iframe',
                     isLive: true,
                     isPopular: true,
-                    category: 'Futbol'
-                },
-                {
-                    name: 'beIN SPORTS 4',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb4',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true,
-                    category: 'Futbol'
-                },
-                {
-                    name: 'beIN SPORTS 5',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb5',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Futbol'
-                },
-                {
-                    name: 'beIN SPORTS Max 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true,
-                    category: 'Futbol'
-                },
-                {
-                    name: 'beIN SPORTS Max 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true,
-                    category: 'Futbol'
-                },
-                {
-                    name: 'Tivibu Spor 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Futbol'
-                },
-                {
-                    name: 'Tivibu Spor 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Futbol'
+                    category: 'Futbol',
+                    events: []
                 },
                 {
                     name: 'S Sport',
@@ -391,47 +407,11 @@
                     type: 'iframe',
                     isLive: true,
                     isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'S Sport 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'S Sport Plus 1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: true,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'S Sport Plus 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'Smart Spor',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsmarts',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'Smart Spor 2',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsms2',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
+                    category: 'Genel Spor',
+                    events: [
+                        { name: 'Formula 1: Belçika GP', date: '2025-08-04', time: '16:00' },
+                        { name: 'NBA: Playoff Maçı', date: '2025-08-07', time: '04:00' }
+                    ]
                 },
                 {
                     name: 'A Spor',
@@ -439,39 +419,8 @@
                     type: 'iframe',
                     isLive: true,
                     isPopular: false,
-                    category: 'Haber & Spor'
-                },
-                {
-                    name: 'TV 8,5',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv85',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel'
-                },
-                {
-                    name: 'TV 8',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv8',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel'
-                },
-                {
-                    name: 'TRT1',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel'
-                },
-                {
-                    name: 'TRT SPOR',
-                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrtspor',
-                    type: 'iframe',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
+                    category: 'Haber & Spor',
+                    events: []
                 },
                 {
                     name: 'TRT SPOR YILDIZ',
@@ -479,79 +428,8 @@
                     type: 'hls',
                     isLive: true,
                     isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'Tabii TV',
-                    streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg&bvr_flags=10&bvr_ch=tabiitv&bvr_bw=2800000',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel'
-                },
-                {
-                    name: 'TABİİ SPOR 1',
-                    streamUrl: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'Tabii SPOR 2',
-                    streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'Tabii SPOR 3',
-                    streamUrl: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'TABİİ SPOR 4',
-                    streamUrl: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'Tabii SPOR 5',
-                    streamUrl: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'Tabii SPOR 6',
-                    streamUrl: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'Tabii SPOR 7',
-                    streamUrl: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'TABİİ SPOR',
-                    streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'Genel Spor'
+                    category: 'Genel Spor',
+                    events: []
                 },
                 {
                     name: 'TAY TV',
@@ -559,8 +437,69 @@
                     type: 'hls',
                     isLive: true,
                     isPopular: false,
-                    category: 'At Yarışı'
-                }
+                    category: 'At Yarışı',
+                    events: [
+                        { name: 'İstanbul Veliefendi Yarışları', date: '2025-08-02', time: '18:30' }
+                    ]
+                },
+                {
+                    name: 'TV 8',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv8',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel',
+                    events: [
+                        { name: 'Survivor: Yeni Bölüm', date: '2025-08-06', time: '20:00' }
+                    ]
+                },
+                {
+                    name: 'TRT1',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel',
+                    events: []
+                },
+                {
+                    name: 'TRT SPOR',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrtspor',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor',
+                    events: []
+                },
+                {
+                    name: 'TABİİ TV',
+                    streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel',
+                    events: []
+                },
+                 {
+                    name: 'TABİİ SPOR',
+                    streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor',
+                    events: []
+                },
+                 {
+                    name: 'Euro Sport 1',
+                    streamUrl: 'YASAL_URL_EKLENECEK',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor',
+                    events: [
+                        { name: 'Grand Tour Bisiklet Yarışı', date: '2025-08-03', time: '14:00' }
+                    ]
+                },
             ];
 
             // DOM elementlerini seçme
@@ -575,6 +514,7 @@
             const tabMenu = document.querySelector('.tab-menu');
             const favoriteChannelsGrid = document.getElementById('favorite-channels-grid');
             const lastWatchedGrid = document.getElementById('last-watched-grid');
+            const upcomingEventsGrid = document.getElementById('upcoming-events-grid');
 
             let currentHls = null;
             let activeCard = null;
@@ -683,6 +623,64 @@
                 }
                 const card = createChannelCard(lastWatched, 'last-watched-grid');
                 lastWatchedGrid.appendChild(card);
+            }
+
+            // Yaklaşan etkinlikleri render etme fonksiyonu
+            function renderUpcomingEvents() {
+                upcomingEventsGrid.innerHTML = '';
+                
+                const now = new Date();
+                const allEvents = [];
+
+                channels.forEach(channel => {
+                    if (channel.events && channel.events.length > 0) {
+                        channel.events.forEach(event => {
+                            const eventDateTime = new Date(`${event.date}T${event.time}:00`);
+                            if (eventDateTime > now) {
+                                allEvents.push({
+                                    ...event,
+                                    channelName: channel.name,
+                                    channel: channel // loadStream için tüm channel objesini ekle
+                                });
+                            }
+                        });
+                    }
+                });
+
+                // Etkinlikleri tarihe göre sıralama
+                allEvents.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+
+                if (allEvents.length === 0) {
+                    upcomingEventsGrid.innerHTML = '<p class="text-gray-400 text-center col-span-full py-4">Yaklaşan bir etkinlik yok.</p>';
+                    return;
+                }
+
+                allEvents.forEach(event => {
+                    const eventCard = document.createElement('div');
+                    eventCard.className = 'event-card';
+
+                    eventCard.innerHTML = `
+                        <div class="event-info">
+                            <span class="event-time">${event.date} ${event.time}</span>
+                            <span class="event-channel">${event.channelName}</span>
+                            <h3 class="event-title">${event.name}</h3>
+                        </div>
+                    `;
+                    
+                    eventCard.addEventListener('click', () => {
+                         loadStream(event.channel);
+                         // Bu etkinlik tıklandığında ilgili kanal kartını aktif yapalım
+                         const channelCards = document.querySelectorAll('.channel-card');
+                         channelCards.forEach(card => card.classList.remove('active'));
+                         const targetCard = document.querySelector(`.channel-card p:contains(${event.channelName})`).closest('.channel-card');
+                         if (targetCard) {
+                             targetCard.classList.add('active');
+                             activeCard = targetCard;
+                         }
+                    });
+
+                    upcomingEventsGrid.appendChild(eventCard);
+                });
             }
 
             // Ana kanal listesini ekrana çiz
@@ -849,6 +847,7 @@
             // Başlangıçta tüm listeleri göster
             renderFavoriteChannels();
             renderLastWatchedChannel();
+            renderUpcomingEvents();
             renderChannelGrid();
         });
     </script>

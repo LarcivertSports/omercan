@@ -252,6 +252,23 @@
             flex-direction: column;
             gap: 0.5rem;
         }
+
+        .report-btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            background-color: #ef4444; /* Kırmızı renk */
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        .report-btn:hover {
+            background-color: #dc2626; /* Koyu kırmızı */
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -266,9 +283,14 @@
         <div class="player-wrapper-outer">
             <div class="player-header">
                 <span id="currentChannelName">Kanal Seçilmedi</span>
-                <span id="cinemaModeBtn" class="cinema-mode-btn">
-                    <i class="fa-solid fa-expand"></i> Sinema Modu
-                </span>
+                <div class="flex gap-4 items-center">
+                    <button id="reportChannelBtn" class="report-btn hidden">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Kanalı Bildir
+                    </button>
+                    <span id="cinemaModeBtn" class="cinema-mode-btn">
+                        <i class="fa-solid fa-expand"></i> Sinema Modu
+                    </span>
+                </div>
             </div>
             <div id="player-wrapper" class="video-container">
                 <div id="player-content-area">
@@ -568,6 +590,7 @@
             const searchButton = document.getElementById('searchButton');
             const tabMenu = document.querySelector('.tab-menu');
             const favoriteChannelsGrid = document.getElementById('favorite-channels-grid');
+            const reportChannelBtn = document.getElementById('reportChannelBtn');
 
             let currentHls = null;
             let activeCard = null;
@@ -695,6 +718,8 @@
                 }
 
                 currentChannelName.textContent = name;
+                // Kanal yüklendiğinde bildirim butonunu göster
+                reportChannelBtn.classList.remove('hidden');
                 
                 const defaultPoster = 'https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin...';
 
@@ -811,6 +836,13 @@
                     }
                 }
             });
+
+            // Kanalı Telegram'a Bildirme İşlevselliği
+            reportChannelBtn.addEventListener('click', () => {
+                const telegramGroupLink = "https://t.me/+mSNjtNrQ0xozNWNk";
+                window.open(telegramGroupLink, '_blank');
+            });
+
 
             // Arama fonksiyonu
             searchInput.addEventListener('input', () => {

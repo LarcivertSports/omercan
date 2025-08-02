@@ -248,11 +248,10 @@
             padding-bottom: 0.5rem;
         }
         #favorite-channels-grid .channel-card {
-            height: auto;
+            height: auto; /* İçerik yüksekliğine göre ayarlanması için */
             flex-direction: column;
             gap: 0.5rem;
         }
-
     </style>
 </head>
 <body class="antialiased">
@@ -333,8 +332,96 @@
                     category: 'Futbol'
                 },
                 {
+                    name: 'beIN SPORTS 4',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb4',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: true,
+                    category: 'Futbol'
+                },
+                {
+                    name: 'beIN SPORTS 5',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb5',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Futbol'
+                },
+                {
+                    name: 'beIN SPORTS Max 1',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm1',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: true,
+                    category: 'Futbol'
+                },
+                {
+                    name: 'beIN SPORTS Max 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm2',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: true,
+                    category: 'Futbol'
+                },
+                {
+                    name: 'Tivibu Spor 1',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint1',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Futbol'
+                },
+                {
+                    name: 'Tivibu Spor 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint2',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Futbol'
+                },
+                {
                     name: 'S Sport',
                     streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'S Sport 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss2',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: true,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'S Sport Plus 1',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex2',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: true,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'S Sport Plus 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex1',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'Smart Spor',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsmarts',
+                    type: 'iframe',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'Smart Spor 2',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsms2',
                     type: 'iframe',
                     isLive: true,
                     isPopular: false,
@@ -349,20 +436,12 @@
                     category: 'Haber & Spor'
                 },
                 {
-                    name: 'TRT SPOR YILDIZ',
-                    streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8',
-                    type: 'hls',
+                    name: 'TV 8,5',
+                    streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv85',
+                    type: 'iframe',
                     isLive: true,
                     isPopular: false,
-                    category: 'Genel Spor'
-                },
-                {
-                    name: 'TAY TV',
-                    streamUrl: 'https://tjktv-live.tjk.org/tjktv/tjktv_1080p.m3u8',
-                    type: 'hls',
-                    isLive: true,
-                    isPopular: false,
-                    category: 'At Yarışı'
+                    category: 'Genel'
                 },
                 {
                     name: 'TV 8',
@@ -389,20 +468,92 @@
                     category: 'Genel Spor'
                 },
                 {
-                    name: 'TABİİ TV',
-                    streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8',
+                    name: 'TRT SPOR YILDIZ',
+                    streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'Tabii TV',
+                    streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg&bvr_flags=10&bvr_ch=tabiitv&bvr_bw=2800000',
                     type: 'hls',
                     isLive: true,
                     isPopular: false,
                     category: 'Genel'
                 },
-                 {
+                {
+                    name: 'TABİİ SPOR 1',
+                    streamUrl: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'Tabii SPOR 2',
+                    streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'Tabii SPOR 3',
+                    streamUrl: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'TABİİ SPOR 4',
+                    streamUrl: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'Tabii SPOR 5',
+                    streamUrl: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'Tabii SPOR 6',
+                    streamUrl: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
+                    name: 'Tabii SPOR 7',
+                    streamUrl: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'Genel Spor'
+                },
+                {
                     name: 'TABİİ SPOR',
                     streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8',
                     type: 'hls',
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor'
+                },
+                {
+                    name: 'TAY TV',
+                    streamUrl: 'https://tjktv-live.tjk.org/tjktv/tjktv_1080p.m3u8',
+                    type: 'hls',
+                    isLive: true,
+                    isPopular: false,
+                    category: 'At Yarışı'
                 }
             ];
 

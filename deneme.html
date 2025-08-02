@@ -7,6 +7,17 @@
     <meta name="description" content="En popüler spor kanallarının canlı yayınlarını HD kalitede ve kesintisiz izleyin. HLS Yayın Portalı ile tüm yayınlar cebinizde.">
     <link rel="canonical" href="https://example.com/" />
 
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "HLS Yayın Portalı",
+          "description": "En popüler spor kanallarının canlı yayınlarını HD kalitede ve kesintisiz izleyin. HLS Yayın Portalı ile tüm yayınlar cebinizde.",
+          "url": "https://example.com/",
+          "inLanguage": "tr-TR"
+        }
+    </script>
+    
     <script async src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +35,6 @@
         .container {
             max-width: 1200px;
         }
-        /* --- MEDIAPLAYER GÖRSEL AYARLARI --- */
         .player-header {
             display: flex;
             justify-content: space-between;
@@ -83,8 +93,6 @@
             margin-bottom: 1.5rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-
-        /* --- BUTONLARIN METİN TABANLI ESKİ HALİNE GETİRİLMESİ --- */
         .channel-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
             background-color: #2d3748;
@@ -117,8 +125,6 @@
             color: #edf2f7;
             line-height: 1.3;
         }
-
-        /* --- SEKME MENÜSÜ --- */
         .tab-menu {
             display: flex;
             flex-wrap: wrap;
@@ -146,8 +152,6 @@
             background-color: #4a5568;
             color: #edf2f7;
         }
-
-        /* --- ARAMA ÇUBUĞU --- */
         .search-container {
             display: flex;
             gap: 0.75rem;
@@ -188,8 +192,6 @@
         .search-button i {
             font-size: 1rem;
         }
-
-        /* Popüler kanalları vurgulamak için yeni stil */
         .popular-channel-card {
             border: 2px solid #eab308;
             box-shadow: 0 4px 15px rgba(234, 179, 8, 0.4);
@@ -210,8 +212,6 @@
             z-index: 10;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-
-        /* Favori ikonu stili */
         .favorite-btn {
             position: absolute;
             top: 5px;
@@ -239,7 +239,6 @@
         .favorite-btn.is-favorite i {
             color: #ef4444;
         }
-        
         .section-header {
             font-size: 1.5rem;
             font-weight: 600;
@@ -253,7 +252,6 @@
             flex-direction: column;
             gap: 0.5rem;
         }
-
         .report-btn {
             padding: 8px 12px;
             border-radius: 6px;
@@ -270,7 +268,6 @@
         .report-btn:hover {
             background-color: #dc2626;
         }
-
     </style>
 </head>
 <body class="antialiased">
@@ -329,7 +326,6 @@
     <script async src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- KANAL LİSTENİZİ BURAYA EKLEYİN ---
             const channels = [
                 {
                     name: 'beIN SPORTS 1',
@@ -719,40 +715,44 @@
                     currentHls = null;
                 }
 
-                // Sayfa başlığını güncelle
                 document.title = `${name} Canlı İzle - Yayın Portalı`;
                 currentChannelName.textContent = name;
                 reportChannelBtn.classList.remove('hidden');
 
-                // SEO: Meta açıklamayı dinamik olarak güncelle
                 const metaDescription = document.querySelector('meta[name="description"]');
                 if (metaDescription) {
                     metaDescription.content = `${name} kanalının canlı yayınını kesintisiz ve HD kalitede izleyin. ${category} kategorisindeki diğer yayınlara göz atın.`;
                 }
 
-                // SEO: Mevcut video şemasını kaldır ve yenisini ekle
                 const oldSchema = document.getElementById('video-schema');
                 if (oldSchema) oldSchema.remove();
 
                 const schemaScript = document.createElement('script');
                 schemaScript.type = 'application/ld+json';
                 schemaScript.id = 'video-schema';
+                // SEO: Daha kapsamlı video şeması
                 schemaScript.innerHTML = JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "VideoObject",
-                    "name": name,
-                    "description": `${name} kanalının canlı yayınını izle. ${category} kategorisindeki en yeni spor ve eğlence yayınları.`,
+                    "name": `${name} Canlı Yayın`,
+                    "description": `${name} kanalının canlı yayınını izleyin. ${category} kategorisindeki en yeni spor ve eğlence yayınları.`,
                     "uploadDate": new Date().toISOString(),
                     "contentUrl": streamUrl,
+                    "thumbnailUrl": "https://placehold.co/1920x1080/000000/FFFFFF?text=CANLI", // Genel bir CANLI etiketi
+                    "embedUrl": streamUrl,
                     "interactionStatistic": {
                         "@type": "InteractionCounter",
                         "interactionType": { "@type": "WatchAction" },
                         "userInteractionCount": 0
+                    },
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "Yayın Portalı",
+                        "url": "https://example.com"
                     }
                 });
                 document.head.appendChild(schemaScript);
                 
-                // SEO: Player için dinamik alt metin
                 const defaultPoster = 'https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin...';
                 const playerImage = `<img src="${defaultPoster}" id="player-placeholder" alt="${name} canlı yayın posteri" class="w-full h-full object-contain bg-black">`;
 
@@ -784,7 +784,6 @@
                     video.id = 'video-player';
                     video.controls = true;
                     video.poster = defaultPoster;
-                    // SEO: Video posteri için alt metin ayarı
                     video.alt = `${name} canlı yayın videosu`;
                     playerContentArea.appendChild(video);
 

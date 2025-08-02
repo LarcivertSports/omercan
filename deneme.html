@@ -302,7 +302,7 @@
                 </div>
             </div>
             <div id="player-wrapper" class="video-container">
-                <div id="player-content-area">
+                <div id="player-content-area" class="h-full">
                     <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">
                 </div>
             </div>
@@ -311,7 +311,7 @@
         
         <div class="mb-8">
             <h2 class="section-header">Favori Kanallar</h2>
-            <div id="favorite-channels-grid" class="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-4">
+            <div id="favorite-channels-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
                  <p class="text-gray-400 text-center col-span-full py-4">Favori kanalınız yok.</p>
             </div>
         </div>
@@ -330,7 +330,7 @@
         </div>
 
         <main>
-            <div id="channel-grid" class="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-4">
+            <div id="channel-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
             </div>
         </main>
 
@@ -691,7 +691,9 @@
                 const tags = new Set();
                 const filteredChannels = allChannels.filter(c => currentCategory === 'all' || c.category === currentCategory);
                 filteredChannels.forEach(c => {
-                    c.tags.forEach(tag => tags.add(tag));
+                    if (c.tags) {
+                        c.tags.forEach(tag => tags.add(tag));
+                    }
                 });
 
                 tags.forEach(tag => {
@@ -768,7 +770,7 @@
                 }
 
                 if (activeTag) {
-                    filteredChannels = filteredChannels.filter(channel => channel.tags.includes(activeTag));
+                    filteredChannels = filteredChannels.filter(channel => channel.tags && channel.tags.includes(activeTag));
                 }
 
                 const finalFilteredChannels = filteredChannels.filter(channel =>

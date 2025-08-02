@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HLS Yayın Portalı</title>
+    <meta name="description" content="En popüler spor kanallarının canlı yayınlarını HD kalitede ve kesintisiz izleyin. HLS Yayın Portalı ile tüm yayınlar cebinizde.">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -722,7 +723,7 @@
 
             // Yayın yükleme fonksiyonu
             function loadStream(channel) {
-                const { streamUrl, type, name } = channel;
+                const { streamUrl, type, name, category } = channel;
                 playerContentArea.innerHTML = '';
 
                 if (currentHls) {
@@ -731,9 +732,37 @@
                 }
 
                 // Sayfa başlığını güncelle
-                document.title = `${name} İzle - Yayın Portalı`;
+                document.title = `${name} Canlı İzle - Yayın Portalı`;
                 currentChannelName.textContent = name;
                 reportChannelBtn.classList.remove('hidden');
+
+                // SEO: Meta açıklamayı dinamik olarak güncelle
+                const metaDescription = document.querySelector('meta[name="description"]');
+                if (metaDescription) {
+                    metaDescription.content = `${name} kanalının canlı yayınını kesintisiz ve HD kalitede izleyin. ${category} kategorisindeki diğer yayınlara göz atın.`;
+                }
+
+                // SEO: Mevcut video şemasını kaldır ve yenisini ekle
+                const oldSchema = document.getElementById('video-schema');
+                if (oldSchema) oldSchema.remove();
+
+                const schemaScript = document.createElement('script');
+                schemaScript.type = 'application/ld+json';
+                schemaScript.id = 'video-schema';
+                schemaScript.innerHTML = JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "VideoObject",
+                    "name": name,
+                    "description": `${name} kanalının canlı yayınını izle. ${category} kategorisindeki en yeni spor ve eğlence yayınları.`,
+                    "uploadDate": new Date().toISOString(),
+                    "contentUrl": streamUrl,
+                    "interactionStatistic": {
+                        "@type": "InteractionCounter",
+                        "interactionType": { "@type": "WatchAction" },
+                        "userInteractionCount": 0
+                    }
+                });
+                document.head.appendChild(schemaScript);
                 
                 const defaultPoster = 'https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin...';
 
@@ -870,7 +899,7 @@
             // Tarayıcı geri/ileri tuşlarına basıldığında URL'yi kontrol et
             window.onpopstate = (event) => {
                 const slug = window.location.pathname.split('/').pop();
-                if (slug && slug !== 'kanal') {
+                if (slug && slug !== 'kanal' && slug !== '') {
                     const channel = findChannelBySlug(slug);
                     if (channel) {
                         loadStream(channel);
@@ -880,6 +909,8 @@
                     document.title = 'HLS Yayın Portalı';
                     currentChannelName.textContent = 'Kanal Seçilmedi';
                     playerContentArea.innerHTML = `<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">`;
+                    // URL'yi ana sayfaya döndür
+                    history.pushState(null, 'HLS Yayın Portalı', '/');
                 }
             };
             

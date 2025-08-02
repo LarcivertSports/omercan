@@ -268,9 +268,33 @@
         .report-btn:hover {
             background-color: #dc2626;
         }
+        .skip-to-main-content-link {
+            position: absolute;
+            left: -999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -99;
+            color: white;
+            background-color: #007bff;
+            padding: 8px;
+        }
+        .skip-to-main-content-link:focus {
+            left: 50%;
+            transform: translateX(-50%);
+            top: 10px;
+            width: auto;
+            height: auto;
+            overflow: visible;
+            z-index: 9999;
+            border-radius: 8px;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body class="antialiased">
+    <a href="#main-content" class="skip-to-main-content-link">İçeriğe Atla</a>
 
     <div class="container mx-auto p-4 md:p-8">
 
@@ -279,7 +303,7 @@
              <p class="mt-3 text-lg text-gray-400">İzlemek istediğiniz kanalı seçin.</p>
         </header>
 
-        <main>
+        <main id="main-content">
             <section class="player-wrapper-outer">
                 <div class="player-header">
                     <span id="currentChannelName">Kanal Seçilmedi</span>
@@ -294,7 +318,7 @@
                 </div>
                 <div id="player-wrapper" class="video-container">
                     <div id="player-content-area">
-                        <img id="player-placeholder" src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">
+                        <img id="player-placeholder" src="https://placehold.co/1920x1080/000000/FFFFFF?text=Canlı+yayın+izlemek+için+bir+kanal+seçin" alt="Canlı yayın izlemek için bir spor veya eğlence kanalı seçin." class="w-full h-full object-contain bg-black">
                     </div>
                 </div>
             </section>
@@ -730,7 +754,6 @@
                 const schemaScript = document.createElement('script');
                 schemaScript.type = 'application/ld+json';
                 schemaScript.id = 'video-schema';
-                // SEO: Daha kapsamlı video şeması
                 schemaScript.innerHTML = JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "VideoObject",
@@ -738,7 +761,7 @@
                     "description": `${name} kanalının canlı yayınını izleyin. ${category} kategorisindeki en yeni spor ve eğlence yayınları.`,
                     "uploadDate": new Date().toISOString(),
                     "contentUrl": streamUrl,
-                    "thumbnailUrl": "https://placehold.co/1920x1080/000000/FFFFFF?text=CANLI", // Genel bir CANLI etiketi
+                    "thumbnailUrl": "https://placehold.co/1920x1080/000000/FFFFFF?text=CANLI",
                     "embedUrl": streamUrl,
                     "interactionStatistic": {
                         "@type": "InteractionCounter",
@@ -753,7 +776,7 @@
                 });
                 document.head.appendChild(schemaScript);
                 
-                const defaultPoster = 'https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin...';
+                const defaultPoster = 'https://placehold.co/1920x1080/000000/FFFFFF?text=CANLI+YAYIN';
                 const playerImage = `<img src="${defaultPoster}" id="player-placeholder" alt="${name} canlı yayın posteri" class="w-full h-full object-contain bg-black">`;
 
                 if (!streamUrl || streamUrl.includes('YASAL_')) {
@@ -893,7 +916,7 @@
                 } else {
                     document.title = 'HLS Yayın Portalı';
                     currentChannelName.textContent = 'Kanal Seçilmedi';
-                    playerContentArea.innerHTML = `<img id="player-placeholder" src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">`;
+                    playerContentArea.innerHTML = `<img id="player-placeholder" src="https://placehold.co/1920x1080/000000/FFFFFF?text=Canlı+yayın+izlemek+için+bir+kanal+seçin" alt="Canlı yayın izlemek için bir spor veya eğlence kanalı seçin." class="w-full h-full object-contain bg-black">`;
                     history.pushState(null, 'HLS Yayın Portalı', '/');
                 }
             };

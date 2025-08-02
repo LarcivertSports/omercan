@@ -660,6 +660,16 @@
             // Yeni fonksiyonlar: localStorage yönetimi
             const getFavorites = () => JSON.parse(localStorage.getItem('favorites')) || [];
             const setFavorites = (favorites) => localStorage.setItem('favorites', JSON.stringify(favorites));
+
+            // Kanal ismini URL dostu bir "slug"a dönüştürme
+            const createSlug = (name) => {
+                return name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+            };
+
+            // URL'deki "slug"dan kanal ismini bulma
+            const findChannelBySlug = (slug) => {
+                return allChannels.find(channel => createSlug(channel.name) === slug);
+            };
             
             // Favori ekleme/çıkarma fonksiyonu
             const toggleFavorite = (channel) => {
@@ -754,11 +764,9 @@
                 // Kartın kendisi için tıklama olayı
                 card.addEventListener('click', () => {
                     loadStream(channel);
-                    if (activeCard) {
-                        activeCard.classList.remove('active');
-                    }
-                    card.classList.add('active');
-                    activeCard = card;
+                    // SEO için URL'yi ve başlığı güncelle
+                    const slug = createSlug(channel.name);
+                    history.pushState(channel, channel.name, `/kanal/${slug}`);
                 });
                 
                 return card;
@@ -817,6 +825,8 @@
                     currentHls = null;
                 }
 
+                // Sayfa başlığını güncelle
+                document.title = `${name} İzle - Yayın Portalı`;
                 currentChannelName.textContent = name;
                 reportChannelBtn.classList.remove('hidden');
                 
@@ -952,10 +962,38 @@
                 renderChannelGrid(searchInput.value);
             });
 
-            // Başlangıçta tüm listeleri ve etiketleri göster
+            // Tarayıcı geri/ileri tuşlarına basıldığında URL'yi kontrol et
+            window.onpopstate = (event) => {
+                const slug = window.location.pathname.split('/').pop();
+                if (slug && slug !== 'kanal') {
+                    const channel = findChannelBySlug(slug);
+                    if (channel) {
+                        loadStream(channel);
+                    }
+                } else {
+                    // Ana sayfaya dönüldüğünde oynatıcıyı sıfırla
+                    document.title = 'HLS Yayın Portalı';
+                    currentChannelName.textContent = 'Kanal Seçilmedi';
+                    playerContentArea.innerHTML = `<img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">`;
+                }
+            };
+            
+            // Sayfa yüklendiğinde URL'yi kontrol et
+            const checkUrlForChannel = () => {
+                const slug = window.location.pathname.split('/').pop();
+                if (slug && slug !== 'kanal' && slug !== '') {
+                    const channel = findChannelBySlug(slug);
+                    if (channel) {
+                        loadStream(channel);
+                    }
+                }
+            };
+
+            // Başlangıçta tüm listeleri, etiketleri göster ve URL'yi kontrol et
             renderFavoriteChannels();
             renderChannelGrid();
             renderTags();
+            checkUrlForChannel();
         });
     </script>
 </body>

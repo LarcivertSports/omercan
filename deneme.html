@@ -270,29 +270,6 @@
             background-color: #dc2626; /* Koyu kırmızı */
         }
 
-        /* Yeni etiket stili */
-        .tag-menu {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .tag-item {
-            background-color: #4a5568;
-            color: #edf2f7;
-            padding: 4px 10px;
-            border-radius: 9999px; /* Tam yuvarlak köşeler */
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-        }
-        .tag-item:hover {
-            background-color: #636b77;
-        }
-        .tag-item.active-tag {
-            background-color: #4299e1; /* Mavi renk */
-        }
     </style>
 </head>
 <body class="antialiased">
@@ -332,10 +309,7 @@
         </div>
 
         <div class="tab-menu">
-            </div>
-
-        <div class="tag-menu">
-            </div>
+        </div>
 
         <div class="search-container">
             <input type="text" id="searchInput" class="search-input" placeholder="Kanal ara...">
@@ -363,7 +337,6 @@
                     isLive: true,
                     isPopular: true,
                     category: 'Futbol',
-                    tags: ['futbol', 'süperlig', 'derbi']
                 },
                 {
                     name: 'beIN SPORTS 2',
@@ -372,7 +345,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Futbol',
-                    tags: ['futbol', 'süperlig', 'maç']
                 },
                 {
                     name: 'beIN SPORTS 3',
@@ -381,7 +353,6 @@
                     isLive: true,
                     isPopular: true,
                     category: 'Futbol',
-                    tags: ['futbol', 'şampiyonlarligi', 'canlı']
                 },
                 {
                     name: 'beIN SPORTS 4',
@@ -390,7 +361,6 @@
                     isLive: true,
                     isPopular: true,
                     category: 'Futbol',
-                    tags: ['futbol', 'maç', 'canlı']
                 },
                 {
                     name: 'beIN SPORTS 5',
@@ -399,7 +369,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Futbol',
-                    tags: ['futbol', 'maç']
                 },
                 {
                     name: 'beIN SPORTS Max 1',
@@ -408,7 +377,6 @@
                     isLive: true,
                     isPopular: true,
                     category: 'Futbol',
-                    tags: ['futbol', 'derbi', 'maç']
                 },
                 {
                     name: 'beIN SPORTS Max 2',
@@ -417,7 +385,6 @@
                     isLive: true,
                     isPopular: true,
                     category: 'Futbol',
-                    tags: ['futbol', 'maç', 'canlı']
                 },
                 {
                     name: 'Tivibu Spor 1',
@@ -426,7 +393,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Futbol',
-                    tags: ['futbol', 'maç', 'canlı']
                 },
                 {
                     name: 'Tivibu Spor 2',
@@ -435,7 +401,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Futbol',
-                    tags: ['futbol', 'maç']
                 },
                 {
                     name: 'S Sport',
@@ -444,7 +409,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'genel']
                 },
                 {
                     name: 'S Sport 2',
@@ -453,7 +417,6 @@
                     isLive: true,
                     isPopular: true,
                     category: 'Genel Spor',
-                    tags: ['spor', 'basketbol']
                 },
                 {
                     name: 'S Sport Plus 1',
@@ -462,7 +425,6 @@
                     isLive: true,
                     isPopular: true,
                     category: 'Genel Spor',
-                    tags: ['spor', 'formula1', 'canlı']
                 },
                 {
                     name: 'S Sport Plus 2',
@@ -471,7 +433,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'basketbol']
                 },
                 {
                     name: 'Smart Spor',
@@ -480,7 +441,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'futbol']
                 },
                 {
                     name: 'Smart Spor 2',
@@ -489,7 +449,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'basketbol', 'tenis']
                 },
                 {
                     name: 'A Spor',
@@ -498,7 +457,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Haber & Spor',
-                    tags: ['spor', 'haber', 'futbol']
                 },
                 {
                     name: 'TV 8,5',
@@ -507,7 +465,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel',
-                    tags: ['genel', 'eğlence', 'spor']
                 },
                 {
                     name: 'TV 8',
@@ -516,7 +473,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel',
-                    tags: ['genel', 'yarışma', 'eğlence']
                 },
                 {
                     name: 'TRT1',
@@ -525,7 +481,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel',
-                    tags: ['genel', 'dizi', 'film']
                 },
                 {
                     name: 'TRT SPOR',
@@ -534,7 +489,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'futbol', 'basketbol']
                 },
                 {
                     name: 'TRT SPOR YILDIZ',
@@ -543,7 +497,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'yıldız', 'voleybol']
                 },
                 {
                     name: 'Tabii TV',
@@ -552,7 +505,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel',
-                    tags: ['genel', 'dizi', 'film']
                 },
                 {
                     name: 'TABİİ SPOR 1',
@@ -561,7 +513,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'futbol', 'maç']
                 },
                 {
                     name: 'Tabii SPOR 2',
@@ -570,7 +521,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'basketbol', 'canlı']
                 },
                 {
                     name: 'Tabii SPOR 3',
@@ -579,7 +529,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'tenis']
                 },
                 {
                     name: 'TABİİ SPOR 4',
@@ -588,7 +537,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'atletizm']
                 },
                 {
                     name: 'Tabii SPOR 5',
@@ -597,7 +545,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'dövüş']
                 },
                 {
                     name: 'Tabii SPOR 6',
@@ -606,7 +553,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'güreş']
                 },
                 {
                     name: 'Tabii SPOR 7',
@@ -615,7 +561,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'su sporları']
                 },
                 {
                     name: 'TABİİ SPOR',
@@ -624,7 +569,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'Genel Spor',
-                    tags: ['spor', 'canlı']
                 },
                 {
                     name: 'TAY TV',
@@ -633,7 +577,6 @@
                     isLive: true,
                     isPopular: false,
                     category: 'At Yarışı',
-                    tags: ['at yarışı', 'yarış']
                 }
             ];
 
@@ -647,7 +590,6 @@
             const searchInput = document.getElementById('searchInput');
             const searchButton = document.getElementById('searchButton');
             const tabMenu = document.querySelector('.tab-menu');
-            const tagMenu = document.querySelector('.tag-menu');
             const favoriteChannelsGrid = document.getElementById('favorite-channels-grid');
             const reportChannelBtn = document.getElementById('reportChannelBtn');
 
@@ -655,7 +597,6 @@
             let activeCard = null;
             let allChannels = [...channels];
             let currentCategory = 'all';
-            let activeTag = null; // Yeni: Aktif etiket
 
             // Yeni fonksiyonlar: localStorage yönetimi
             const getFavorites = () => JSON.parse(localStorage.getItem('favorites')) || [];
@@ -701,41 +642,10 @@
                     tabMenu.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active-tab'));
                     tab.classList.add('active-tab');
                     currentCategory = tab.dataset.category;
-                    activeTag = null; // Kategori değiştirince etiketi sıfırla
-                    renderTags(); // Etiket menüsünü yeniden çiz
                     renderChannelGrid(searchInput.value);
                 });
                 tabMenu.appendChild(tab);
             });
-
-            // Dinamik olarak etiketleri oluşturma
-            const renderTags = () => {
-                tagMenu.innerHTML = '';
-                const tags = new Set();
-                const filteredChannels = allChannels.filter(c => currentCategory === 'all' || c.category === currentCategory);
-                filteredChannels.forEach(c => {
-                    c.tags.forEach(tag => tags.add(tag));
-                });
-
-                tags.forEach(tag => {
-                    const tagItem = document.createElement('div');
-                    tagItem.className = 'tag-item';
-                    if (tag === activeTag) {
-                        tagItem.classList.add('active-tag');
-                    }
-                    tagItem.textContent = `#${tag}`;
-                    tagItem.addEventListener('click', () => {
-                        if (tag === activeTag) {
-                            activeTag = null;
-                        } else {
-                            activeTag = tag;
-                        }
-                        renderTags(); // Aktif etiketi vurgulamak için yeniden çiz
-                        renderChannelGrid(searchInput.value);
-                    });
-                    tagMenu.appendChild(tagItem);
-                });
-            };
             
             // Kanal kartı oluşturma fonksiyonu
             const createChannelCard = (channel, targetGrid) => {
@@ -796,13 +706,8 @@
                     filteredChannels = filteredChannels.filter(channel => channel.category === currentCategory);
                 }
 
-                if (activeTag) {
-                    filteredChannels = filteredChannels.filter(channel => channel.tags.includes(activeTag));
-                }
-
                 const finalFilteredChannels = filteredChannels.filter(channel =>
-                    channel.name.toLowerCase().includes(filterText.toLowerCase()) || 
-                    (channel.tags && channel.tags.some(tag => tag.toLowerCase().includes(filterText.toLowerCase())))
+                    channel.name.toLowerCase().includes(filterText.toLowerCase())
                 );
 
                 if (finalFilteredChannels.length === 0) {
@@ -989,10 +894,9 @@
                 }
             };
 
-            // Başlangıçta tüm listeleri, etiketleri göster ve URL'yi kontrol et
+            // Başlangıçta tüm listeleri göster ve URL'yi kontrol et
             renderFavoriteChannels();
             renderChannelGrid();
-            renderTags();
             checkUrlForChannel();
         });
     </script>

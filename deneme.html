@@ -621,14 +621,6 @@
 
             const getFavorites = () => JSON.parse(localStorage.getItem('favorites')) || [];
             const setFavorites = (favorites) => localStorage.setItem('favorites', JSON.stringify(favorites));
-
-            const createSlug = (name) => {
-                return name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-            };
-
-            const findChannelBySlug = (slug) => {
-                return allChannels.find(channel => createSlug(channel.name) === slug);
-            };
             
             const toggleFavorite = (channel) => {
                 let favorites = getFavorites();
@@ -687,8 +679,6 @@
                 
                 card.addEventListener('click', () => {
                     loadStream(channel);
-                    const slug = createSlug(channel.name);
-                    history.pushState(channel, channel.name, `/kanal/${slug}`);
                 });
                 
                 return card;
@@ -906,42 +896,8 @@
                 renderChannelGrid(searchInput.value);
             });
 
-            window.onpopstate = (event) => {
-                const slug = window.location.pathname.split('/').pop();
-                if (slug && slug !== 'kanal' && slug !== '') {
-                    const channel = findChannelBySlug(slug);
-                    if (channel) {
-                        loadStream(channel);
-                    } else {
-                        // KOD GÜNCELLEMESİ: Geçersiz URL durumunda hata mesajı gösterir
-                        setStatus('Kanal bulunamadı veya geçersiz URL.', 'error');
-                        playerContentArea.innerHTML = `<img id="player-placeholder" src="https://placehold.co/1920x1080/000000/FFFFFF?text=Canlı+yayın+izlemek+için+bir+kanal+seçin" alt="Canlı yayın izlemek için bir spor veya eğlence kanalı seçin." class="w-full h-full object-contain bg-black">`;
-                    }
-                } else {
-                    document.title = 'HLS Yayın Portalı';
-                    currentChannelName.textContent = 'Kanal Seçilmedi';
-                    playerContentArea.innerHTML = `<img id="player-placeholder" src="https://placehold.co/1920x1080/000000/FFFFFF?text=Canlı+yayın+izlemek+için+bir+kanal+seçin" alt="Canlı yayın izlemek için bir spor veya eğlence kanalı seçin." class="w-full h-full object-contain bg-black">`;
-                    history.pushState(null, 'HLS Yayın Portalı', '/');
-                }
-            };
-            
-            const checkUrlForChannel = () => {
-                const slug = window.location.pathname.split('/').pop();
-                if (slug && slug !== 'kanal' && slug !== '') {
-                    const channel = findChannelBySlug(slug);
-                    if (channel) {
-                        loadStream(channel);
-                    } else {
-                        // KOD GÜNCELLEMESİ: Geçersiz URL durumunda hata mesajı gösterir
-                        setStatus('Kanal bulunamadı veya geçersiz URL.', 'error');
-                        playerContentArea.innerHTML = `<img id="player-placeholder" src="https://placehold.co/1920x1080/000000/FFFFFF?text=Canlı+yayın+izlemek+için+bir+kanal+seçin" alt="Canlı yayın izlemek için bir spor veya eğlence kanalı seçin." class="w-full h-full object-contain bg-black">`;
-                    }
-                }
-            };
-
             renderFavoriteChannels();
             renderChannelGrid();
-            checkUrlForChannel();
         });
     </script>
 </body>

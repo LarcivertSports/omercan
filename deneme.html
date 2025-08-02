@@ -622,6 +622,7 @@
             const getFavorites = () => JSON.parse(localStorage.getItem('favorites')) || [];
             const setFavorites = (favorites) => localStorage.setItem('favorites', JSON.stringify(favorites));
 
+            // KOD GÜNCELLEMESİ: Kanal adını SEO dostu bir slug'a dönüştürme fonksiyonu
             const createSlug = (name) => {
                 return name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
             };
@@ -687,6 +688,7 @@
                 
                 card.addEventListener('click', () => {
                     loadStream(channel);
+                    // KOD GÜNCELLEMESİ: history.pushState fonksiyonu slug'ı kullanarak URL'yi değiştiriyor
                     const slug = createSlug(channel.name);
                     history.pushState(channel, channel.name, `/kanal/${slug}`);
                 });

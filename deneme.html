@@ -36,7 +36,12 @@
             font-weight: 600;
             font-size: 0.95rem;
         }
-        .cinema-mode-btn {
+        .player-header .actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .cinema-mode-btn, .report-btn {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -44,8 +49,9 @@
             font-size: 0.85rem;
             cursor: pointer;
             transition: color 0.2s ease;
+            text-decoration: none; /* Link alt çizgisini kaldırır */
         }
-        .cinema-mode-btn:hover {
+        .cinema-mode-btn:hover, .report-btn:hover {
             color: #a0aec0;
         }
         .video-container {
@@ -199,9 +205,14 @@
         <div class="player-wrapper-outer">
             <div class="player-header">
                 <span id="currentChannelName">Kanal Seçilmedi</span>
-                <span id="cinemaModeBtn" class="cinema-mode-btn">
-                    <i class="fa-solid fa-expand"></i> Sinema Modu
-                </span>
+                <div class="actions">
+                    <a href="https://t.me/+mSNjtNrQ0xozNWNk" target="_blank" class="report-btn">
+                        <i class="fa-solid fa-flag"></i> Kanalı Bildir
+                    </a>
+                    <span id="cinemaModeBtn" class="cinema-mode-btn">
+                        <i class="fa-solid fa-expand"></i> Sinema Modu
+                    </span>
+                </div>
             </div>
             <div id="player-wrapper" class="video-container">
                 <div id="player-content-area">
@@ -501,7 +512,6 @@
                     } else if (document.webkitExitFullscreen) {
                         document.webkitExitFullscreen();
                     } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
                     }
                 }
             };
@@ -514,6 +524,18 @@
             searchInput.addEventListener('input', () => renderChannelGrid(searchInput.value));
             searchButton.addEventListener('click', () => renderChannelGrid(searchInput.value));
 
+            // Sekme menüsü için olay dinleyicisi
+            tabMenu.addEventListener('click', (event) => {
+                const target = event.target;
+                if (target.classList.contains('tab-item')) {
+                    document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active-tab'));
+                    target.classList.add('active-tab');
+                    const selectedCategory = target.dataset.category;
+                    displayedChannels = channelsByCategory[selectedCategory];
+                    renderChannelGrid(searchInput.value);
+                }
+            });
+
             // Sinema Modu butonu için olay dinleyicisi
             cinemaModeBtn.addEventListener('click', toggleCinemaMode);
 
@@ -521,9 +543,9 @@
             // 6. UYGULAMA BAŞLANGICI
             // ====================================================================
             const initializeApp = () => {
-                renderTabs(); // Önce sekmeleri oluştur
-                displayedChannels = channelsByCategory['Tüm Kanallar']; // Varsayılan olarak Tüm Kanalları göster
-                renderChannelGrid(); // Başlangıçta tüm kanalları listele
+                renderTabs();
+                displayedChannels = channelsByCategory['Tüm Kanallar'];
+                renderChannelGrid();
             };
 
             initializeApp();

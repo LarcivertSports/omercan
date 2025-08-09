@@ -4,25 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Ömercan Yayın Portalı — Yeni</title>
-
-  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-  <!-- HLS.js for HLS playback/preview -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
   <style>
     :root{
       --glass-bg: rgba(255,255,255,0.04);
-      --accent: #06b6d4; /* cyan-400 */
+      --accent: #06b6d4;
     }
     [data-theme="light"]{
       --glass-bg: rgba(255,255,255,0.7);
       --accent: #0ea5e9;
     }
-
-    /* tiny live badge */
     .live-badge{
       background: linear-gradient(90deg,#ef4444,#f97316);
       color:white;
@@ -34,500 +27,204 @@
       gap:6px;
       align-items:center;
     }
-
-    /* hover preview card styling */
-    .preview-pop {
-      width: 320px;
-      max-width: calc(100vw - 32px);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-      background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65));
-      transform-origin: top left;
-      z-index: 80;
-    }
-
-    /* favorite star */
-    .fav-btn { filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5)); }
-
-    /* transition for cards */
     .channel-card {
-      transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, border-color .18s;
+      transition: transform .18s, box-shadow .18s;
     }
     .channel-card:hover{
       transform: translateY(-6px) scale(1.02);
       box-shadow: 0 12px 40px rgba(2,6,23,0.6);
-    }
-
-    /* responsive preview position fix (mobile small) */
-    @media (max-width:640px){
-      .preview-pop { width: 280px; }
     }
   </style>
 </head>
 <body class="antialiased bg-gradient-to-b from-slate-900 to-slate-800 min-h-screen" data-theme="dark">
   <div class="max-w-6xl mx-auto px-4 py-8">
 
-    <!-- Header -->
     <header class="flex items-center justify-between gap-4 mb-6">
       <div>
         <h1 class="text-3xl md:text-4xl font-extrabold text-white">Ömercan Yayın Portalı</h1>
-        <p class="text-slate-300 mt-1">Favori kanallarını ekle, önizle, hızlıca izle.</p>
+        <p class="text-slate-300 mt-1">Favori kanallarını ekle, filtrele, hızlıca izle.</p>
       </div>
-
-      <div class="flex items-center gap-3">
-        <div class="hidden sm:flex items-center gap-2 bg-[var(--glass-bg)] px-3 py-1 rounded-full">
-          <i class="fa-solid fa-eye text-slate-300"></i>
-          <span id="nowWatching" class="text-slate-200 text-sm">Henüz izlenmiyor</span>
-        </div>
-
-        <button id="themeToggle" title="Tema değiştir" class="p-2 rounded-md bg-[var(--glass-bg)] hover:scale-105 transition">
-          <i id="themeIcon" class="fa-solid fa-moon text-slate-200"></i>
-        </button>
-      </div>
+      <button id="themeToggle" title="Tema değiştir" class="p-2 rounded-md bg-[var(--glass-bg)]">
+        <i id="themeIcon" class="fa-solid fa-moon text-slate-200"></i>
+      </button>
     </header>
 
-    <!-- Player + Controls -->
     <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       <div class="lg:col-span-2 space-y-3">
-        <div id="playerCard" class="rounded-xl overflow-hidden bg-[var(--glass-bg)] p-3 relative">
+        <div id="playerCard" class="rounded-xl overflow-hidden bg-[var(--glass-bg)] p-3">
           <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-3">
-              <img id="playerLogo" src="https://placehold.co/64x64/111827/FFFFFF?text=Logo" alt="" class="w-12 h-12 rounded-md object-cover bg-slate-700">
-              <div>
-                <div id="playerTitle" class="text-white font-semibold">Kanal seçilmedi</div>
-                <div id="playerMeta" class="text-slate-300 text-sm">Hazır</div>
-              </div>
+            <div>
+              <div id="playerTitle" class="text-white font-semibold">Kanal seçilmedi</div>
+              <div id="playerMeta" class="text-slate-300 text-sm">Hazır</div>
             </div>
-
-            <div class="flex items-center gap-2">
-              <button id="playerPin" class="p-2 rounded-md text-slate-200 bg-transparent hover:bg-white/5" title="Mini oynatıcı">
-                <i class="fa-solid fa-square"></i>
-              </button>
-              <button id="playerFullscreen" class="p-2 rounded-md text-slate-200 bg-transparent hover:bg-white/5" title="Sinema modu">
-                <i class="fa-solid fa-expand"></i>
-              </button>
-            </div>
+            <button id="playerFullscreen" class="p-2 rounded-md text-slate-200 hover:bg-white/5">
+              <i class="fa-solid fa-expand"></i>
+            </button>
           </div>
-
           <div id="playerArea" class="w-full bg-black rounded-md overflow-hidden aspect-video flex items-center justify-center">
-            <!-- initial placeholder -->
-            <img id="playerPlaceholder" src="https://placehold.co/1280x720/000000/FFFFFF?text=Kanal+seçin" alt="placeholder" class="w-full h-full object-cover">
+            <img src="https://placehold.co/1280x720/000000/FFFFFF?text=Kanal+Seçin" alt="placeholder">
           </div>
-
-          <div id="playerFooter" class="mt-3 flex items-center justify-between text-sm text-slate-300">
-            <div class="flex items-center gap-3">
-              <span id="liveBadgeArea"></span>
-              <span id="playerQuality">—</span>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <a id="reportLink" href="#" target="_blank" class="text-slate-300 hover:text-white">Kanalı bildir</a>
-            </div>
-          </div>
+          <div id="liveBadgeArea" class="mt-3"></div>
         </div>
-
-        <!-- small info / actions -->
         <div class="flex items-center gap-3">
-          <input id="searchInput" type="search" placeholder="Kanal ara veya filtrele..." class="flex-1 rounded-full px-4 py-2 bg-[var(--glass-bg)] text-slate-200 focus:ring-2 focus:ring-[var(--accent)] outline-none" />
-          <select id="categorySelect" class="rounded-full px-3 py-2 bg-[var(--glass-bg)] text-slate-200">
-            <option value="all">Tümü</option>
-          </select>
-
-          <button id="showFavs" class="px-4 py-2 rounded-full bg-amber-500 text-black font-semibold hover:scale-105 transition">
-            <i class="fa-solid fa-star"></i> Favoriler
-          </button>
+          <input id="searchInput" type="search" placeholder="Kanal ara..." class="flex-1 rounded-full px-4 py-2 bg-[var(--glass-bg)] text-slate-200 focus:ring-2 focus:ring-[var(--accent)] outline-none" />
+          <select id="categorySelect" class="rounded-full px-3 py-2 bg-[var(--glass-bg)] text-slate-200"></select>
         </div>
       </div>
-
-      <!-- Sidebar: categories / favorites / instructions -->
       <aside class="space-y-4">
         <div class="rounded-xl p-4 bg-[var(--glass-bg)] text-slate-200">
           <h3 class="font-semibold mb-2">Kategoriler</h3>
           <div id="categoryList" class="flex flex-wrap gap-2"></div>
         </div>
-
-        <div class="rounded-xl p-4 bg-[var(--glass-bg)] text-slate-200">
-          <h3 class="font-semibold mb-2">Kısa Notlar</h3>
-          <ul class="text-sm text-slate-300 space-y-1">
-            <li>• Hover ile küçük önizleme (tarayıcı izin veriyorsa).</li>
-            <li>• Favoriler cihazında saklanır.</li>
-            <li>• HLS talepleri CORS nedeniyle bazı kanallarda engellenebilir.</li>
-          </ul>
-        </div>
       </aside>
     </section>
 
-    <!-- Channel Grid -->
     <main>
-      <div id="tabs" class="flex items-center gap-3 mb-4"></div>
       <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
     </main>
 
   </div>
 
   <script>
-    /*******************************
-     * DATA: kanallar (örnek)
-     * logo: görüntü URL'si (değiştir)
-     * type: 'hls' veya 'iframe'
-     * preview: opsiyonel küçük önizleme URL'si (poster)
-     *******************************/
     const channels = [
-      { id: 'bein1', name: 'beIN SPORTS 1', type: 'iframe', stream: 'https://www.mersotv1.com/channel.html?id=yayinstar', logo: 'https://placehold.co/256x144/0ea5e9/ffffff?text=beIN+1', category: 'Spor', live: true, popular:true, preview: 'https://placehold.co/640x360/0ea5e9/ffffff?text=beIN+1' },
-      { id: 'trt1', name: 'TRT 1', type: 'iframe', stream: 'https://www.mersotv1.com/channel.html?id=yayintrt1', logo: 'https://placehold.co/256x144/06b6d4/fff?text=TRT1', category: 'Ulusal', live: false, popular:false, preview: 'https://placehold.co/640x360/06b6d4/fff?text=TRT1' },
-      { id: 'trsport', name: 'TRT SPOR YILDIZ', type: 'hls', stream: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', logo: 'https://placehold.co/256x144/f97316/fff?text=TRT+SPOR', category: 'Spor', live: true, popular:false, preview: 'https://placehold.co/640x360/f97316/fff?text=TRT+SPOR' },
-      { id: 'tabii', name: 'Tabii TV', type: 'hls', stream: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg', logo: 'https://placehold.co/256x144/8b5cf6/fff?text=Tabii', category: 'Eğlence', live: true, popular:false, preview: 'https://placehold.co/640x360/8b5cf6/fff?text=Tabii' },
-      { id: 'smart', name: 'Smart Spor', type: 'iframe', stream: 'https://www.mersotv1.com/channel.html?id=yayinsmarts', logo: 'https://placehold.co/256x144/ef4444/fff?text=Smart', category: 'Spor', live: false, popular:false, preview: 'https://placehold.co/640x360/ef4444/fff?text=Smart' },
-      { id: 'tay', name: 'TAY TV', type: 'hls', stream: 'https://tjktv-live.tjk.org/tjktv/tjktv_1080p.m3u8', logo: 'https://placehold.co/256x144/10b981/fff?text=TAY', category: 'Spor', live: false, popular:false, preview: 'https://placehold.co/640x360/10b981/fff?text=TAY' },
-      // ... dilediğin kadar ekle
+      { name: 'beIN SPORTS 1', stream: 'https://www.mersotv1.com/channel.html?id=yayinstar', type: 'iframe', live: true, popular: true, category: 'Spor' },
+      { name: 'beIN SPORTS 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinb2#amp=1', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'beIN SPORTS 3', stream: 'https://www.mersotv1.com/channel.html?id=yayinb3', type: 'iframe', live: true, popular: true, category: 'Spor' },
+      { name: 'beIN SPORTS 4', stream: 'https://www.mersotv1.com/channel.html?id=yayinb4', type: 'iframe', live: true, popular: true, category: 'Spor' },
+      { name: 'beIN SPORTS 5', stream: 'https://www.mersotv1.com/channel.html?id=yayinb5', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'beIN SPORTS Max 1', stream: 'https://www.mersotv1.com/channel.html?id=yayinbm1', type: 'iframe', live: true, popular: true, category: 'Spor' },
+      { name: 'beIN SPORTS Max 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinbm2', type: 'iframe', live: true, popular: true, category: 'Spor' },
+      { name: 'Tivibu Spor 1', stream: 'https://www.mersotv1.com/channel.html?id=yayint1', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'Tivibu Spor 2', stream: 'https://www.mersotv1.com/channel.html?id=yayint2', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'Tivibu Spor 3', stream: 'https://www.mersotv1.com/channel.html?id=yayint3', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'Tivibu Spor 4', stream: 'https://www.mersotv1.com/channel.html?id=yayint4', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'S Sport', stream: 'https://www.mersotv1.com/channel.html?id=yayinss', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'S Sport 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinss2', type: 'iframe', live: true, popular: true, category: 'Spor' },
+      { name: 'S Sport Plus 1', stream: 'https://www.mersotv1.com/channel.html?id=yayinex2', type: 'iframe', live: true, popular: true, category: 'Spor' },
+      { name: 'S Sport Plus 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinex1', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'Smart Spor', stream: 'https://www.mersotv1.com/channel.html?id=yayinsmarts', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'Smart Spor 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinsms2', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'A Spor', stream: 'https://www.mersotv1.com/channel.html?id=yayinas', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'TV 8,5', stream: 'https://www.mersotv1.com/channel.html?id=yayintv85', type: 'iframe', live: true, popular: false, category: 'Ulusal' },
+      { name: 'TV 8', stream: 'https://www.mersotv1.com/channel.html?id=yayintv8', type: 'iframe', live: true, popular: false, category: 'Ulusal' },
+      { name: 'TRT1', stream: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe', live: true, popular: false, category: 'Ulusal' },
+      { name: 'TRT SPOR', stream: 'https://www.mersotv1.com/channel.html?id=yayintrtspor', type: 'iframe', live: true, popular: false, category: 'Spor' },
+      { name: 'TRT SPOR YILDIZ', stream: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
+      { name: 'Tabii TV', stream: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg', type: 'hls', live: true, popular: false, category: 'Diğer' },
+      { name: 'TABİİ SPOR 1', stream: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
+      { name: 'Tabii SPOR 2', stream: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
+      { name: 'Tabii SPOR 3', stream: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
+      { name: 'TABİİ SPOR 4', stream: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
+      { name: 'Tabii SPOR 5', stream: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
+      { name: 'Tabii SPOR 6', stream: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
+      { name: 'Tabii SPOR 7', stream: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
+      { name: 'Tabii SPOR', stream: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
+      { name: 'TAY TV', stream: 'https://tjktv-live.tjk.org/tjktv/tjktv_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' }
     ];
 
-    /**********************
-     * APP STATE
-     **********************/
-    const state = {
-      filtered: [...channels],
-      favorites: new Set(JSON.parse(localStorage.getItem('favs')||'[]')),
-      theme: localStorage.getItem('theme') || 'dark',
-      current: null
-    };
-
-    // element refs
     const grid = document.getElementById('grid');
     const searchInput = document.getElementById('searchInput');
     const categorySelect = document.getElementById('categorySelect');
     const categoryList = document.getElementById('categoryList');
-    const tabs = document.getElementById('tabs');
     const playerArea = document.getElementById('playerArea');
-    const playerPlaceholder = document.getElementById('playerPlaceholder');
-    const playerLogo = document.getElementById('playerLogo');
     const playerTitle = document.getElementById('playerTitle');
     const playerMeta = document.getElementById('playerMeta');
-    const nowWatching = document.getElementById('nowWatching');
+    const liveBadgeArea = document.getElementById('liveBadgeArea');
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
-    const showFavs = document.getElementById('showFavs');
     const playerFullscreen = document.getElementById('playerFullscreen');
-    const liveBadgeArea = document.getElementById('liveBadgeArea');
 
-    /**********************
-     * UTIL
-     **********************/
-    function saveFavs(){ localStorage.setItem('favs', JSON.stringify(Array.from(state.favorites))); }
+    let state = { theme: localStorage.getItem('theme') || 'dark' };
     function setTheme(t){
       state.theme = t;
-      document.body.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+      document.body.setAttribute('data-theme', t);
       localStorage.setItem('theme', t);
       themeIcon.className = t === 'light' ? 'fa-solid fa-sun text-slate-800' : 'fa-solid fa-moon text-slate-200';
     }
     setTheme(state.theme);
+    themeToggle.addEventListener('click', ()=> setTheme(state.theme==='light'?'dark':'light'));
 
-    /**********************
-     * CATEGORIES
-     **********************/
-    const categories = ['Tümü', ...Array.from(new Set(channels.map(c=>c.category)))];
-    const categorySelectEl = document.getElementById('categorySelect');
+    const categories = ['Tümü', ...new Set(channels.map(c=>c.category))];
     categories.forEach(cat=>{
       const opt = document.createElement('option');
-      opt.value = cat === 'Tümü' ? 'all' : cat;
+      opt.value = cat;
       opt.textContent = cat;
-      categorySelectEl.appendChild(opt);
-    });
-    // sidebar pills
-    categories.forEach(cat=>{
+      categorySelect.appendChild(opt);
       const btn = document.createElement('button');
       btn.textContent = cat;
       btn.className = 'px-3 py-1 rounded-full bg-white/5 text-slate-200 text-sm';
-      btn.onclick = ()=>{ filterByCategory(cat==='Tümü'?'all':cat); highlightTab(cat); };
+      btn.onclick = ()=> filter(cat);
       categoryList.appendChild(btn);
     });
 
-    function highlightTab(cat){
-      tabs.querySelectorAll('button').forEach(b=>b.classList.remove('bg-[var(--accent)]','text-black','font-semibold'));
-      const found = Array.from(tabs.children).find(b => b.textContent === cat);
-      if(found){ found.classList.add('bg-[var(--accent)]','text-black','font-semibold'); }
-    }
-
-    /**********************
-     * RENDER GRID
-     **********************/
     function renderGrid(list){
       grid.innerHTML = '';
-      if(!list.length){
-        grid.innerHTML = '<div class="col-span-full text-center text-slate-300 py-12">Hiç kanal bulunamadı.</div>';
-        return;
-      }
-
       list.forEach(ch=>{
         const card = document.createElement('div');
-        card.className = 'channel-card p-3 rounded-xl bg-[var(--glass-bg)] flex flex-col items-stretch gap-3 cursor-pointer relative';
-        card.dataset.id = ch.id;
-
-        // logo + fav overlay
-        const logoWrap = document.createElement('div');
-        logoWrap.className = 'relative';
-        const logo = document.createElement('img');
-        logo.src = ch.logo;
-        logo.alt = ch.name;
-        logo.className = 'w-full h-28 object-cover rounded-md';
-        logoWrap.appendChild(logo);
-
-        // live badge top-left
+        card.className = 'channel-card p-3 rounded-xl bg-[var(--glass-bg)] cursor-pointer';
         if(ch.live){
           const badge = document.createElement('div');
-          badge.className = 'live-badge absolute left-2 top-2';
-          badge.innerHTML = '<i class="fa-solid fa-circle text-[10px]"></i><span class="ml-1 text-[11px]">CANLI</span>';
-          logoWrap.appendChild(badge);
+          badge.className = 'live-badge mb-2';
+          badge.innerHTML = '<i class="fa-solid fa-circle text-[10px]"></i> CANLI';
+          card.appendChild(badge);
         }
-
-        // fav button top-right
-        const favBtn = document.createElement('button');
-        favBtn.className = 'fav-btn absolute right-2 top-2 p-1 rounded-full bg-white/10 hover:bg-white/20';
-        favBtn.innerHTML = `<i class="${state.favorites.has(ch.id)?'fa-solid fa-star text-yellow-400':'fa-regular fa-star text-white'}"></i>`;
-        favBtn.title = 'Favorilere ekle';
-        favBtn.onclick = (e)=>{
-          e.stopPropagation();
-          if(state.favorites.has(ch.id)) state.favorites.delete(ch.id);
-          else state.favorites.add(ch.id);
-          saveFavs();
-          renderGrid(state.filtered);
-        };
-        logoWrap.appendChild(favBtn);
-
-        // content
         const title = document.createElement('div');
         title.className = 'font-semibold text-white';
         title.textContent = ch.name;
-
         const meta = document.createElement('div');
-        meta.className = 'text-xs text-slate-300 flex items-center justify-between';
-        meta.innerHTML = `<span>${ch.category}</span><span>${ch.popular?'<i class="fa-solid fa-fire"></i> Popüler':''}</span>`;
-
-        card.appendChild(logoWrap);
+        meta.className = 'text-xs text-slate-300';
+        meta.textContent = ch.category;
         card.appendChild(title);
         card.appendChild(meta);
-
-        // events
-        card.addEventListener('click', ()=> openChannel(ch));
-        // hover preview
-        let previewTimeout;
-        card.addEventListener('mouseenter',(e)=>{
-          previewTimeout = setTimeout(()=> showPreview(ch, card), 350);
-        });
-        card.addEventListener('mouseleave',()=>{
-          clearTimeout(previewTimeout);
-          hidePreview();
-        });
-
+        card.addEventListener('click', ()=> playChannel(ch));
         grid.appendChild(card);
       });
     }
 
-    /**********************
-     * PREVIEW (hover)
-     **********************/
-    let previewEl = null;
-    function showPreview(ch, anchor){
-      hidePreview();
-      previewEl = document.createElement('div');
-      previewEl.className = 'preview-pop absolute';
-      previewEl.style.top = (anchor.getBoundingClientRect().top + window.scrollY + 8) + 'px';
-      previewEl.style.left = (anchor.getBoundingClientRect().right + 12) + 'px';
-      previewEl.innerHTML = `
-        <div style="width:100%;height:180px;background:#000;display:flex;align-items:center;justify-content:center">
-          <div id="previewMedia" style="width:100%;height:100%;"></div>
-        </div>
-        <div class="p-3">
-          <div class="font-semibold text-white mb-1">${ch.name}</div>
-          <div class="text-sm text-slate-300">${ch.category} • ${ch.live?'<span class="text-amber-400 font-semibold">CANLI</span>':''}</div>
-        </div>
-      `;
-      document.body.appendChild(previewEl);
-
-      const mediaWrap = previewEl.querySelector('#previewMedia');
-
-      // if HLS and hls.js supported, try to play muted preview
-      if(ch.type === 'hls' && Hls.isSupported()){
-        const video = document.createElement('video');
-        video.muted = true;
-        video.autoplay = true;
-        video.playsInline = true;
-        video.controls = false;
-        video.style.width = '100%';
-        video.style.height = '100%';
-        video.style.objectFit = 'cover';
-        mediaWrap.appendChild(video);
-        try{
-          const hls = new Hls({ lowLatencyMode: true });
-          hls.loadSource(ch.stream);
-          hls.attachMedia(video);
-          // destroy hls after some time when hidden
-          previewEl._hls = hls;
-        }catch(e){
-          // fallback to poster image
-          mediaWrap.innerHTML = `<img src="${ch.preview||ch.logo}" class="w-full h-full object-cover">`;
-        }
-      } else {
-        // iframe or unsupported: show preview poster
-        mediaWrap.innerHTML = `<img src="${ch.preview||ch.logo}" class="w-full h-full object-cover">`;
-      }
-
-      // reposition if off-screen (right edge)
-      const rect = previewEl.getBoundingClientRect();
-      if(rect.right > window.innerWidth - 8){
-        previewEl.style.left = (anchor.getBoundingClientRect().left - rect.width - 12) + 'px';
-      }
-    }
-
-    function hidePreview(){
-      if(!previewEl) return;
-      if(previewEl._hls){ try{ previewEl._hls.destroy(); }catch(e){} }
-      previewEl.remove();
-      previewEl = null;
-    }
-
-    /**********************
-     * OPEN CHANNEL (player)
-     **********************/
-    let activePlayer = null; // either video element or iframe
-    function openChannel(ch){
-      // clear existing
-      playerArea.innerHTML = '';
-      playerLogo.src = ch.logo;
+    function playChannel(ch){
       playerTitle.textContent = ch.name;
       playerMeta.textContent = ch.type.toUpperCase();
-      nowWatching.textContent = ch.name;
-      liveBadgeArea.innerHTML = ch.live ? '<span class="live-badge"><i class="fa-solid fa-circle text-[10px]"></i> LIVE</span>' : '';
-      state.current = ch.id;
-
-      if(activePlayer && activePlayer._hls){ try{ activePlayer._hls.destroy(); }catch(e){} }
-      activePlayer = null;
-
-      if(ch.type === 'iframe'){
+      liveBadgeArea.innerHTML = ch.live ? '<span class="live-badge"><i class="fa-solid fa-circle text-[10px]"></i> CANLI</span>' : '';
+      playerArea.innerHTML = '';
+      if(ch.type==='iframe'){
         const iframe = document.createElement('iframe');
         iframe.src = ch.stream;
         iframe.allowFullscreen = true;
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.border = '0';
+        iframe.className = 'w-full h-full';
         playerArea.appendChild(iframe);
-        activePlayer = iframe;
-      } else if(ch.type === 'hls'){
+      } else if(ch.type==='hls'){
         const video = document.createElement('video');
         video.controls = true;
-        video.style.width = '100%';
-        video.style.height = '100%';
-        video.style.objectFit = 'contain';
         video.autoplay = true;
+        video.className = 'w-full h-full';
         playerArea.appendChild(video);
-
         if(Hls.isSupported()){
-          try{
-            const hls = new Hls({ lowLatencyMode: true });
-            hls.loadSource(ch.stream);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, ()=> video.play().catch(()=>{}));
-            activePlayer = video;
-            activePlayer._hls = hls;
-          }catch(e){
-            playerArea.innerHTML = `<div class="text-white p-4">Yayın yüklenemedi.</div>`;
-          }
-        } else if(video.canPlayType('application/vnd.apple.mpegurl')){
-          video.src = ch.stream;
-          video.addEventListener('loadedmetadata', ()=> video.play().catch(()=>{}));
-          activePlayer = video;
+          const hls = new Hls();
+          hls.loadSource(ch.stream);
+          hls.attachMedia(video);
         } else {
-          playerArea.innerHTML = `<div class="text-white p-4">Tarayıcınız HLS oynatmayı desteklemiyor.</div>`;
+          video.src = ch.stream;
         }
       }
     }
 
-    /**********************
-     * SEARCH / FILTER
-     **********************/
-    function filterByCategory(cat){
-      const catName = cat === 'all' ? null : cat;
-      categorySelect.value = cat === 'all' ? 'all' : cat;
-      applyFilters();
-    }
-
-    function applyFilters(){
-      const q = (searchInput.value||'').trim().toLowerCase();
-      const cat = categorySelect.value;
-      let list = channels.filter(c=>{
-        if(cat !== 'all' && c.category !== cat) return false;
-        if(q && !(`${c.name} ${c.category}`.toLowerCase().includes(q))) return false;
-        return true;
+    function filter(cat){
+      let val = searchInput.value.toLowerCase();
+      let filtered = channels.filter(c=>{
+        let matchCat = (cat==='Tümü' || c.category===cat);
+        let matchSearch = c.name.toLowerCase().includes(val);
+        return matchCat && matchSearch;
       });
-      state.filtered = list;
-      renderGrid(list);
+      renderGrid(filtered);
     }
 
-    searchInput.addEventListener('input', ()=> applyFilters());
-    categorySelect.addEventListener('change', ()=> applyFilters());
-    showFavs.addEventListener('click', ()=>{
-      const favList = channels.filter(c=>state.favorites.has(c.id));
-      state.filtered = favList;
-      renderGrid(favList);
-    });
-
-    /**********************
-     * TABS (popular / all / live)
-     **********************/
-    const tabDefs = [
-      { id:'all', label:'Tümü' },
-      { id:'popular', label:'Popüler' },
-      { id:'live', label:'Canlı' }
-    ];
-    function renderTabs(){
-      tabs.innerHTML = '';
-      tabDefs.forEach(t=>{
-        const b = document.createElement('button');
-        b.className = 'px-4 py-2 rounded-full bg-white/5 text-slate-200 text-sm';
-        b.textContent = t.label;
-        b.onclick = ()=>{
-          if(t.id === 'all') state.filtered = channels;
-          else if(t.id === 'popular') state.filtered = channels.filter(c=>c.popular);
-          else if(t.id === 'live') state.filtered = channels.filter(c=>c.live);
-          renderGrid(state.filtered);
-          highlightTab(t.label);
-        };
-        tabs.appendChild(b);
-      });
-    }
-
-    /**********************
-     * THEME
-     **********************/
-    themeToggle.addEventListener('click', ()=>{
-      setTheme(state.theme === 'light' ? 'dark' : 'light');
-    });
-
-    /**********************
-     * FULLSCREEN PLAYER
-     **********************/
+    searchInput.addEventListener('input', ()=> filter(categorySelect.value));
+    categorySelect.addEventListener('change', ()=> filter(categorySelect.value));
     playerFullscreen.addEventListener('click', ()=>{
-      const el = document.getElementById('playerCard');
-      if (!document.fullscreenElement) {
-        el.requestFullscreen?.();
-      } else {
-        document.exitFullscreen?.();
-      }
+      document.getElementById('playerCard').requestFullscreen();
     });
 
-    /**********************
-     * INIT
-     **********************/
-    function init(){
-      renderTabs();
-      applyFilters();
-    }
-    init();
-
-    // cleanup preview on scroll (so it doesn't float weird)
-    window.addEventListener('scroll', ()=> hidePreview());
-    window.addEventListener('resize', ()=> hidePreview());
+    renderGrid(channels);
   </script>
 </body>
 </html>

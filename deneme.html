@@ -1,605 +1,221 @@
-<!doctype html>
-<html lang="tr">
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ömercan Yayın Portalı — Favoriler & Son İzlenen</title>
-
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-  <!-- HLS.js -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-  <style>
-    :root{ --glass-bg: rgba(255,255,255,0.04); --accent: #06b6d4; }
-    [data-theme="light"]{ --glass-bg: rgba(255,255,255,0.85); --accent: #0ea5e9; }
-    .live-badge{ background: linear-gradient(90deg,#ef4444,#f97316); color:#fff; font-weight:700; font-size:11px; padding:4px 8px; border-radius:999px; display:inline-flex; gap:6px; align-items:center; }
-    .channel-card{ transition: transform .18s, box-shadow .18s; }
-    .channel-card:hover{ transform: translateY(-6px) scale(1.02); box-shadow: 0 12px 40px rgba(2,6,23,0.6); }
-    .fav-btn { min-width:34px; min-height:34px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; }
-    .small-note { font-size:13px; color: #cbd5e0; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Canlı TV Yayınları</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --accent: #00ffae;
+  --glass-bg: rgba(255,255,255,0.05);
+}
+[data-theme="light"] {
+  --accent: #0066ff;
+  --glass-bg: rgba(0,0,0,0.05);
+}
+body {
+  background: #0f172a;
+  font-family: sans-serif;
+  margin: 0;
+  color: white;
+}
+[data-theme="light"] body {
+  background: #f3f4f6;
+  color: #111;
+}
+.channel-card {transition: transform .2s;}
+.channel-card:hover {transform: scale(1.02);}
+.live-badge {
+  color: var(--accent);
+  font-size: 0.8em;
+  font-weight: bold;
+}
+.small-note {font-size: 0.85em; color: #aaa;}
+input, select, button {outline: none;}
+</style>
 </head>
-<body class="antialiased bg-gradient-to-b from-slate-900 to-slate-800 min-h-screen" data-theme="dark">
-  <div class="max-w-6xl mx-auto px-4 py-8">
+<body>
+<div id="app" class="p-4">
+<header style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
+  <h1 style="font-size:1.2em;font-weight:bold">📺 Canlı TV Yayınları</h1>
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
+    <input id="searchInput" placeholder="Ara..." style="padding:5px;border-radius:5px" />
+    <select id="categorySelect" style="padding:5px;border-radius:5px"></select>
+    <button id="showFavs" style="padding:5px;border-radius:5px;background:var(--accent);color:black">⭐ Favoriler</button>
+    <button id="themeToggle" style="padding:5px;border-radius:5px"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+  </div>
+</header>
 
-    <!-- Header -->
-    <header class="flex items-center justify-between gap-4 mb-6">
+<section style="display:grid;grid-template-columns:2fr 1fr;gap:10px;max-width:100%">
+  <div id="playerCard" style="border-radius:10px;overflow:hidden;background:var(--glass-bg);padding:10px">
+    <div id="playerArea" style="aspect-ratio:16/9;background:#000"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px">
       <div>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white">Ömercan Yayın Portalı</h1>
-        <p class="text-slate-300 mt-1">Favorilere ekle • son izlenenler • filtrele • hızlı izle</p>
+        <div id="playerTitle" style="font-weight:bold"></div>
+        <div id="playerMeta" class="small-note"></div>
       </div>
-
-      <div class="flex items-center gap-3">
-        <div id="nowWatching" class="hidden sm:flex items-center gap-2 bg-[var(--glass-bg)] px-3 py-1 rounded-full small-note">
-          <i class="fa-solid fa-eye"></i> Henüz izlenmiyor
-        </div>
-        <button id="themeToggle" title="Tema değiştir" class="p-2 rounded-md bg-[var(--glass-bg)]">
-          <i id="themeIcon" class="fa-solid fa-moon text-slate-200"></i>
-        </button>
-      </div>
-    </header>
-
-    <!-- Player + Controls -->
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-      <div class="lg:col-span-2 space-y-3">
-        <div id="playerCard" class="rounded-xl overflow-hidden bg-[var(--glass-bg)] p-3">
-          <div class="flex items-center justify-between mb-2">
-            <div>
-              <div id="playerTitle" class="text-white font-semibold">Kanal seçilmedi</div>
-              <div id="playerMeta" class="text-slate-300 text-sm">Hazır</div>
-            </div>
-            <div class="flex items-center gap-2">
-              <button id="playerPin" class="p-2 rounded-md text-slate-200 hover:bg-white/5" title="Mini oynatıcı"><i class="fa-solid fa-square"></i></button>
-              <button id="playerFullscreen" class="p-2 rounded-md text-slate-200 hover:bg-white/5" title="Sinema modu"><i class="fa-solid fa-expand"></i></button>
-            </div>
-          </div>
-
-          <div id="playerArea" class="w-full bg-black rounded-md overflow-hidden aspect-video flex items-center justify-center">
-            <img id="playerPlaceholder" src="https://placehold.co/1280x720/000000/FFFFFF?text=Kanal+Seçin" alt="placeholder" class="w-full h-full object-cover">
-          </div>
-
-          <div id="playerFooter" class="mt-3 flex items-center justify-between text-sm text-slate-300">
-            <div id="liveBadgeArea"></div>
-            <div class="flex items-center gap-3 small-note">
-              <span id="playerQuality">—</span>
-              <a id="reportLink" href="https://t.me/+mSNjtNrQ0xozNWNk" target="_blank" class="text-slate-300 hover:text-white">Kanalı bildir</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <input id="searchInput" type="search" placeholder="Kanal veya kategori ara..." class="flex-1 rounded-full px-4 py-2 bg-[var(--glass-bg)] text-slate-200 focus:ring-2 focus:ring-[var(--accent)] outline-none" />
-          <select id="categorySelect" class="rounded-full px-3 py-2 bg-[var(--glass-bg)] text-slate-200">
-            <!-- doldurulacak -->
-          </select>
-          <button id="showFavs" class="px-4 py-2 rounded-full bg-amber-500 text-black font-semibold hover:scale-105 transition"><i class="fa-solid fa-star"></i> Favoriler</button>
-        </div>
-      </div>
-
-      <aside class="space-y-4">
-        <div class="rounded-xl p-4 bg-[var(--glass-bg)] text-slate-200">
-          <h3 class="font-semibold mb-2">Hızlı Sekmeler</h3>
-          <div id="tabs" class="flex flex-wrap gap-2"></div>
-        </div>
-
-        <div class="rounded-xl p-4 bg-[var(--glass-bg)] text-slate-200">
-          <h3 class="font-semibold mb-2">Kategoriler & Kısayollar</h3>
-          <div id="categoryList" class="flex flex-wrap gap-2"></div>
-        </div>
-
-        <div class="rounded-xl p-4 bg-[var(--glass-bg)] text-slate-200">
-          <h3 class="font-semibold mb-2">Son İzlenenler</h3>
-          <div id="recentList" class="space-y-2 small-note"></div>
-        </div>
-      </aside>
-    </section>
-
-    <!-- Channel Grid -->
-    <main>
-      <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
-    </main>
-
+      <button id="playerFullscreen" title="Tam Ekran" style="padding:5px;border-radius:5px;background:rgba(255,255,255,0.1)">
+        <i class="fa-solid fa-expand"></i>
+      </button>
+    </div>
+    <div id="liveBadgeArea" style="margin-top:5px"></div>
   </div>
 
-  <script>
-    /************************************************************************
-     * Tüm kanallar — "Tüm Kanallar" listesinden alındı, logo kaldırıldı.
-     * Her kayıt: { id, name, stream, type, live, popular, category }
-     ************************************************************************/
-    const channels = [
-      { id:'bein1', name: 'beIN SPORTS 1', stream: 'https://www.mersotv1.com/channel.html?id=yayinstar', type:'iframe', live:true, popular:true, category:'Spor' },
-      { id:'bein2', name: 'beIN SPORTS 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinb2#amp=1', type:'iframe', live:true, popular:false, category:'Spor' },
-      { id:'bein3', name: 'beIN SPORTS 3', stream: 'https://www.mersotv1.com/channel.html?id=yayinb3', type:'iframe', live:true, popular:true, category:'Spor' },
-      { id:'bein4', name: 'beIN SPORTS 4', stream: 'https://www.mersotv1.com/channel.html?id=yayinb4', type:'iframe', live:true, popular:true, category:'Spor' },
-      { id:'bein5', name: 'beIN SPORTS 5', stream: 'https://www.mersotv1.com/channel.html?id=yayinb5', type:'iframe', live:true, popular:false, category:'Spor' },
-      { id:'beimax1', name: 'beIN SPORTS Max 1', stream: 'https://www.mersotv1.com/channel.html?id=yayinbm1', type:'iframe', live:true, popular:true, category:'Spor' },
-      { id:'beimax2', name: 'beIN SPORTS Max 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinbm2', type:'iframe', live:true, popular:true, category:'Spor' },
+  <aside style="display:flex;flex-direction:column;gap:10px">
+    <div style="border-radius:10px;padding:10px;background:var(--glass-bg);color:#ccc">
+      <h3 style="margin-bottom:5px">Kategoriler</h3>
+      <div id="categoryList" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+    </div>
+    <div style="border-radius:10px;padding:10px;background:var(--glass-bg);color:#ccc">
+      <h3 style="margin-bottom:5px">Son İzlenenler</h3>
+      <div id="recentList" class="small-note"></div>
+    </div>
+  </aside>
+</section>
 
-      { id:'tiv1', name: 'Tivibu Spor 1', stream: 'https://www.mersotv1.com/channel.html?id=yayint1', type:'iframe', live:true, popular:false, category:'Spor' },
-      { id:'tiv2', name: 'Tivibu Spor 2', stream: 'https://www.mersotv1.com/channel.html?id=yayint2', type:'iframe', live:true, popular:false, category:'Spor' },
-      { id:'tiv3', name: 'Tivibu Spor 3', stream: 'https://www.mersotv1.com/channel.html?id=yayint3', type:'iframe', live:true, popular:false, category:'Spor' },
-      { id:'tiv4', name: 'Tivibu Spor 4', stream: 'https://www.mersotv1.com/channel.html?id=yayint4', type:'iframe', live:true, popular:false, category:'Spor' },
+<main style="margin-top:10px">
+  <div id="grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px"></div>
+</main>
+</div>
 
-      { id:'ssport', name: 'S Sport', stream: 'https://www.mersotv1.com/channel.html?id=yayinss', type:'iframe', live:true, popular:false, category:'Spor' },
-      { id:'ssport2', name: 'S Sport 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinss2', type:'iframe', live:true, popular:true, category:'Spor' },
-      { id:'ssplus1', name: 'S Sport Plus 1', stream: 'https://www.mersotv1.com/channel.html?id=yayinex2', type:'iframe', live:true, popular:true, category:'Spor' },
-      { id:'ssplus2', name: 'S Sport Plus 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinex1', type:'iframe', live:true, popular:false, category:'Spor' },
+<script>
+const channels = [
+  { id:'bein1', name: 'beIN SPORTS 1', stream: 'https://www.mersotv1.com/channel.html?id=yayinstar', type:'iframe', live:true, popular:true, category:'Spor' },
+  { id:'bein2', name: 'beIN SPORTS 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinb2#amp=1', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'bein3', name: 'beIN SPORTS 3', stream: 'https://www.mersotv1.com/channel.html?id=yayinb3', type:'iframe', live:true, popular:true, category:'Spor' },
+  { id:'bein4', name: 'beIN SPORTS 4', stream: 'https://www.mersotv1.com/channel.html?id=yayinb4', type:'iframe', live:true, popular:true, category:'Spor' },
+  { id:'bein5', name: 'beIN SPORTS 5', stream: 'https://www.mersotv1.com/channel.html?id=yayinb5', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'beimax1', name: 'beIN SPORTS Max 1', stream: 'https://www.mersotv1.com/channel.html?id=yayinbm1', type:'iframe', live:true, popular:true, category:'Spor' },
+  { id:'beimax2', name: 'beIN SPORTS Max 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinbm2', type:'iframe', live:true, popular:true, category:'Spor' },
+  { id:'tiv1', name: 'Tivibu Spor 1', stream: 'https://www.mersotv1.com/channel.html?id=yayint1', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'tiv2', name: 'Tivibu Spor 2', stream: 'https://www.mersotv1.com/channel.html?id=yayint2', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'tiv3', name: 'Tivibu Spor 3', stream: 'https://www.mersotv1.com/channel.html?id=yayint3', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'tiv4', name: 'Tivibu Spor 4', stream: 'https://www.mersotv1.com/channel.html?id=yayint4', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'ssport', name: 'S Sport', stream: 'https://www.mersotv1.com/channel.html?id=yayinss', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'ssport2', name: 'S Sport 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinss2', type:'iframe', live:true, popular:true, category:'Spor' },
+  { id:'ssplus1', name: 'S Sport Plus 1', stream: 'https://www.mersotv1.com/channel.html?id=yayinex2', type:'iframe', live:true, popular:true, category:'Spor' },
+  { id:'ssplus2', name: 'S Sport Plus 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinex1', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'smart1', name: 'Smart Spor', stream: 'https://www.mersotv1.com/channel.html?id=yayinsmarts', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'smart2', name: 'Smart Spor 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinsms2', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'aspor', name: 'A Spor', stream: 'https://www.mersotv1.com/channel.html?id=yayinas', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'tv85', name: 'TV 8,5', stream: 'https://www.mersotv1.com/channel.html?id=yayintv85', type:'iframe', live:true, popular:false, category:'Spor' },
+  { id:'trt1', name: 'TRT 1', stream: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type:'iframe', live:true, popular:true, category:'Ulusal' },
+  { id:'atv', name: 'ATV', stream: 'https://www.mersotv1.com/channel.html?id=yayinatv', type:'iframe', live:true, popular:true, category:'Ulusal' },
+  { id:'kanald', name: 'Kanal D', stream: 'https://www.mersotv1.com/channel.html?id=yayinkd', type:'iframe', live:true, popular:true, category:'Ulusal' },
+  { id:'show', name: 'Show TV', stream: 'https://www.mersotv1.com/channel.html?id=yayinshow', type:'iframe', live:true, popular:true, category:'Ulusal' },
+  { id:'star', name: 'Star TV', stream: 'https://www.mersotv1.com/channel.html?id=yayinstar', type:'iframe', live:true, popular:true, category:'Ulusal' },
+  { id:'fox', name: 'FOX TV', stream: 'https://www.mersotv1.com/channel.html?id=yayinfox', type:'iframe', live:true, popular:true, category:'Ulusal' },
+  { id:'tv8', name: 'TV 8', stream: 'https://www.mersotv1.com/channel.html?id=yayintv8', type:'iframe', live:true, popular:true, category:'Ulusal' },
+  { id:'teve2', name: 'Teve2', stream: 'https://www.mersotv1.com/channel.html?id=yayint2', type:'iframe', live:true, popular:false, category:'Ulusal' },
+  { id:'kanal7', name: 'Kanal 7', stream: 'https://www.mersotv1.com/channel.html?id=yayink7', type:'iframe', live:true, popular:false, category:'Ulusal' },
+  { id:'trtbelgesel', name: 'TRT Belgesel', stream: 'https://www.mersotv1.com/channel.html?id=yayintrtbelgesel', type:'iframe', live:true, popular:false, category:'Ulusal' },
+  { id:'trtcocuk', name: 'TRT Çocuk', stream: 'https://www.mersotv1.com/channel.html?id=yayintrtcocuk', type:'iframe', live:true, popular:false, category:'Ulusal' },
+  { id:'trt2', name: 'TRT 2', stream: 'https://www.mersotv1.com/channel.html?id=yayintrt2', type:'iframe', live:true, popular:false, category:'Ulusal' },
+  { id:'trtmuzik', name: 'TRT Müzik', stream: 'https://www.mersotv1.com/channel.html?id=yayintrtmuzik', type:'iframe', live:true, popular:false, category:'Ulusal' },
+  { id:'trtturk', name: 'TRT Türk', stream: 'https://www.mersotv1.com/channel.html?id=yayintrtturk', type:'iframe', live:true, popular:false, category:'Ulusal' },
+  { id:'trtarabi', name: 'TRT Arabi', stream: 'https://www.mersotv1.com/channel.html?id=yayintrtarabi', type:'iframe', live:true, popular:false, category:'Ulusal' },
+  { id:'haberturk', name: 'HABERTÜRK', stream: 'https://www.mersotv1.com/channel.html?id=yayinhaberturk', type:'iframe', live:true, popular:true, category:'Haber' },
+  { id:'ntv', name: 'NTV', stream: 'https://www.mersotv1.com/channel.html?id=yayinntv', type:'iframe', live:true, popular:true, category:'Haber' },
+  { id:'cnnturk', name: 'CNN TÜRK', stream: 'https://www.mersotv1.com/channel.html?id=yayincnn', type:'iframe', live:true, popular:true, category:'Haber' },
+  { id:'ahaber', name: 'A HABER', stream: 'https://www.mersotv1.com/channel.html?id=yayintahaber', type:'iframe', live:true, popular:false, category:'Haber' },
+  { id:'tvnet', name: 'TV NET', stream: 'https://www.mersotv1.com/channel.html?id=yayintvnet', type:'iframe', live:true, popular:false, category:'Haber' },
+  { id:'ulketv', name: 'ÜLKE TV', stream: 'https://www.mersotv1.com/channel.html?id=yayinulke', type:'iframe', live:true, popular:false, category:'Haber' },
+  { id:'24tv', name: '24 TV', stream: 'https://www.mersotv1.com/channel.html?id=yayin24', type:'iframe', live:true, popular:false, category:'Haber' },
+  { id:'haber24', name: 'Haber 24', stream: 'https://www.mersotv1.com/channel.html?id=yayinh24', type:'iframe', live:true, popular:false, category:'Haber' },
+  { id:'benguturk', name: 'Bengü Türk', stream: 'https://www.mersotv1.com/channel.html?id=yayinbenguturk', type:'iframe', live:true, popular:false, category:'Haber' },
+  { id:'trthaber', name: 'TRT Haber', stream: 'https://www.mersotv1.com/channel.html?id=yayintrthaber', type:'iframe', live:true, popular:true, category:'Haber' }
+];
+let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+let recent = JSON.parse(localStorage.getItem("recent") || "[]");
 
-      { id:'smart1', name: 'Smart Spor', stream: 'https://www.mersotv1.com/channel.html?id=yayinsmarts', type:'iframe', live:true, popular:false, category:'Spor' },
-      { id:'smart2', name: 'Smart Spor 2', stream: 'https://www.mersotv1.com/channel.html?id=yayinsms2', type:'iframe', live:true, popular:false, category:'Spor' },
+function fillCategories() {
+  const cats = ["Tümü", ...new Set(channels.map(c => c.category))];
+  const select = document.getElementById("categorySelect");
+  select.innerHTML = cats.map(c => `<option>${c}</option>`).join("");
+  document.getElementById("categoryList").innerHTML = cats.map(c =>
+    `<button onclick="filterCategory('${c}')" style="padding:5px;border-radius:5px;background:rgba(255,255,255,0.1)">${c}</button>`
+  ).join("");
+}
 
-      { id:'aspor', name: 'A Spor', stream: 'https://www.mersotv1.com/channel.html?id=yayinas', type:'iframe', live:true, popular:false, category:'Spor' },
+function renderGrid(list) {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = list.map(c => `
+    <div class="channel-card" style="padding:10px;border-radius:10px;background:var(--glass-bg);cursor:pointer" onclick="playChannel('${c.id}')">
+      <div style="font-weight:bold">${c.name}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px">
+        ${c.live ? `<span class="live-badge">LIVE</span>` : ""}
+        <button onclick="toggleFav(event, '${c.id}')">${favorites.includes(c.id) ? "⭐" : "☆"}</button>
+      </div>
+    </div>
+  `).join("");
+}
 
-      { id:'tv85', name: 'TV 8,5', stream: 'https://www.mersotv1.com/channel.html?id=yayintv85', type:'iframe', live:true, popular:false, category:'Ulusal' },
-      { id:'tv8', name: 'TV 8', stream: 'https://www.mersotv1.com/channel.html?id=yayintv8', type:'iframe', live:true, popular:false, category:'Ulusal' },
+function playChannel(id) {
+  const ch = channels.find(c => c.id === id);
+  if (!ch) return;
+  document.getElementById("playerTitle").textContent = ch.name;
+  document.getElementById("playerMeta").textContent = ch.category;
+  document.getElementById("liveBadgeArea").innerHTML = ch.live ? `<span class="live-badge">CANLI</span>` : "";
+  document.getElementById("playerArea").innerHTML = `<iframe src="${ch.stream}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`;
 
-      { id:'trt1', name: 'TRT1', stream: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type:'iframe', live:true, popular:false, category:'Ulusal' },
-      { id:'trtspor', name: 'TRT SPOR', stream: 'https://www.mersotv1.com/channel.html?id=yayintrtspor', type:'iframe', live:true, popular:false, category:'Spor' },
-      { id:'trtspory', name: 'TRT SPOR YILDIZ', stream: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type:'hls', live:true, popular:false, category:'Spor' },
+  // Son izlenenler listesi
+  recent = [id, ...recent.filter(r => r !== id)].slice(0, 5);
+  localStorage.setItem("recent", JSON.stringify(recent));
+  renderRecent();
+}
 
-      { id:'tabii', name: 'Tabii TV', stream: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg&bvr_flags=10&bvr_ch=tabiitv&bvr_bw=2800000', type:'hls', live:true, popular:false, category:'Diğer' },
+function toggleFav(e, id) {
+  e.stopPropagation();
+  if (favorites.includes(id)) {
+    favorites = favorites.filter(f => f !== id);
+  } else {
+    favorites.push(id);
+  }
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  renderGrid(filteredList());
+}
 
-      { id:'tabsp1', name: 'TABİİ SPOR 1', stream: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8', type:'hls', live:true, popular:false, category:'Spor' },
-      { id:'tabsp2', name: 'Tabii SPOR 2', stream: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type:'hls', live:true, popular:false, category:'Spor' },
-      { id:'tabsp3', name: 'Tabii SPOR 3', stream: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8', type:'hls', live:true, popular:false, category:'Spor' },
-      { id:'tabsp4', name: 'TABİİ SPOR 4', stream: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8', type:'hls', live:true, popular:false, category:'Spor' },
-      { id:'tabsp5', name: 'Tabii SPOR 5', stream: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8', type:'hls', live:true, popular:false, category:'Spor' },
-      { id:'tabsp6', name: 'Tabii SPOR 6', stream: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8', type:'hls', live:true, popular:false, category:'Spor' },
-      { id:'tabsp7', name: 'Tabii SPOR 7', stream: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8', type:'hls', live:true, popular:false, category:'Spor' },
-      { id:'tabsp', name: 'Tabii SPOR', stream: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type:'hls', live:true, popular:false, category:'Spor' },
+function renderRecent() {
+  const area = document.getElementById("recentList");
+  area.innerHTML = recent.map(id => {
+    const ch = channels.find(c => c.id === id);
+    return ch ? `<div onclick="playChannel('${id}')" style="cursor:pointer">${ch.name}</div>` : "";
+  }).join("");
+}
 
-      { id:'tay', name: 'TAY TV', stream: 'https://tjktv-live.tjk.org/tjktv/tjktv_1080p.m3u8', type:'hls', live:true, popular:false, category:'Spor' }
-    ];
+function filteredList() {
+  const term = document.getElementById("searchInput").value.toLowerCase();
+  const cat = document.getElementById("categorySelect").value;
+  return channels.filter(c => 
+    (cat === "Tümü" || c.category === cat) &&
+    c.name.toLowerCase().includes(term)
+  );
+}
 
-    /**********************
-     * APP STATE
-     **********************/
-    const state = {
-      filtered: [...channels],
-      favorites: new Set(JSON.parse(localStorage.getItem('favs')||'[]')),
-      recent: JSON.parse(localStorage.getItem('recent')||'[]'), // array of ids
-      theme: localStorage.getItem('theme') || 'dark',
-      current: null
-    };
+function filterCategory(cat) {
+  document.getElementById("categorySelect").value = cat;
+  renderGrid(filteredList());
+}
 
-    /**********************
-     * ELEMENT REFS
-     **********************/
-    const grid = document.getElementById('grid');
-    const searchInput = document.getElementById('searchInput');
-    const categorySelect = document.getElementById('categorySelect');
-    const categoryList = document.getElementById('categoryList');
-    const tabs = document.getElementById('tabs');
-    const playerArea = document.getElementById('playerArea');
-    const playerTitle = document.getElementById('playerTitle');
-    const playerMeta = document.getElementById('playerMeta');
-    const nowWatching = document.getElementById('nowWatching');
-    const playerFullscreen = document.getElementById('playerFullscreen');
-    const liveBadgeArea = document.getElementById('liveBadgeArea');
-    const recentList = document.getElementById('recentList');
-    const showFavs = document.getElementById('showFavs');
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
+document.getElementById("themeToggle").onclick = () => {
+  const html = document.documentElement;
+  const isDark = html.getAttribute("data-theme") === "dark";
+  html.setAttribute("data-theme", isDark ? "light" : "dark");
+  document.getElementById("themeIcon").className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+};
 
-    /**********************
-     * UTIL
-     **********************/
-    function saveFavs(){ localStorage.setItem('favs', JSON.stringify(Array.from(state.favorites))); }
-    function saveRecent(){ localStorage.setItem('recent', JSON.stringify(state.recent)); }
-    function setTheme(t){
-      state.theme = t;
-      document.body.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
-      localStorage.setItem('theme', t);
-      themeIcon.className = t === 'light' ? 'fa-solid fa-sun text-slate-800' : 'fa-solid fa-moon text-slate-200';
-    }
-    setTheme(state.theme);
+document.getElementById("searchInput").oninput = () => renderGrid(filteredList());
+document.getElementById("categorySelect").onchange = () => renderGrid(filteredList());
+document.getElementById("showFavs").onclick = () => {
+  const favList = channels.filter(c => favorites.includes(c.id));
+  renderGrid(favList);
+};
 
-    /**********************
-     * CATEGORIES & TABS
-     **********************/
-    const categories = ['Tümü', ...Array.from(new Set(channels.map(c=>c.category)))];
-    categories.forEach(cat=>{
-      const opt = document.createElement('option');
-      opt.value = cat;
-      opt.textContent = cat;
-      categorySelect.appendChild(opt);
-
-      const btn = document.createElement('button');
-      btn.textContent = cat;
-      btn.className = 'px-3 py-1 rounded-full bg-white/5 text-slate-200 text-sm';
-      btn.onclick = ()=> { filter(cat); highlightTab(cat); };
-      categoryList.appendChild(btn);
-    });
-
-    const tabDefs = [
-      { id:'all', label:'Tümü' },
-      { id:'popular', label:'Popüler' },
-      { id:'live', label:'Canlı' },
-      { id:'favs', label:'Favoriler' },
-      { id:'recent', label:'Son İzlenenler' }
-    ];
-    function renderTabs(){
-      tabs.innerHTML = '';
-      tabDefs.forEach(t=>{
-        const b = document.createElement('button');
-        b.className = 'px-4 py-2 rounded-full bg-white/5 text-slate-200 text-sm';
-        b.textContent = t.label;
-        b.onclick = ()=>{
-          if(t.id === 'all') state.filtered = channels;
-          else if(t.id === 'popular') state.filtered = channels.filter(c=>c.popular);
-          else if(t.id === 'live') state.filtered = channels.filter(c=>c.live);
-          else if(t.id === 'favs') state.filtered = channels.filter(c=> state.favorites.has(c.id));
-          else if(t.id === 'recent') state.filtered = state.recent.map(id=> channels.find(ch=>ch.id===id)).filter(Boolean);
-          renderGrid(state.filtered);
-          highlightTab(t.label);
-        };
-        tabs.appendChild(b);
-      });
-    }
-
-    function highlightTab(cat){
-      tabs.querySelectorAll('button').forEach(b=> b.classList.remove('bg-[var(--accent)]','text-black','font-semibold') );
-      const found = Array.from(tabs.children).find(b => b.textContent === cat);
-      if(found) found.classList.add('bg-[var(--accent)]','text-black','font-semibold');
-    }
-
-    /**********************
-     * RENDER GRID
-     **********************/
-    function renderGrid(list){
-      grid.innerHTML = '';
-      if(!list || list.length===0){
-        grid.innerHTML = '<div class="col-span-full text-center text-slate-300 py-12">Görüntülenecek kanal yok.</div>';
-        return;
-      }
-
-      list.forEach(ch=>{
-        const card = document.createElement('div');
-        card.className = 'channel-card p-3 rounded-xl bg-[var(--glass-bg)] cursor-pointer relative';
-        card.dataset.id = ch.id;
-
-        // fav button top-right
-        const favBtn = document.createElement('button');
-        favBtn.className = 'fav-btn absolute right-3 top-3 p-1 bg-white/10 hover:bg-white/20';
-        favBtn.innerHTML = `<i class="${state.favorites.has(ch.id)?'fa-solid fa-star text-yellow-400':'fa-regular fa-star text-white'}"></i>`;
-        favBtn.title = state.favorites.has(ch.id) ? 'Favoriden çıkar' : 'Favorilere ekle';
-        favBtn.onclick = (e) => {
-          e.stopPropagation();
-          if(state.favorites.has(ch.id)) state.favorites.delete(ch.id);
-          else state.favorites.add(ch.id);
-          saveFavs();
-          renderGrid(state.filtered);
-          renderRecent();
-        };
-        card.appendChild(favBtn);
-
-        // live badge (if live)
-        if(ch.live){
-          const badge = document.createElement('div');
-          badge.className = 'live-badge mb-2 inline-flex items-center gap-2';
-          badge.innerHTML = '<i class="fa-solid fa-circle text-[10px]"></i><span>CANLI</span>';
-          card.appendChild(badge);
-        }
-
-        // title + meta
-        const title = document.createElement('div');
-        title.className = 'font-semibold text-white';
-        title.textContent = ch.name;
-        const meta = document.createElement('div');
-        meta.className = 'text-xs text-slate-300 mt-1';
-        meta.textContent = ch.category;
-
-        card.appendChild(title);
-        card.appendChild(meta);
-
-        // click play
-        card.addEventListener('click', ()=> openChannel(ch));
-
-        grid.appendChild(card);
-      });
-    }
-
-    /**********************
-     * RECENT LIST RENDER
-     **********************/
-    function renderRecent(){
-      recentList.innerHTML = '';
-      if(!state.recent || state.recent.length===0){
-        recentList.innerHTML = '<div class="small-note">Henüz bir kanal izlenmedi.</div>';
-        return;
-      }
-      state.recent.forEach(id=>{
-        const ch = channels.find(c=>c.id===id);
-        if(!ch) return;
-        const row = document.createElement('div');
-        row.className = 'flex items-center justify-between';
-        row.innerHTML = `<div class="small-note">${ch.name}</div>
-                         <div class="flex items-center gap-2">
-                           <button class="px-2 py-1 text-xs rounded bg-white/5" onclick="(function(e){ e.stopPropagation(); openChannelById('${ch.id}'); })(event)">Aç</button>
-                           <button class="px-2 py-1 text-xs rounded bg-white/5" onclick="(function(e){ e.stopPropagation(); removeRecent('${ch.id}'); })(event)"><i class="fa-solid fa-trash"></i></button>
-                         </div>`;
-        recentList.appendChild(row);
-      });
-    }
-
-    function addRecent(id){
-      state.recent = state.recent.filter(x=>x!==id);
-      state.recent.unshift(id);
-      if(state.recent.length>5) state.recent = state.recent.slice(0,5);
-      saveRecent();
-      renderRecent();
-    }
-    function removeRecent(id){
-      state.recent = state.recent.filter(x=>x!==id);
-      saveRecent();
-      renderRecent();
-    }
-
-    /**********************
-     * PLAYER: open channel
-     **********************/
-    let activePlayer = null;
-    function openChannel(ch){
-      state.current = ch.id;
-      playerTitle.textContent = ch.name;
-      playerMeta.textContent = ch.type.toUpperCase();
-      nowWatching.classList.remove('hidden');
-      nowWatching.innerHTML = `<i class="fa-solid fa-eye"></i> ${ch.name}`;
-      liveBadgeArea.innerHTML = ch.live ? '<span class="live-badge"><i class="fa-solid fa-circle text-[10px]"></i> CANLI</span>' : '';
-      playerArea.innerHTML = '';
-
-      // cleanup previous hls
-      if(activePlayer && activePlayer._hls){ try{ activePlayer._hls.destroy(); }catch(e){} }
-      activePlayer = null;
-
-      if(ch.type === 'iframe'){
-        const iframe = document.createElement('iframe');
-        iframe.src = ch.stream;
-        iframe.allowFullscreen = true;
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.border = '0';
-        playerArea.appendChild(iframe);
-        activePlayer = iframe;
-      } else if(ch.type === 'hls'){
-        const video = document.createElement('video');
-        video.controls = true;
-        video.autoplay = true;
-        video.muted = false;
-        video.playsInline = true;
-        video.style.width = '100%';
-        video.style.height = '100%';
-        video.style.objectFit = 'contain';
-        playerArea.appendChild(video);
-
-        if(Hls.isSupported()){
-          try{
-            const hls = new Hls({ lowLatencyMode: true });
-            hls.loadSource(ch.stream);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, ()=> { video.play().catch(()=>{}); });
-            video._hls = hls;
-            activePlayer = video;
-            activePlayer._hls = hls;
-          }catch(e){
-            playerArea.innerHTML = `<div class="text-white p-4">Yayın yüklenemedi.</div>`;
-          }
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')){
-          video.src = ch.stream;
-          video.addEventListener('loadedmetadata', ()=> video.play().catch(()=>{}));
-          activePlayer = video;
-        } else {
-          playerArea.innerHTML = `<div class="text-white p-4">Tarayıcınız HLS oynatmayı desteklemiyor.</div>`;
-        }
-      }
-
-      // mark recent
-      addRecent(ch.id);
-    }
-
-    // helper to open by id (used in recent list)
-    function openChannelById(id){
-      const ch = channels.find(c=>c.id===id);
-      if(ch) openChannel(ch);
-    }
-
-    /**********************
-     * FILTER / SEARCH
-     **********************/
-    function filter(cat){
-      const q = (searchInput.value||'').trim().toLowerCase();
-      let filtered = channels.filter(c=>{
-        const matchCat = (cat==='Tümü' || c.category===cat);
-        const matchQ = !q || (c.name + ' ' + c.category).toLowerCase().includes(q);
-        return matchCat && matchQ;
-      });
-      state.filtered = filtered;
-      renderGrid(filtered);
-    }
-
-    searchInput.addEventListener('input', ()=> filter(categorySelect.value));
-    categorySelect.addEventListener('change', ()=> filter(categorySelect.value));
-
-    /**********************
-     * FAVORİLER BUTONU
-     **********************/
-    showFavs.addEventListener('click', ()=>{
-      const favList = channels.filter(c=> state.favorites.has(c.id));
-      if(favList.length === 0){
-        alert('Favori kanalınız yok. Kanal kartındaki yıldız ile favori ekleyebilirsiniz.');
-        return;
-      }
-      state.filtered = favList;
-      renderGrid(favList);
-    });
-
-    /**********************
-     * FULLSCREEN BUTTON
-     **********************/
-    playerFullscreen.addEventListener('click', ()=>{
-      const el = document.getElementById('playerCard');
-      if (!document.fullscreenElement) {
-        el.requestFullscreen?.();
-      } else {
-        document.exitFullscreen?.();
-      }
-    });
-
-    /**********************
-     * THEME TOGGLE
-     **********************/
-    themeToggle.addEventListener('click', ()=>{
-      setTheme(state.theme === 'light' ? 'dark' : 'light');
-    });
-
-    /**********************
-     * INIT
-     **********************/
-    function init(){
-      renderTabs();
-      state.filtered = channels;
-      renderGrid(channels);
-      renderRecent();
-      // highlight default tab
-      highlightTab('Tümü');
-    }
-    init();
-
-    // cleanup on scroll/resize
-    window.addEventListener('scroll', ()=>{ /* nothing for now */ });
-    window.addEventListener('resize', ()=>{ /* nothing for now */ });
-
-    /**********************
-     * Expose a couple helpers for inline onclick handlers in rendered HTML
-     **********************/
-    window.openChannelById = openChannelById;
-    window.removeRecent = removeRecent;
-  </script>
-</body>
-  </html>      { name: 'A Spor', stream: 'https://www.mersotv1.com/channel.html?id=yayinas', type: 'iframe', live: true, popular: false, category: 'Spor' },
-      { name: 'TV 8,5', stream: 'https://www.mersotv1.com/channel.html?id=yayintv85', type: 'iframe', live: true, popular: false, category: 'Ulusal' },
-      { name: 'TV 8', stream: 'https://www.mersotv1.com/channel.html?id=yayintv8', type: 'iframe', live: true, popular: false, category: 'Ulusal' },
-      { name: 'TRT1', stream: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe', live: true, popular: false, category: 'Ulusal' },
-      { name: 'TRT SPOR', stream: 'https://www.mersotv1.com/channel.html?id=yayintrtspor', type: 'iframe', live: true, popular: false, category: 'Spor' },
-      { name: 'TRT SPOR YILDIZ', stream: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
-      { name: 'Tabii TV', stream: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg', type: 'hls', live: true, popular: false, category: 'Diğer' },
-      { name: 'TABİİ SPOR 1', stream: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
-      { name: 'Tabii SPOR 2', stream: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
-      { name: 'Tabii SPOR 3', stream: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
-      { name: 'TABİİ SPOR 4', stream: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
-      { name: 'Tabii SPOR 5', stream: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
-      { name: 'Tabii SPOR 6', stream: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
-      { name: 'Tabii SPOR 7', stream: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
-      { name: 'Tabii SPOR', stream: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' },
-      { name: 'TAY TV', stream: 'https://tjktv-live.tjk.org/tjktv/tjktv_1080p.m3u8', type: 'hls', live: true, popular: false, category: 'Spor' }
-    ];
-
-    const grid = document.getElementById('grid');
-    const searchInput = document.getElementById('searchInput');
-    const categorySelect = document.getElementById('categorySelect');
-    const categoryList = document.getElementById('categoryList');
-    const playerArea = document.getElementById('playerArea');
-    const playerTitle = document.getElementById('playerTitle');
-    const playerMeta = document.getElementById('playerMeta');
-    const liveBadgeArea = document.getElementById('liveBadgeArea');
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const playerFullscreen = document.getElementById('playerFullscreen');
-
-    let state = { theme: localStorage.getItem('theme') || 'dark' };
-    function setTheme(t){
-      state.theme = t;
-      document.body.setAttribute('data-theme', t);
-      localStorage.setItem('theme', t);
-      themeIcon.className = t === 'light' ? 'fa-solid fa-sun text-slate-800' : 'fa-solid fa-moon text-slate-200';
-    }
-    setTheme(state.theme);
-    themeToggle.addEventListener('click', ()=> setTheme(state.theme==='light'?'dark':'light'));
-
-    const categories = ['Tümü', ...new Set(channels.map(c=>c.category))];
-    categories.forEach(cat=>{
-      const opt = document.createElement('option');
-      opt.value = cat;
-      opt.textContent = cat;
-      categorySelect.appendChild(opt);
-      const btn = document.createElement('button');
-      btn.textContent = cat;
-      btn.className = 'px-3 py-1 rounded-full bg-white/5 text-slate-200 text-sm';
-      btn.onclick = ()=> filter(cat);
-      categoryList.appendChild(btn);
-    });
-
-    function renderGrid(list){
-      grid.innerHTML = '';
-      list.forEach(ch=>{
-        const card = document.createElement('div');
-        card.className = 'channel-card p-3 rounded-xl bg-[var(--glass-bg)] cursor-pointer';
-        if(ch.live){
-          const badge = document.createElement('div');
-          badge.className = 'live-badge mb-2';
-          badge.innerHTML = '<i class="fa-solid fa-circle text-[10px]"></i> CANLI';
-          card.appendChild(badge);
-        }
-        const title = document.createElement('div');
-        title.className = 'font-semibold text-white';
-        title.textContent = ch.name;
-        const meta = document.createElement('div');
-        meta.className = 'text-xs text-slate-300';
-        meta.textContent = ch.category;
-        card.appendChild(title);
-        card.appendChild(meta);
-        card.addEventListener('click', ()=> playChannel(ch));
-        grid.appendChild(card);
-      });
-    }
-
-    function playChannel(ch){
-      playerTitle.textContent = ch.name;
-      playerMeta.textContent = ch.type.toUpperCase();
-      liveBadgeArea.innerHTML = ch.live ? '<span class="live-badge"><i class="fa-solid fa-circle text-[10px]"></i> CANLI</span>' : '';
-      playerArea.innerHTML = '';
-      if(ch.type==='iframe'){
-        const iframe = document.createElement('iframe');
-        iframe.src = ch.stream;
-        iframe.allowFullscreen = true;
-        iframe.className = 'w-full h-full';
-        playerArea.appendChild(iframe);
-      } else if(ch.type==='hls'){
-        const video = document.createElement('video');
-        video.controls = true;
-        video.autoplay = true;
-        video.className = 'w-full h-full';
-        playerArea.appendChild(video);
-        if(Hls.isSupported()){
-          const hls = new Hls();
-          hls.loadSource(ch.stream);
-          hls.attachMedia(video);
-        } else {
-          video.src = ch.stream;
-        }
-      }
-    }
-
-    function filter(cat){
-      let val = searchInput.value.toLowerCase();
-      let filtered = channels.filter(c=>{
-        let matchCat = (cat==='Tümü' || c.category===cat);
-        let matchSearch = c.name.toLowerCase().includes(val);
-        return matchCat && matchSearch;
-      });
-      renderGrid(filtered);
-    }
-
-    searchInput.addEventListener('input', ()=> filter(categorySelect.value));
-    categorySelect.addEventListener('change', ()=> filter(categorySelect.value));
-    playerFullscreen.addEventListener('click', ()=>{
-      document.getElementById('playerCard').requestFullscreen();
-    });
-
-    renderGrid(channels);
-  </script>
+// Başlangıç yükleme
+fillCategories();
+renderGrid(channels);
+renderRecent();
+</script>
 </body>
 </html>

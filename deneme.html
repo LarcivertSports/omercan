@@ -1,218 +1,327 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Basit HLS Yayın Sitesi - Ömercan</title>
-  <!-- hls.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.0/dist/hls.min.js"></script>
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa4b2;--accent:#2dd4bf}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;background:linear-gradient(180deg,#071026 0%,#071024 100%);color:#e6eef6}
-    .container{max-width:1100px;margin:24px auto;padding:16px}
-    header{display:flex;align-items:center;justify-content:space-between}
-    h1{font-size:20px;margin:0}
-    .controls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-    input[type=text]{padding:8px;border-radius:8px;border:1px solid #213142;background:#071425;color:inherit;min-width:260px}
-    button{background:var(--accent);border:0;padding:8px 12px;border-radius:8px;color:#042226;cursor:pointer}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;margin-top:18px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
-    video{width:100%;height:200px;background:#000;border-radius:8px;display:block}
-    .meta{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:8px}
-    .meta .title{font-size:14px;color:#d8e6f2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .meta .actions{display:flex;gap:6px}
-    .small{padding:6px 8px;background:transparent;border:1px solid rgba(255,255,255,0.04);border-radius:8px;color:var(--muted);cursor:pointer}
-    .danger{background:transparent;border:1px solid rgba(255,0,60,0.12);color:#ff6b8a}
-    footer{margin-top:20px;color:var(--muted);font-size:13px}
-    @media (max-width:420px){video{height:140px}}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Yayın Portalı — Ömercan (Tüm Kanallar)</title>
+
+<!-- Tailwind / FontAwesome -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+<style>
+  body { font-family: Inter, ui-sans-serif, system-ui; background:#0b1220; color:#e6eef8; }
+  .container { max-width:1150px; margin:0 auto; padding:20px; }
+  .player-card { background:#071226; border-radius:10px; overflow:hidden; box-shadow:0 6px 18px rgba(2,6,23,0.6); }
+  .video-area { position:relative; padding-bottom:56.25%; height:0; background:#000; }
+  #video-player, #iframe-player, #playerPoster { position:absolute; top:0; left:0; width:100%; height:100%; }
+  .channel-card { background:#0f1724; border-radius:8px; padding:12px; text-align:center; cursor:pointer; transition:transform .12s, box-shadow .12s; }
+  .channel-card:hover { transform:translateY(-4px); box-shadow:0 8px 18px rgba(2,6,23,0.6); }
+  .channel-card.active { outline:2px solid #ef4444; transform:scale(1.02); }
+  .tab { background:#071226; padding:6px; border-radius:8px; display:flex; gap:6px; }
+  .tab button.active { background:#133042; color:#fff; }
+  .status { min-height:1.25rem; }
+  @media (max-width:640px){ .grid-cols-responsive { grid-template-columns: repeat(2,1fr); } }
+</style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div>
-        <h1>Basit HLS Yayın Sitesi</h1>
-        <div style="color:var(--muted);font-size:13px;margin-top:6px">HLS (m3u8) yayınlarını buraya yapıştır — canlı önizleme ve gömme kodu üretir.</div>
+<div class="container">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold">Ömercan Yayın Portalı — Tüm Kanallar</h1>
+    <p class="text-sm text-gray-400">HLS & iframe destekli canlı yayın izleme — tüm kanallar eklendi</p>
+  </header>
+
+  <div class="player-card mb-6">
+    <div class="flex justify-between items-center px-4 py-3" style="background:#031022;">
+      <div id="currentChannelName">Kanal seçilmedi</div>
+      <div class="flex items-center gap-3">
+        <button id="btnCinema" title="Sinema Modu" class="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700"><i class="fa-solid fa-expand"></i></button>
+        <button id="btnShare" title="Paylaş" class="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700"><i class="fa-solid fa-share-nodes"></i></button>
       </div>
-      <div style="text-align:right;color:var(--muted);font-size:13px">Yerel kayıt: tarayıcıda <code>localStorage</code></div>
-    </header><div class="controls">
-  <input id="url" type="text" placeholder="HLS yayın URL (ör: https://example.com/stream.m3u8)" />
-  <input id="title" type="text" placeholder="Yayın başlığı (opsiyonel)" />
-  <button id="addBtn">Yayın Ekle</button>
-  <button id="clearBtn" class="small">Tümünü Temizle</button>
-  <button id="exportBtn" class="small">Listeyi İndir (JSON)</button>
+    </div>
+
+    <div class="video-area" id="player-wrapper">
+      <img id="playerPoster" src="https://placehold.co/1280x720/000000/ffffff?text=Bir+kanal+seçin" alt="poster" />
+      <video id="video-player" controls playsinline style="display:none;background:#000;"></video>
+      <iframe id="iframe-player" frameborder="0" allowfullscreen style="display:none;"></iframe>
+    </div>
+
+    <div class="px-4 py-3 flex items-center justify-between" style="background:#02131f;">
+      <div class="status text-sm text-yellow-300" id="statusMessage"></div>
+      <div class="text-sm text-gray-400">Kısayollar: ←/→ kanal değiştir · F tam ekran · Sağ tık = favori</div>
+    </div>
+  </div>
+
+  <div class="mb-4 flex gap-3 items-center">
+    <div class="tab" id="tabMenu"></div>
+    <input id="searchInput" placeholder="Kanal ara..." class="flex-1 px-3 py-2 rounded bg-slate-900 text-white" />
+    <button id="btnFavorites" class="px-3 py-2 rounded bg-amber-600">Favoriler</button>
+  </div>
+
+  <main>
+    <div id="channel-grid" class="grid gap-4 grid-cols-3 md:grid-cols-4 lg:grid-cols-6 grid-cols-responsive"></div>
+  </main>
 </div>
 
-<div id="grid" class="grid" aria-live="polite"></div>
+<!-- hls.js -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-<footer>
-  İpucu: Bu tek dosyalık sayfayı GitHub Pages veya herhangi bir statik sunucuya koyarak yayınlayabilirsiniz. Tarayıcınız HLS'i natif desteklemiyorsa <code>hls.js</code> yardımıyla oynatılır.
-</footer>
+<script>
+/* ==========================
+   Channels (Tüm Kanallar) — orijinal dosyadan alındı, tekrarlar çıkarıldı.
+   Eğer yeni kanal eklemek istersen diziyi düzenle.
+   ========================== */
+const channels = [
+  { name: 'beIN SPORTS 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinstar', type: 'iframe', category: 'Spor' },
+  { name: 'beIN SPORTS 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb2#amp=1', type: 'iframe', category: 'Spor' },
+  { name: 'beIN SPORTS 3', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb3', type: 'iframe', category: 'Spor' },
+  { name: 'beIN SPORTS 4', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb4', type: 'iframe', category: 'Spor' },
+  { name: 'beIN SPORTS 5', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinb5', type: 'iframe', category: 'Spor' },
+  { name: 'beIN SPORTS Max 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm1', type: 'iframe', category: 'Spor' },
+  { name: 'beIN SPORTS Max 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinbm2', type: 'iframe', category: 'Spor' },
+  { name: 'Tivibu Spor 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint1', type: 'iframe', category: 'Spor' },
+  { name: 'Tivibu Spor 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint2', type: 'iframe', category: 'Spor' },
+  { name: 'Tivibu Spor 3', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint3', type: 'iframe', category: 'Spor' },
+  { name: 'Tivibu Spor 4', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint4', type: 'iframe', category: 'Spor' },
+  { name: 'S Sport', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss', type: 'iframe', category: 'Spor' },
+  { name: 'S Sport 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss2', type: 'iframe', category: 'Spor' },
+  { name: 'S Sport Plus 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex2', type: 'iframe', category: 'Spor' },
+  { name: 'S Sport Plus 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex1', type: 'iframe', category: 'Spor' },
+  { name: 'S Sport Plus 3', streamUrl: 'https://217.30.11.74/e/3030.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'Smart Spor', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsmarts', type: 'iframe', category: 'Spor' },
+  { name: 'Smart Spor 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsms2', type: 'iframe', category: 'Spor' },
+  { name: 'A Spor', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinas', type: 'iframe', category: 'Spor' },
+  { name: 'TV 8,5', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv85', type: 'iframe', category: 'Eğlence' },
+  { name: 'TV 8', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv8', type: 'iframe', category: 'Eğlence' },
+  { name: 'TRT1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe', category: 'Ulusal' },
+  { name: 'TRT SPOR', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrtspor', type: 'iframe', category: 'Spor' },
+  { name: 'TRT SPOR YILDIZ', streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'Tabii TV', streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg&bvr_flags=10&bvr_ch=tabiitv&bvr_bw=2800000', type: 'hls', category: 'Ulusal' },
+  { name: 'TABİİ SPOR 1', streamUrl: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'Tabii SPOR 2', streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'Tabii SPOR 3', streamUrl: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'TABİİ SPOR 4', streamUrl: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'Tabii SPOR 5', streamUrl: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'Tabii SPOR 6', streamUrl: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'Tabii SPOR 7', streamUrl: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'Tabii SPOR', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'Spor' },
+  { name: 'TAY TV', streamUrl: 'https://tjktv-live.tjk.org/tjktv/tjktv_1080p.m3u8', type: 'hls', category: 'Yerel' }
+];
 
-  </div>  <script>
-    // Basit HLS grid app
-    const urlEl = document.getElementById('url')
-    const titleEl = document.getElementById('title')
-    const addBtn = document.getElementById('addBtn')
-    const grid = document.getElementById('grid')
-    const clearBtn = document.getElementById('clearBtn')
-    const exportBtn = document.getElementById('exportBtn')
+/* -------------------------
+   DOM referansları ve durum
+   -------------------------*/
+const channelGrid = document.getElementById('channel-grid');
+const tabMenu = document.getElementById('tabMenu');
+const searchInput = document.getElementById('searchInput');
+const statusMessage = document.getElementById('statusMessage');
+const currentChannelName = document.getElementById('currentChannelName');
+const videoEl = document.getElementById('video-player');
+const iframeEl = document.getElementById('iframe-player');
+const posterEl = document.getElementById('playerPoster');
+const btnCinema = document.getElementById('btnCinema') || document.getElementById('btnCinema');
+const btnShare = document.getElementById('btnShare');
+const btnFavorites = document.getElementById('btnFavorites');
 
-    let streams = JSON.parse(localStorage.getItem('hls_streams') || '[]')
+let hls = null;
+let activeIndex = -1;
+let displayed = channels.slice();
+let favorites = JSON.parse(localStorage.getItem('favChannels')||'[]');
 
-    function save(){ localStorage.setItem('hls_streams', JSON.stringify(streams)) }
+/* -------------------------
+   Yardımcı fonksiyonlar
+   -------------------------*/
+function setStatus(text, type='info'){
+  statusMessage.textContent = text;
+  statusMessage.className = '';
+  if(type==='error') statusMessage.classList.add('text-red-400');
+  else if(type==='success') statusMessage.classList.add('text-green-400');
+  else statusMessage.classList.add('text-yellow-300');
+}
 
-    function createCard(stream){
-      const card = document.createElement('div')
-      card.className = 'card'
+function clearPlayer(){
+  if(hls){ try{ hls.destroy(); }catch(e){} hls=null; }
+  videoEl.pause(); videoEl.removeAttribute('src'); videoEl.style.display='none';
+  iframeEl.removeAttribute('src'); iframeEl.style.display='none';
+  posterEl.style.display='block';
+}
 
-      const video = document.createElement('video')
-      video.autoplay = true
-      video.muted = true
-      video.playsInline = true
-      video.controls = false
-      video.setAttribute('data-src', stream.url)
+/* -------------------------
+   Kanal yükleme
+   -------------------------*/
+function loadChannel(index){
+  const channel = channels[index];
+  if(!channel) return;
+  activeIndex = index;
+  currentChannelName.textContent = channel.name;
+  setStatus('Yükleniyor...', 'info');
+  clearPlayer();
 
-      // Attach hls if needed
-      function attach(){
-        if(video.canPlayType('application/vnd.apple.mpegurl')){
-          // Native HLS
-          video.src = stream.url
-          video.play().catch(()=>{})
-        } else if(window.Hls){
-          const hls = new Hls()
-          hls.loadSource(stream.url)
-          hls.attachMedia(video)
-          hls.on(Hls.Events.MANIFEST_PARSED, function() {
-            video.play().catch(()=>{})
-          })
-          // store reference for cleanup
-          video._hls = hls
-        } else {
-          // no hls support
-          const msg = document.createElement('div')
-          msg.textContent = 'Tarayıcı HLS desteklemiyor.'
-          card.appendChild(msg)
+  // deep-link param
+  const url = new URL(window.location);
+  url.searchParams.set('ch', encodeURIComponent(channel.name));
+  window.history.replaceState({}, '', url);
+
+  if(channel.type === 'iframe'){
+    iframeEl.src = channel.streamUrl;
+    iframeEl.style.display = 'block';
+    posterEl.style.display = 'none';
+    setStatus('Iframe yükleniyor — hedef site X-Frame-Options sebebiyle engelleyebilir.', 'info');
+    iframeEl.onload = ()=> setStatus('Iframe yüklendi.', 'success');
+    iframeEl.onerror = ()=> setStatus('Iframe yüklenemedi (muhtemel X-Frame-Options/CORS).', 'error');
+  } else if(channel.type === 'hls'){
+    videoEl.style.display = 'block';
+    posterEl.style.display = 'none';
+    if(Hls.isSupported()){
+      hls = new Hls({ lowLatencyMode:true, backBufferLength: 30, maxBufferLength: 90 });
+      hls.loadSource(channel.streamUrl);
+      hls.attachMedia(videoEl);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        setStatus('Yayın yüklendi — oynatılıyor...', 'success');
+        videoEl.play().catch(()=> setStatus('Otomatik oynatma engellendi — oynat butonuna basın.', 'info'));
+      });
+      hls.on(Hls.Events.ERROR, (evt, data) => {
+        console.error('HLS error', data);
+        if(data.fatal){
+          if(data.type === Hls.ErrorTypes.NETWORK_ERROR) setStatus('Ağ hatası: yayın bulunamadı veya engellendi.', 'error');
+          else if(data.type === Hls.ErrorTypes.MEDIA_ERROR){ setStatus('Medya hatası — kurtarılıyor...', 'error'); hls.recoverMediaError(); }
+          else setStatus('Bilinmeyen HLS hatası.', 'error');
         }
-      }
-
-      attach()
-
-      const meta = document.createElement('div')
-      meta.className = 'meta'
-
-      const tdiv = document.createElement('div')
-      tdiv.className = 'title'
-      tdiv.textContent = stream.title || stream.url
-
-      const actions = document.createElement('div')
-      actions.className = 'actions'
-
-      const playBtn = document.createElement('button')
-      playBtn.className = 'small'
-      playBtn.textContent = 'Küçük Oynat'
-      playBtn.onclick = ()=>{
-        if(video.paused) video.play().catch(()=>{})
-        else video.pause()
-      }
-
-      const previewBtn = document.createElement('button')
-      previewBtn.className = 'small'
-      previewBtn.textContent = 'Önizlemede Aç'
-      previewBtn.onclick = ()=>{
-        // open full player in new window with embed code
-        const embed = generateEmbed(stream)
-        const w = window.open('', '_blank')
-        w.document.write(`<!doctype html><meta charset="utf-8"><title>${escapeHtml(stream.title||'Yayın')}</title>${embed}<style>body{margin:0;background:#000;height:100vh}video{width:100%;height:100vh}</style>`)w.document.close()
+      });
+    } else if(videoEl.canPlayType('application/vnd.apple.mpegurl')){
+      videoEl.src = channel.streamUrl;
+      videoEl.addEventListener('loadedmetadata', ()=> { setStatus('Yüklendi — oynatılıyor', 'success'); videoEl.play().catch(()=>{}); });
+      videoEl.addEventListener('error', ()=> setStatus('Tarayıcı HLS oynatmayı desteklemiyor veya URL engellenmiş.', 'error'));
+    } else {
+      setStatus('Tarayıcınız HLS desteklemiyor.', 'error');
+    }
+  } else {
+    setStatus('Bilinmeyen yayın tipi.', 'error');
   }
 
-  const embedBtn = document.createElement('button')
-  embedBtn.className = 'small'
-  embedBtn.textContent = 'Gömme Kodu'
-  embedBtn.onclick = ()=>{
-    const code = generateEmbed(stream)
-    prompt('Gömme HTML kodu (kopyalayın):', code)
+  // highlight active card
+  document.querySelectorAll('.channel-card').forEach((c, i)=> c.classList.toggle('active', i===index));
+}
+
+/* -------------------------
+   Grid & Tabs render
+   -------------------------*/
+function renderGrid(list){
+  channelGrid.innerHTML = '';
+  if(list.length === 0){
+    channelGrid.innerHTML = '<div class="text-gray-400 col-span-full p-6">Kanal bulunamadı.</div>';
+    return;
   }
+  list.forEach((ch) => {
+    const globalIndex = channels.indexOf(ch);
+    const card = document.createElement('div');
+    card.className = 'channel-card';
+    const favMark = favorites.includes(ch.name) ? '⭐ ' : '';
+    card.innerHTML = `<div class="text-sm font-semibold">${favMark}${ch.name}</div><div class="text-xs text-gray-400 mt-1">${ch.category}</div>`;
+    card.addEventListener('click', () => loadChannel(globalIndex));
+    card.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      toggleFavorite(ch.name);
+      return false;
+    });
+    channelGrid.appendChild(card);
+  });
+}
 
-  const removeBtn = document.createElement('button')
-  removeBtn.className = 'small danger'
-  removeBtn.textContent = 'Kaldır'
-  removeBtn.onclick = ()=>{
-    // cleanup hls instance
-    if(video._hls) try{ video._hls.destroy() }catch(e){}
-    streams = streams.filter(s => s.id !== stream.id)
-    save(); render()
+function renderTabs(){
+  const cats = ['Tüm Kanallar', ...Array.from(new Set(channels.map(c=>c.category)))];
+  tabMenu.innerHTML = '';
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'px-3 py-1 rounded text-sm text-gray-200';
+    btn.textContent = cat;
+    btn.addEventListener('click', ()=> {
+      document.querySelectorAll('#tabMenu button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      displayed = cat === 'Tüm Kanallar' ? channels.slice() : channels.filter(c=>c.category===cat);
+      renderGrid(displayed);
+    });
+    tabMenu.appendChild(btn);
+  });
+  // activate first
+  const first = tabMenu.querySelector('button');
+  if(first) first.classList.add('active');
+}
+
+/* -------------------------
+   Favoriler
+   -------------------------*/
+function toggleFavorite(name){
+  if(favorites.includes(name)) favorites = favorites.filter(n=>n!==name);
+  else favorites.push(name);
+  localStorage.setItem('favChannels', JSON.stringify(favorites));
+  renderGrid(displayed);
+}
+
+btnFavorites.addEventListener('click', ()=>{
+  displayed = channels.filter(c=>favorites.includes(c.name));
+  renderGrid(displayed);
+});
+
+/* -------------------------
+   Arama
+   -------------------------*/
+searchInput.addEventListener('input', ()=>{
+  const q = searchInput.value.trim().toLowerCase();
+  displayed = channels.filter(c=> c.name.toLowerCase().includes(q) || c.category.toLowerCase().includes(q));
+  renderGrid(displayed);
+});
+
+/* -------------------------
+   Kısa yollar
+   -------------------------*/
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'F' || e.key === 'f') {
+    const el = document.getElementById('player-wrapper');
+    if(!document.fullscreenElement) el.requestFullscreen?.();
+    else document.exitFullscreen?.();
   }
-
-  actions.appendChild(playBtn)
-  actions.appendChild(previewBtn)
-  actions.appendChild(embedBtn)
-  actions.appendChild(removeBtn)
-
-  meta.appendChild(tdiv)
-  meta.appendChild(actions)
-
-  card.appendChild(video)
-  card.appendChild(meta)
-
-  return card
-}
-
-function generateID(){ return 's_'+Math.random().toString(36).slice(2,9) }
-
-function generateEmbed(stream){
-  // Simple responsive iframe + video player (uses hls.js from CDN)
-  const escapedUrl = escapeHtml(stream.url)
-  const title = escapeHtml(stream.title || '')
-  return `\n<div id=\"player\"></div>\n<script src=\"https://cdn.jsdelivr.net/npm/hls.js@1.5.0/dist/hls.min.js\"></script>\n<video id=\"v\" controls playsinline style=\"width:100%;height:auto;max-height:90vh;background:#000\" poster=\"\">Your browser does not support HTML5 video.</video>\n<script>\n(function(){\n  const url=\"${escapedUrl}\"; const v=document.getElementById('v');\n  if(v.canPlayType('application/vnd.apple.mpegurl')){ v.src=url } else if(window.Hls){ const h=new Hls(); h.loadSource(url); h.attachMedia(v);} else { console.error('No HLS support'); }\n})();\n</script>\n`
-}
-
-function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c] }) }
-
-function render(){
-  grid.innerHTML = ''
-  if(streams.length===0){
-    grid.innerHTML = '<div style="color:var(--muted);padding:18px">Henüz yayın eklenmedi. Üstteki alanlara HLS URL yapıştırıp "Yayın Ekle" butonuna basın.</div>'
-    return
+  if(e.key === 'ArrowRight') {
+    const next = Math.min(channels.length-1, activeIndex+1);
+    if(next!==activeIndex && next>=0) loadChannel(next);
   }
-  streams.forEach(s => grid.appendChild(createCard(s)))
+  if(e.key === 'ArrowLeft') {
+    const prev = Math.max(0, activeIndex-1);
+    if(prev!==activeIndex && prev>=0) loadChannel(prev);
+  }
+});
+
+/* -------------------------
+   Share
+   -------------------------*/
+btnShare.addEventListener('click', ()=>{
+  navigator.clipboard?.writeText(window.location.href).then(()=> setStatus('Sayfa URL\'si kopyalandı.', 'success')).catch(()=> setStatus('Kopyalama başarısız.', 'error'));
+});
+
+/* -------------------------
+   Başlangıç
+   -------------------------*/
+renderTabs();
+renderGrid(channels.slice());
+
+// deep link ?ch=Kanal+Adı veya ?ch=index
+const qp = new URLSearchParams(window.location.search);
+if(qp.has('ch')){
+  const raw = qp.get('ch');
+  const idx = parseInt(raw);
+  if(!isNaN(idx) && channels[idx]) loadChannel(idx);
+  else {
+    const byNameIndex = channels.findIndex(c => c.name.toLowerCase() === decodeURIComponent(raw).toLowerCase());
+    if(byNameIndex>=0) loadChannel(byNameIndex);
+  }
 }
 
-addBtn.onclick = ()=>{
-  const url = urlEl.value.trim()
-  if(!url) return alert('Lütfen HLS (m3u8) URL girin.')
-  const title = titleEl.value.trim()
-  const entry = { id: generateID(), url, title }
-  streams.unshift(entry)
-  save(); render()
-  urlEl.value = ''
-  titleEl.value = ''
-}
-
-clearBtn.onclick = ()=>{
-  if(!confirm('Tüm yayınları silmek istediğinize emin misiniz?')) return
-  streams = []
-  save(); render()
-}
-
-exportBtn.onclick = ()=>{
-  const blob = new Blob([JSON.stringify(streams, null, 2)], {type:'application/json'})
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
-  a.download = 'hls-streams.json'
-  a.click()
-}
-
-// initial render
-render()
-
-// cleanup Hls instances before unloading
-window.addEventListener('beforeunload', ()=>{
-  document.querySelectorAll('video').forEach(v=>{ if(v._hls) try{ v._hls.destroy() }catch(e){} })
-})
-
-  </script>
+/* ===========================
+   UYARI ve NOTLAR
+   - Bazı iframe kaynakları X-Frame-Options veya Content-Security-Policy nedeniyle embed edilemez.
+   - HLS (.m3u8) URL'leri CORS/Hotlink kısıtlaması nedeniyle doğrudan oynatılmayabilir; sorun olursa reverse-proxy (nginx proxy_pass) veya stream proxy gerekebilir.
+   - Telif haklarına dikkat; abonelik/telifli yayınların izinsiz paylaşımı yasaktır.
+   =========================== */
+</script>
 </body>
 </html>

@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Canlı Deprem İzleyici</title>
+
+<!-- Tailwind (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Leaflet (harita) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="" crossorigin=""></script>
+
+<!-- (Opsiyonel) Moment-like formatting (tiny) -->
+<script>
+  // Basit tarih formatlayıcı (tarayıcı uyumluluğu ve az bağımlılık için)
+  function fmtDate(ts) {
+    const d = new Date(ts);
+    return d.toLocaleString();
+  }
+</script>
+
+<style>
+  /* Küçük ek stiller */
+  #map { height: 60vh; min-height: 320px; border-radius: 8px; }
+  .quake-marker { font-weight:700; }
+  /* büyüklüğe göre marker rengi (css sınıf örneği) */
+  .mag-0 { background:#7ee7a6; }
+  .mag-1 { background:#b8f28e; }
+  .mag-2 { background:#fff59a; }
+  .mag-3 { background:#ffd27f; }
+  .mag-4 { background:#ff9a76; }
+  .mag-5 { background:#ff6b6b; }
+  .mag-6 { background:#d94a4a; }
+</style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased">
+  <div class="max-w-6xl mx-auto p-4">
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+      <div>
+        <h1 class="text-2xl font-bold">Canlı Deprem İzleyici</h1>
+        <p class="text-sm text-slate-400">USGS verileriyle anlık deprem listesi ve harita — ücretsiz ve herkese açık</p>
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <label class="text-sm text-slate-300">Zaman:</label>
+        <select id="feedSelect" class="rounded px-2 py-1 bg-slate-800 text-white">
+          <option value="hour">Son 1 saat</option>
+          <option value="day" selected>Son 24 saat</option>
+          <option value="week">Son 7 gün</option>
+        </select>
+
+        <label class="text-sm text-slate-300 ml-2">Min Mag:</label>
+        <input id="minMag" type="number" step="0.1" min="0" value="0" class="w-16 px-2 py-1 rounded bg-slate-800 text-white">
+
+        <button id="refreshBtn" class="ml-3 px-3 py-1 bg-emerald-500 text-black rounded font-semibold">Yenile</button>
+        <button id="autoToggle" class="ml-1 px-2 py-1 bg-slate-700 rounded text-sm">Otomatik: Kapalı</button>
+      </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <section class="lg:col-span-2 space-y-3">
+        <div id="map" aria-label="Deprem haritası" role="region"></div>
+        <div class="flex gap-2 text-sm text-slate-400">
+          <div>Kaynak: <a class="underline text-sky-300" href="https://earthquake.usgs.gov/" target="_blank" rel="noopener">USGS</a></div>
+          <div> • Otomatik yenileme: <span id="autoIntervalLabel">30s</span></div>
+        </div>
+      </section>
+
+      <aside class="lg:col-span-1">
+        <div class="bg-slate-800 rounded p-3 h-[60vh] overflow-auto" id="listContainer" aria-live="polite">
+          <h2 class="font-semibold mb-2">Depremler</h2>
+          <div id="quakeList" class="space-y-2 text-sm"></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="mt-4 text-xs text-slate-500">
+      <p>Not: Bazı akışlar ve konumlar kesin olmayabilir; acil durumlarda resmi kaynakları ve yetkilileri takip edin.</p>
+    </footer>
+  </div>
+
+<script>
+/*
+  Basit Canlı Deprem İzleyici - JavaScript
+  Kaynak: USGS GeoJSON summary feeds
+  Feeds:
+    - all_hour.geojson  -> son 1 saat
+    - all_day.geojson   -> son 24 saat
+    - all_week.geojson  -> son 7 gün
+  Endpoint base: https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/
+*/
+
+const feedMap = {
+  hour: 'all_hour.geojson',
+  day: 'all_day.geojson',
+  week: 'all_week.geojson'
+};
+
+const mapEl = document.getElementById('map');
+const quakeListEl = document.getElementById('quakeList');
+const feedSelect = document.getElementById('feedSelect');
+const minMagEl = document.getElementById('minMag');
+const refreshBtn = document.getElementById('refreshBtn');
+const autoToggle = document.getElementById('autoToggle');
+const autoIntervalLabel = document.getElementById('autoIntervalLabel');
+
+let map, markersLayer;
+let autoTimer = null;
+let autoInterval = 30000; // ms (30s default)
+autoIntervalLabel.textContent = (autoInterval/1000) + 's';
+
+// Initialize Leaflet map
+function initMap() {
+  map = L.map('map', { zoomControl: true }).setView([39.0, 35.0], 4); // Türkiye merkezli başlangıç
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  markersLayer = L.layerGroup().addTo(map);
+}
+
+// Helper: magnitude -> color circle
+function magColor(m) {
+  if (m >= 6) return '#d94a4a';
+  if (m >= 5) return '#ff6b6b';
+  if (m >= 4) return '#ff9a76';
+  if (m >= 3) return '#ffd27f';
+  if (m >= 2) return '#fff59a';
+  if (m >= 1) return '#b8f28e';
+  return '#7ee7a6';
+}
+
+// Create a custom circle marker
+function addQuakeMarker(feature) {
+  const coords = feature.geometry.coordinates; // [lon, lat, depth]
+  const lon = coords[0], lat = coords[1], depth = coords[2];
+  const mag = feature.properties.mag;
+  const place = feature.properties.place;
+  const time = feature.properties.time;
+  const id = feature.id;
+  const url = feature.properties.url;
+
+  const circle = L.circleMarker([lat, lon], {
+    radius: Math.max(4, (mag || 0) * 3), // büyüklüğe göre boyut
+    fillColor: magColor(mag || 0),
+    color: '#00000020',
+    weight: 1,
+    fillOpacity: 0.9
+  });
+
+  const popupHtml = `
+    <div style="font-weight:700">${place}</div>
+    <div>Büyüklük: ${mag ?? '—'}</div>
+    <div>Derinlik: ${depth ?? '—'} km</div>
+    <div>Zaman: ${fmtDate(time)}</div>
+    <a href="${url}" target="_blank" rel="noopener">Detay (USGS)</a>
+  `;
+
+  circle.bindPopup(popupHtml);
+  circle.addTo(markersLayer);
+
+  return { id, lat, lon, mag, place, time, depth, url, layer: circle };
+}
+
+let lastQuakes = []; // saklanan veri (features)
+
+/* Fetch & render */
+async function fetchAndRender() {
+  const feedKey = feedSelect.value;
+  const file = feedMap[feedKey] || feedMap['day'];
+  const url = `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/${file}`;
+
+  setStatus('Veri çekiliyor...');
+  try {
+    const res = await fetch(url, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('API hatası: ' + res.status);
+    const data = await res.json();
+    // GeoJSON.features (array)
+    const minMag = parseFloat(minMagEl.value) || 0;
+    const features = (data.features || []).filter(f => (f.properties.mag ?? -99) >= minMag);
+
+    // temizle
+    markersLayer.clearLayers();
+    quakeListEl.innerHTML = '';
+
+    lastQuakes = features.slice().sort((a,b)=> (b.properties.mag||0) - (a.properties.mag||0)); // büyükten küçüğe
+
+    // Marker ekle ve liste doldur
+    lastQuakes.forEach((f, idx) => {
+      const q = addQuakeMarker(f);
+      // liste öğesi
+      const li = document.createElement('div');
+      li.className = 'p-2 rounded bg-slate-700/40';
+      li.style.cursor = 'pointer';
+      li.innerHTML = `
+        <div class="flex justify-between items-center">
+          <div class="font-semibold">${f.properties.place}</div>
+          <div class="text-xs text-slate-300">${(f.properties.mag ?? '—').toFixed ? f.properties.mag.toFixed(1) : f.properties.mag}</div>
+        </div>
+        <div class="text-xs text-slate-400">${fmtDate(f.properties.time)} • Derinlik: ${f.geometry.coordinates[2]} km</div>
+      `;
+      // click => popup aç ve haritaya zoom
+      li.addEventListener('click', () => {
+        q.layer.openPopup();
+        map.setView([q.lat, q.lon], Math.max(map.getZoom(), 6), { animate: true });
+      });
+      quakeListEl.appendChild(li);
+    });
+
+    setStatus(`Toplam ${lastQuakes.length} adet (filtre uygulanmış)`);
+    // Fit bounds to markers if any
+    if (lastQuakes.length > 0) {
+      const latlngs = lastQuakes.map(f => [f.geometry.coordinates[1], f.geometry.coordinates[0]]);
+      const bounds = L.latLngBounds(latlngs);
+      map.fitBounds(bounds.pad(0.2));
+    }
+  } catch (err) {
+    console.error(err);
+    setStatus('Veri çekilemedi: ' + err.message, true);
+  }
+}
+
+/* Utility: durum mesajı */
+const statusEl = document.getElementById('statusMessage');
+function setStatus(txt, isError = false) {
+  statusEl.textContent = txt;
+  statusEl.className = isError ? 'text-sm text-red-400' : 'text-sm text-yellow-300';
+}
+
+/* Auto refresh control */
+refreshBtn.addEventListener('click', () => fetchAndRender());
+
+autoToggle.addEventListener('click', () => {
+  if (autoTimer) {
+    clearInterval(autoTimer);
+    autoTimer = null;
+    autoToggle.textContent = 'Otomatik: Kapalı';
+  } else {
+    autoTimer = setInterval(fetchAndRender, autoInterval);
+    autoToggle.textContent = 'Otomatik: Açık';
+  }
+});
+
+/* Keyboard accessibility: liste öğelerinde gezinme (←/→ kanal listesi değil; burada liste için up/down) */
+document.addEventListener('keydown', (e) => {
+  // Eğer focus listContainer içindeyse, up/down ile öğeler arasında gezin
+  const active = document.activeElement;
+  if (active && active.id === 'quakeList') return; // eğer içeride uygunsa ignore
+  // Basit kısa yollar:
+  if (e.key === 'r' || e.key === 'R') fetchAndRender(); // r ile yenile
+  if (e.key === 'f' || e.key === 'F') {
+    // fullscreen toggle for map container
+    const playerEl = document.getElementById('map');
+    if (!document.fullscreenElement) playerEl.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+});
+
+/* Başlat */
+initMap();
+fetchAndRender();
+
+/* Responsive: feed veya min mag değişince yeniden çek */
+feedSelect.addEventListener('change', fetchAndRender);
+minMagEl.addEventListener('change', fetchAndRender);
+
+/* Otomatik yenileme (ilk olarak kapalı) */
+/* istersen default açık yapmak için burada autoToggle.click() çağırabilirsin */
+</script>
+</body>
+</html>

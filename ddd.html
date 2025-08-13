@@ -85,21 +85,21 @@
             border-radius: 12px;
             overflow: hidden;
             position: relative;
+            background-color: #333;
+            border: 2px solid #555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
         }
-
-        .channel-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 12px;
-            border: 2px solid #333;
-            object-fit: cover;
-            aspect-ratio: 16 / 9;
-        }
-
+        
         .channel-item:hover {
             transform: translateY(-5px) scale(1.05);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            background-color: #444;
+            border-color: #007bff;
         }
 
         .channel-item.hidden {
@@ -140,13 +140,13 @@
 
     <div class="channel-grid" id="channel-list">
         <div class="channel-item" data-channel-name="TRT 1" onclick="loadStream('https://tv-trt1.medya.trt.com.tr/master_1080.m3u8')">
-            <img src="https://example.com/trt1-logo.jpg" alt="TRT 1 Logosu">
+            TRT 1
         </div>
         <div class="channel-item" data-channel-name="ATV" onclick="loadStream('https://live-streams.example.com/atv/manifest.m3u8')">
-            <img src="https://example.com/atv-logo.jpg" alt="ATV Logosu">
+            ATV
         </div>
         <div class="channel-item" data-channel-name="Star TV" onclick="loadStream('https://live-streams.example.com/startv/manifest.m3u8')">
-            <img src="https://example.com/startv-logo.jpg" alt="Star TV Logosu">
+            Star TV
         </div>
         </div>
 

@@ -1,150 +1,77 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="tr">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D3QJREW81L"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-D3QJREW81L');
-</script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ömercan Yayın Portalı</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Ömercan Yayın Portalı</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            color: #e2e8f0;
-        }
-        .player-header {
-            background: rgba(45, 55, 72, 0.9);
-            backdrop-filter: blur(6px);
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            padding: 0.75rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .cinema-mode-btn, .report-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #cbd5e0;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: color 0.2s ease;
-            text-decoration: none;
-        }
-        .cinema-mode-btn:hover, .report-btn:hover {
-            color: #a0aec0;
-        }
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        color: #e2e8f0;
+    }
+    .player-header {
+        background: rgba(45, 55, 72, 0.9);
+        backdrop-filter: blur(6px);
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 65vh; /* Masaüstü yüksekliği */
+        background-color: #000;
+        overflow: hidden;
+    }
+    #video-player, #iframe-player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        object-fit: cover;
+    }
+    @media (max-width: 768px) {
         .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            background-color: #000;
-            overflow: hidden;
+            height: 45vh; /* Mobilde biraz daha küçük */
         }
-        .channel-card {
-            transition: all 0.3s ease-in-out;
-            background-color: rgba(45, 55, 72, 0.85);
-            border-radius: 12px;
-            padding: 0.75rem;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        .channel-card:hover {
-            transform: scale(1.05);
-            background-color: rgba(74, 85, 104, 0.95);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-        }
-        .channel-card.active {
-            border: 2px solid #38bdf8;
-            box-shadow: 0 12px 24px rgba(56, 189, 248, 0.4);
-        }
-        .search-container {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        .search-input {
-            flex-grow: 1;
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid transparent;
-            background-color: rgba(45, 55, 72, 0.85);
-            color: #edf2f7;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .search-input::placeholder {
-            color: #a0aec0;
-        }
-        .search-input:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
-        }
-        .search-button {
-            padding: 10px 16px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: transform 0.2s ease, background 0.3s ease;
-        }
-        .search-button:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-        }
-        .tab-menu {
-            display: flex;
-            background-color: rgba(45, 55, 72, 0.85);
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 1.5rem;
-        }
-        .tab-item {
-            flex: 1;
-            text-align: center;
-            padding: 8px 12px;
-            color: #cbd5e0;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-        }
-        .tab-item.active-tab {
-            background: linear-gradient(135deg, #4a5568, #2d3748);
-            color: #edf2f7;
-        }
-        .tab-item:hover:not(.active-tab) {
-            background-color: #4a5568;
-            color: #edf2f7;
-        }
-    </style>
+    }
+    .channel-card {
+        transition: all 0.3s ease-in-out;
+        background-color: rgba(45, 55, 72, 0.85);
+        border-radius: 12px;
+        padding: 0.75rem;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    .channel-card:hover {
+        transform: scale(1.05);
+        background-color: rgba(74, 85, 104, 0.95);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    }
+    .channel-card.active {
+        border: 2px solid #38bdf8;
+        box-shadow: 0 12px 24px rgba(56, 189, 248, 0.4);
+    }
+</style>
 </head>
 <body class="antialiased">
 
 <div class="container mx-auto p-4 md:p-8">
-
     <header class="text-center mb-8">
         <h1 class="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">The Ömercan Yayın Portalı</h1>
         <p class="mt-3 text-lg text-gray-300">İzlemek istediğiniz kanalı seçin.</p>
@@ -154,7 +81,7 @@
         <div class="player-header">
             <span id="currentChannelName">Kanal Seçilmedi</span>
             <div class="actions">
-                <a href="https://t.me/+mSNjtNrQ0xozNWNk" target="_blank" class="report-btn">
+                <a href="#" target="_blank" class="report-btn">
                     <i class="fa-solid fa-flag"></i> Kanalı Bildir
                 </a>
                 <span id="cinemaModeBtn" class="cinema-mode-btn">
@@ -164,7 +91,9 @@
         </div>
         <div id="player-wrapper" class="video-container">
             <div id="player-content-area">
-                <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">
+                <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." 
+                     alt="İzlemek için bir kanal seçin" 
+                     style="width:100%; height:100%; object-fit:contain; background:black;">
             </div>
         </div>
     </div>
@@ -183,7 +112,6 @@
     <main>
         <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4"></div>
     </main>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>

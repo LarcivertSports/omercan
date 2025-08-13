@@ -1,4 +1,185 @@
-!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canlı TV İzle - HLS Yayınları</title>
+    <style>
+        /* Genel Stil Ayarları */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            margin: 0;
+            background-color: #121212; /* Koyu tema */
+            color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Ana Oynatıcı Alanı */
+        .player-container {
+            width: 95%;
+            max-width: 1200px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .player-container iframe {
+            display: block;
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+
+        /* Arama Çubuğu */
+        .search-container {
+            width: 95%;
+            max-width: 1200px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-container input[type="text"] {
+            width: 100%;
+            max-width: 600px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #555;
+            background-color: #222;
+            color: #fff;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+        }
+        
+        .search-container input[type="text"]::placeholder {
+            color: #aaa;
+        }
+
+        .search-container input[type="text"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Kanal Listesi */
+        .channel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            width: 95%;
+            max-width: 1200px;
+            padding: 10px;
+            margin-top: 15px;
+        }
+
+        .channel-item {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .channel-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            border: 2px solid #333;
+            object-fit: cover;
+            aspect-ratio: 16 / 9;
+        }
+
+        .channel-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .channel-item.hidden {
+            display: none;
+        }
+
+        /* Responsive Ayarlar */
+        @media (max-width: 768px) {
+            .player-container iframe {
+                height: 350px;
+            }
+            .channel-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .player-container iframe {
+                height: 250px;
+            }
+            .channel-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .search-container input[type="text"] {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <iframe id="main-player" src="" allowfullscreen allow="encrypted-media"></iframe>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Kanal arayın..." oninput="filterChannels()">
+    </div>
+
+    <div class="channel-grid" id="channel-list">
+        <div class="channel-item" data-channel-name="TRT 1" onclick="loadStream('https://tv-trt1.medya.trt.com.tr/master_1080.m3u8')">
+            <img src="https://example.com/trt1-logo.jpg" alt="TRT 1 Logosu">
+        </div>
+        <div class="channel-item" data-channel-name="ATV" onclick="loadStream('https://live-streams.example.com/atv/manifest.m3u8')">
+            <img src="https://example.com/atv-logo.jpg" alt="ATV Logosu">
+        </div>
+        <div class="channel-item" data-channel-name="Star TV" onclick="loadStream('https://live-streams.example.com/startv/manifest.m3u8')">
+            <img src="https://example.com/startv-logo.jpg" alt="Star TV Logosu">
+        </div>
+        </div>
+
+    <script>
+        // Sayfa yüklendiğinde varsayılan yayını oynatır
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const defaultStreamUrl = 'https://tv-trt1.medya.trt.com.tr/master_1080.m3u8';
+            document.getElementById('main-player').src = defaultStreamUrl;
+        });
+
+        // Yeni bir yayını iframe'e yükler
+        function loadStream(streamUrl) {
+            const player = document.getElementById('main-player');
+            player.src = streamUrl;
+        }
+
+        // Kanalları arama metnine göre filtreler
+        function filterChannels() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const channels = document.querySelectorAll('.channel-item');
+            
+            channels.forEach(channel => {
+                const channelName = channel.getAttribute('data-channel-name').toLowerCase();
+                if (channelName.includes(searchInput)) {
+                    channel.classList.remove('hidden');
+                } else {
+                    channel.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">

@@ -1,4 +1,90 @@
-<video controls preload="metadata" width="640" height="360">
-    <source src="blob:https://justsporthd44.xyz/91c4000d-c1b8-4ec3-9e40-ec868b4cc1ac" type="video/mp4">
-    Tarayıcınız video etiketini desteklemiyor.
-</video>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Canlı Yayın</title>
+    <style>
+        /* Video oynatıcının boyutlarını ayarlayın */
+        #live-video {
+            width: 100%; /* Sayfanın genişliği kadar */
+            max-width: 800px; /* Maksimum genişlik sınırı */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <video id="live-video" controls autoplay muted></video>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <script>
+        // Yayın URL'niz
+        var videoSrc = 'https://audi.zirvedesin19.sbs/yayinzirve.m3u8';
+        
+        // HTML'deki video öğesini seçin
+        var video = document.getElementById('live-video');
+
+        // hls.js'nin desteklenip desteklenmediğini kontrol edin
+        if (Hls.isSupported()) {
+            var hls = new Hls();
+            
+            // hls.js'yi video öğesine bağlayın
+            hls.attachMedia(video);
+            
+            // Yayın kaynağını yükleyin
+            hls.loadSource(videoSrc);
+            
+            // Manifest (yayın bilgileri) ayrıştırıldıktan sonra otomatik oynatmayı başlatın
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                // Not: Tarayıcı kısıtlamaları nedeniyle (özellikle mobil), 
+                // "muted" (sessiz) değilse otomatik oynatma başarısız olabilir.
+                video.play().catch(error => {
+                    console.log("Otomatik oynatma başarısız oldu, kullanıcı etkileşimi bekleniyor:", error);
+                });
+            });
+
+            // Hata yönetimi (isteğe bağlı)
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                var errorType = data.type;
+                var errorDetails = data.details;
+                var errorFatal = data.fatal;
+
+                if (errorFatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.error("Kritik ağ hatası, yeniden yüklemeye çalışılıyor:", data.details);
+                            hls.recoverMediaError();
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            console.error("Kritik medya hatası, yeniden yaratmaya çalışılıyor:", data.details);
+                            hls.recoverMediaError();
+                            break;
+                        default:
+                            // Diğer tüm kritik hatalarda oynatıcıyı yok et ve yeniden başlat
+                            hls.destroy();
+                            break;
+                    }
+                }
+            });
+
+        } 
+        // Tarayıcının kendi HLS desteği varsa (çoğunlukla Safari/iOS)
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoSrc;
+            video.addEventListener('loadedmetadata', function() {
+                video.play().catch(error => {
+                    console.log("Yerel otomatik oynatma başarısız oldu:", error);
+                });
+            });
+        }
+        // Hiçbir destek yoksa kullanıcıya bilgi verin
+        else {
+            video.poster = "hata.jpg"; // Yükleme hatası resmi
+            video.controls = false;
+            video.innerHTML = "<p>Üzgünüz, tarayıcınız bu video formatını desteklemiyor.</p>";
+        }
+    </script>
+
+</body>
+</html>

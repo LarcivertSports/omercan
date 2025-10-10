@@ -1,90 +1,625 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>Canlı Yayın</title>
-    <style>
-        /* Video oynatıcının boyutlarını ayarlayın */
-        #live-video {
-            width: 100%; /* Sayfanın genişliği kadar */
-            max-width: 800px; /* Maksimum genişlik sınırı */
-            height: auto;
-        }
-    </style>
-</head>
-<body>
+  <script type='text/javascript'>//<![CDATA[ 
 
-    <video id="live-video" controls autoplay muted></video>
+var curl = window.location.href;if (curl.indexOf('m=1') != -1) {curl = curl.replace('m=1', 'm=0');window.location.href = curl;} 
+
+//]]></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Larcivert Sports</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D3QJREW81L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-D3QJREW81L');
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-    <script>
-        // Yayın URL'niz
-        var videoSrc = 'https://audi.zirvedesin19.sbs/yayinzirve.m3u8';
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Koyu arka plan */
+            color: #e2e8f0; /* Açık yazı rengi */
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2d3748;
+            padding: 0.75rem 1rem;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            color: #edf2f7;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .player-header .actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .cinema-mode-btn, .report-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #cbd5e0;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            text-decoration: none;
+        }
+        .cinema-mode-btn:hover, .report-btn:hover {
+            color: #a0aec0;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background-color: #000;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0;
+        }
+        #video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: #000;
+        }
+        #iframe-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            object-fit: contain;
+            background-color: #000;
+        }
+        .player-wrapper-outer {
+            background-color: #2d3748;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .channel-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+            background-color: #2d3748;
+            border-radius: 8px;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 80px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .channel-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background-color: #4a5568;
+        }
+        .channel-card.active {
+             border: 2px solid #ef4444;
+             transform: scale(1.02);
+             box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4), 0 4px 6px -2px rgba(239, 68, 68, 0.3);
+             background-color: #4a5568;
+        }
+        .tab-menu {
+            display: flex;
+            background-color: #2d3748;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 1.5rem;
+        }
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px 12px;
+            color: #cbd5e0;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+        .tab-item.active-tab {
+            background-color: #4a5568;
+            color: #edf2f7;
+        }
+        .tab-item:hover:not(.active-tab) {
+            background-color: #4a5568;
+            color: #edf2f7;
+        }
+        .search-container {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .search-input {
+            flex-grow: 1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+            background-color: #2d3748;
+            color: #edf2f7;
+            font-size: 1rem;
+            outline: none;
+        }
+        .search-input::placeholder {
+            color: #a0aec0;
+        }
+        .search-input:focus {
+            border-color: #63b3ed;
+        }
+        .search-button {
+            padding: 10px 16px;
+            border-radius: 8px;
+            background-color: #48bb78;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .search-button:hover {
+            background-color: #38a169;
+        }
+        .search-button i {
+            font-size: 1rem;
+        }
         
-        // HTML'deki video öğesini seçin
-        var video = document.getElementById('live-video');
+        /* 🔥 TELEGRAM POP-UP STİLLERİ BAŞLANGIÇ 🔥 */
+        #telegram-popup-overlay {
+            display: none; /* Başlangıçta gizli tut */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Daha koyu arka plan */
+            z-index: 9999; /* En üstte görünmesini sağla */
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px); /* Hafif blur efekti */
+            animation: fadeIn 0.3s ease-out;
+        }
 
-        // hls.js'nin desteklenip desteklenmediğini kontrol edin
-        if (Hls.isSupported()) {
-            var hls = new Hls();
-            
-            // hls.js'yi video öğesine bağlayın
-            hls.attachMedia(video);
-            
-            // Yayın kaynağını yükleyin
-            hls.loadSource(videoSrc);
-            
-            // Manifest (yayın bilgileri) ayrıştırıldıktan sonra otomatik oynatmayı başlatın
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                // Not: Tarayıcı kısıtlamaları nedeniyle (özellikle mobil), 
-                // "muted" (sessiz) değilse otomatik oynatma başarısız olabilir.
-                video.play().catch(error => {
-                    console.log("Otomatik oynatma başarısız oldu, kullanıcı etkileşimi bekleniyor:", error);
+        #telegram-popup-content {
+            background-color: #2d3748; /* Sitenizin koyu arkaplanıyla uyumlu */
+            color: #edf2f7;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transform: scale(0.9);
+            animation: popUp 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; /* Pop-up animasyonu */
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popUp {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            color: #cbd5e0;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ef4444; /* Kırmızı hover rengi */
+        }
+
+        .telegram-icon {
+            font-size: 40px;
+            color: #0088cc; /* Telegram mavisi */
+            margin-bottom: 15px;
+        }
+
+        .join-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            background-color: #0088cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .join-btn i {
+            margin-right: 8px;
+        }
+
+        .join-btn:hover {
+            background-color: #006699;
+            transform: translateY(-1px);
+        }
+        /* 🔥 TELEGRAM POP-UP STİLLERİ BİTİŞ 🔥 */
+
+    </style>
+</head>
+<body>
+    
+    <div id="telegram-popup-overlay">
+        <div id="telegram-popup-content">
+            <span class="close-btn" onclick="closeTelegramPopup()">&times;</span>
+            <i class="fab fa-telegram-plane telegram-icon"></i>
+            <h2 class="text-2xl font-bold text-white mb-2">Telegram Kanalımıza Katılın!</h2>
+            <p class="text-gray-400">Canlı yayın duyuruları, yedek linkler ve güncel bilgilere anında ulaşmak için kanalımızı takip edin.</p>
+            <a href="https://t.me/larcivertsports" target="_blank" class="join-btn" onclick="closeTelegramPopup()">
+                <i class="fab fa-telegram-plane"></i> Şimdi Katıl
+            </a>
+        </div>
+    </div>
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+             <h1 class="text-4xl md:text-5xl font-bold text-white">Larcivert Sports Yayın Portalı</h1>
+             <p class="mt-3 text-lg text-gray-400">İzlemek istediğiniz kanalı seçin.</p>
+        </header>
+
+        <div class="player-wrapper-outer">
+            <div class="player-header">
+                <span id="currentChannelName">Kanal Seçilmedi</span>
+                <div class="actions">
+                    <a href="https://t.me/+mSNjtNrQ0xozNWNk" target="_blank" class="report-btn">
+                        <i class="fa-solid fa-flag"></i> Kanalı Bildir
+                    </a>
+                    <span id="cinemaModeBtn" class="cinema-mode-btn">
+                        <i class="fa-solid fa-expand"></i> Sinema Modu
+                    </span>
+                </div>
+            </div>
+            <div id="player-wrapper" class="video-container">
+                <div id="player-content-area">
+                    <img src="https://placehold.co/1920x1080/000000/FFFFFF?text=İzlemek+için+bir+kanal+seçin..." alt="İzlemek için bir kanal seçin" class="w-full h-full object-contain bg-black">
+                </div>
+            </div>
+        </div>
+        <div id="statusMessage" class="mt-3 text-center text-sm text-yellow-400 h-5"></div>
+
+        <div id="tabMenu" class="tab-menu">
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Kanal ara...">
+            <button id="searchButton" class="search-button">
+                <i class="fa-solid fa-magnifying-glass"></i> Ara
+            </button>
+        </div>
+
+        <main>
+            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4">
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 🔥 TELEGRAM POP-UP FONKSİYONLARI BAŞLANGIÇ 🔥
+        const telegramPopupOverlay = document.getElementById('telegram-popup-overlay');
+        const telegramPopupDelay = 2500; // 2500 milisaniye = 2.5 saniye sonra göster
+
+        // Pop-up'ı kapatma ve localStorage'a kaydetme fonksiyonu
+        function closeTelegramPopup() {
+            telegramPopupOverlay.style.display = 'none';
+            // Kullanıcının bir daha görmemesi için (1 gün)
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 1); // 1 gün sonra süre dolsun
+            localStorage.setItem('telegramPopupClosed', expiryDate.getTime());
+        }
+
+        // Pop-up'ı gösterme fonksiyonu
+        function showTelegramPopup() {
+            const closedUntil = localStorage.getItem('telegramPopupClosed');
+            const currentTime = new Date().getTime();
+
+            // Eğer daha önce kapatılmış ve süresi dolmamışsa gösterme
+            if (closedUntil && currentTime < closedUntil) {
+                return;
+            }
+
+            // Gecikmeden sonra göster
+            setTimeout(() => {
+                telegramPopupOverlay.style.display = 'flex';
+            }, telegramPopupDelay);
+        }
+
+        // Pop-up'ın dışına tıklanınca kapatma
+        telegramPopupOverlay.addEventListener('click', function(event) {
+            if (event.target === telegramPopupOverlay) {
+                closeTelegramPopup();
+            }
+        });
+        // 🔥 TELEGRAM POP-UP FONKSİYONLARI BİTİŞ 🔥
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const channelsByCategory = {
+                'Tüm Kanallar': [
+                    // ... (Mevcut kanal listesi)
+                    { name: 'beIN SPORTS 1', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-1/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 1 YEDEK', streamUrl: 'https://dlhd.dad/stream/stream-62.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 2', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-2/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'beIN SPORTS 2 YEDEK', streamUrl: 'https://dlhd.dad/stream/stream-63.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 3', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-3/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 3 YEDEK', streamUrl: 'https://dlhd.dad/stream/stream-64.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 4', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-4/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 4 YEDEK', streamUrl: 'https://dlhd.dad/watch/stream-67.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 5', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-5/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'beIN SPORTS 5 YEDEK', streamUrl: 'https://dlhd.dad/cast/stream-1010.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS Max 1', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsportsmax-1/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'HT Spor', streamUrl: 'https://ciner.daioncdn.net/ht-spor/ht-spor.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS Max 2', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsportsmax-2/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS HABER', streamUrl: 'https://www.youtube.com/embed/live_stream?channel=UCPe9vNjHF1kEExT5kHwc7aw', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'Tivibu Spor 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint1', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'Tivibu Spor 1 YEDEK', streamUrl: 'https://a.strmrdr-cf-worker-e262d71fa4.workers.dev/bc2b05d321cb80050c5d035a9daeb26d/DmodYM9CdSNPUZyc2x7VWd/5082/a.strmrdr-cf-worker-e262d71fa4.workers.dev/chunklist_hd.m3u8?verify=1757229203223~24.133.86.79~4397bc63b5806d46d3ce4be549572386', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'Tivibu Spor 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint2', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'Tivibu Spor 3', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint3', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'Tivibu Spor 4', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint4', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'S Sport', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'NBA TV', streamUrl: 'https://dlhd.dad/player/stream-404.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'S Sport 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss2', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'S SPORT 2 YEDEK', streamUrl: 'https://a.strmrdr-cf-worker-e262d71fa4.workers.dev/bc2b05d321cb80050c5d035a9daeb26d/DmodYM9CdSNPUZyc2x7VWd/5102/a.strmrdr-cf-worker-e262d71fa4.workers.dev/chunklist_hd.m3u8?verify=1757228711893~24.133.86.79~b9e14efa2748e51e82dfca5e37f95160', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'S Sport Plus 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex2', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'S Sport Plus 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex1', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'S Sport Plus 3', streamUrl: 'https://217.30.11.74/e/3030.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Smart Spor', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsmarts', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'Smart Spor 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsms2', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'A Spor', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsas', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'TV 8,5', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv85', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'TV 8 YEDEK', streamUrl: 'https://tv8.daioncdn.net/tv8/tv8_720p.m3u8?=&sid=7pwbifbi9217&app=7ddc255a-ef47-4e81-ab14-c0e5f2949788&ce=3', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'TV 8', streamUrl: 'https://tv8.daioncdn.net/tv8/tv8_1080p.m3u8?=&sid=7pw3mvrh2gyv&app=7ddc255a-ef47-4e81-ab14-c0e5f2949788&ce=3&ppid=dced9b9781809ab837d997224483cfbe&dfp_paln=AQzzBGQENTyN73vw2Y6sa8Sjq-WcQOKTIO6WCoSoEnmUBFs5M2yGc1xx0F6RwC9qfLpUxVkGS0Hdc7ds8dcGhJjxzV7GQ2p7dE4oFWZ9BilC1k_0FPTYlo9qqMtf9usB_HLbd2oDbZtZWFmRa7lSMbDYBuHkqsd9g4dfRbRg1wP-H90YBIJABNa96-4s5zZiJvvHTDKATHVYV1uFdm1AhD3CtThmIpo5LBpCDoB5wWcM8aXA_o2P1wPIAsiAkF_HYYczO_ZwKuu4NJmVYzAccQr-3uqhIdCMfj0Jpc3CgBCjyWZi_BOAcyxRizMY4tfJiIcRps-1IANZYc0cedeYhptzv-3lkD5ZvDodbHpraEpYCUNkhDrpyapE1foX6d9rwvDNtJBvwKvUC5pItosE29L3Phn73pbj1Oe-2BSbmZfjXgU8rab0I7LyBCAP13Zbq7pLmLB8HQBx9kGyCuUDDMioEOnuJK9asluhrkOZTi5vvfJUf9iCUxUN-VOT9bGsTW02UPARRoSemrNOTYGB6LF79DOY1RxIBbpnIS4DQZXNHHqapS8Mi-lWByLSX0lL3CYo7CwZvDEUgWbCX-_4FKhIngtHIq1YfDOmaMVD2OKpfBDtra5R-c6EGvqN03kou4hpy4olwHLH-LGnmmPbnTgQ9xrPRuo-sYoSIlePT7CHAUJE7ERNbg2sHX-7HbDhUwRmPALq3Exn_R-CmD7cWH447eQzPY6l46wrThsxmzmbEpwJRv2DRKCCih2Nw6lrBDxdfkZJhIJM-ClUHPcovnx0bKsQWSR_EVc8dItPdM7JcOHTulr-FtT5MshRfSHzykL26ZL0yAjlMSI_n59T5t-sazwqHBBTYwW0kUyVM8l6v3dV5ooKYkDkt3T_9yCEcIfhM4kMbbPZ8toe_hNu1up_a8quxrCA3rKONQvQKwqei6qfo8HN6LsviKJZEWvpPXm9wucHJ0AImXUBJNmPlcZIqKq-dhP0XNm97sSUt5sfSiRYYtbBzQKMWMJXuO9lqs_rw271JelA4mXvYztaVrntX-LeeyG1fI3PVNNgYUhx2zDIGRc.', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'TRT1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'TRT1 YEDEK', streamUrl: 'https://tv-trt1.medya.trt.com.tr/master_720.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'TRT SPOR', streamUrl: 'https://tv-trtspor1.medya.trt.com.tr/master.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'TRT SPOR YILDIZ', streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii TV', streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg&bvr_flags=10&bvr_ch=tabiitv&bvr_bw=2800000', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'TABİİ SPOR 1', streamUrl: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 2', streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 3', streamUrl: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'TABİİ SPOR 4', streamUrl: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 5', streamUrl: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 6', streamUrl: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 7', streamUrl: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'DAZN LaLiga', streamUrl: 'https://dlhd.dad/plus/stream-538.php', type: 'iframe', isLive: true, isPopular: false }
+                ],
+                'Ulusal Kanallar': [
+                    { name: 'TRT1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'TRT1 YEDEK', streamUrl: 'https://tv-trt1.medya.trt.com.tr/master_720.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'TV 8,5', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintv85', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'TV 8', streamUrl: 'https://tv8.daioncdn.net/tv8/tv8_1080p.m3u8?=&sid=7pw3mvrh2gyv&app=7ddc255a-ef47-4e81-ab14-c0e5f2949788&ce=3&ppid=dced9b9781809ab837d997224483cfbe&dfp_paln=AQzzBGQENTyN73vw2Y6sa8Sjq-WcQOKTIO6WCoSoEnmUBFs5M2yGc1xx0F6RwC9qfLpUxVkGS0Hdc7ds8dcGhJjxzV7GQ2p7dE4oFWZ9BilC1k_0FPTYlo9qqMtf9usB_HLbd2oDbZtZWFmRa7lSMbDYBuHkqsd9g4dfRbRg1wP-H90YBIJABNa96-4s5zZiJvvHTDKATHVYV1uFdm1AhD3CtThmIpo5LBpCDoB5wWcM8aXA_o2P1wPIAsiAkF_HYYczO_ZwKuu4NJmVYzAccQr-3uqhIdCMfj0Jpc3CgBCjyWZi_BOAcyxRizMY4tfJiIcRps-1IANZYc0cedeYhptzv-3lkD5ZvDodbHpraEpYCUNkhDrpyapE1foX6d9rwvDNtJBvwKvUC5pItosE29L3Phn73pbj1Oe-2BSbmZfjXgU8rab0I7LyBCAP13Zbq7pLmLB8HQBx9kGyCuUDDMioEOnuJK9asluhrkOZTi5vvfJUf9iCUxUN-VOT9bGsTW02UPARRoSemrNOTYGB6LF79DOY1RxIBbpnIS4DQZXNHHqapS8Mi-lWByLSX0lL3CYo7CwZvDEUgWbCX-_4FKhIngtHIq1YfDOmaMVD2OKpfBDtra5R-c6EGvqN03kou4hpy4olwHLH-LGnmmPbnTgQ9xrPRuo-sYoSIlePT7CHAUJE7ERNbg2sHX-7HbDhUwRmPALq3Exn_R-CmD7cWH447eQzPY6l46wrThsxmzmbEpwJRv2DRKCCih2Nw6lrBDxdfkZJhIJM-ClUHPcovnx0bKsQWSR_EVc8dItPdM7JcOHTulr-FtT5MshRfSHzykL26ZL0yAjlMSI_n59T5t-sazwqHBBTYwW0kUyVM8l6v3dV5ooKYkDkt3T_9yCEcIfhM4kMbbPZ8toe_hNu1up_a8quxrCA3rKONQvQKwqei6qfo8HN6LsviKJZEWvpPXm9wucHJ0AImXUBJNmPlcZIqKq-dhP0XNm97sSUt5sfSiRYYtbBzQKMWMJXuO9lqs_rw271JelA4mXvYztaVrntX-LeeyG1fI3PVNNgYUhx2zDIGRc.', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'Tabii TV', streamUrl: 'https://ceokzokgtd.erbvr.com/tabiitv/tabiitv_1080p.m3u8?sid=Xr8N4zzNzkm4VwzL77qvNg&bvr_flags=10&bvr_ch=tabiitv&bvr_bw=2800000', type: 'hls', isLive: true, isPopular: false }
+                ],
+                'Spor Kanalları': [
+                    // ... (Mevcut spor kanal listesi)
+                    { name: 'beIN SPORTS 1', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-1/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 1 YEDEK', streamUrl: 'https://dlhd.dad/stream/stream-62.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 2', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-2/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'beIN SPORTS 2 YEDEK', streamUrl: 'https://dlhd.dad/stream/stream-63.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 3', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-3/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 3 YEDEK', streamUrl: 'https://dlhd.dad/stream/stream-64.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 4', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-4/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 4 YEDEK', streamUrl: 'https://dlhd.dad/watch/stream-67.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS 5', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsports-5/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'beIN SPORTS 5 YEDEK', streamUrl: 'https://dlhd.dad/cast/stream-1010.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS Max 1', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsportsmax-1/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'HT Spor', streamUrl: 'https://ciner.daioncdn.net/ht-spor/ht-spor.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'beIN SPORTS Max 2', streamUrl: 'https://df16ea90s1u1080.0227f5e80acfd3ae.live/live/sbeinsportsmax-2/playlist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'FB TV', streamUrl: 'https://fbtv.fenerbahce.org/fenerbahcetv.stream_720p/chunklist.m3u8?app=web', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'Tivibu Spor 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint1', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'Tivibu Spor 1 YEDEK', streamUrl: 'https://a.strmrdr-cf-worker-e262d71fa4.workers.dev/bc2b05d321cb80050c5d035a9daeb26d/DmodYM9CdSNPUZyc2x7VWd/5082/a.strmrdr-cf-worker-e262d71fa4.workers.dev/chunklist_hd.m3u8?verify=1757229203223~24.133.86.79~4397bc63b5806d46d3ce4be549572386', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'Tivibu Spor 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint2', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'Tivibu Spor 3', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint3', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'Tivibu Spor 4', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayint4', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'S Sport', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'NBA TV', streamUrl: 'https://dlhd.dad/player/stream-404.php', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'S Sport 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinss2', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'S SPORT 2 YEDEK', streamUrl: 'https://a.strmrdr-cf-worker-e262d71fa4.workers.dev/bc2b05d321cb80050c5d035a9daeb26d/DmodYM9CdSNPUZyc2x7VWd/5102/a.strmrdr-cf-worker-e262d71fa4.workers.dev/chunklist_hd.m3u8?verify=1757228711893~24.133.86.79~b9e14efa2748e51e82dfca5e37f95160', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'S Sport Plus 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex2', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'S Sport Plus 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinex1', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'S Sport Plus 3', streamUrl: 'https://217.30.11.74/e/3030.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Smart Spor', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsmarts', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'Smart Spor 2', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsms2', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'A Spor', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayinsas', type: 'iframe', isLive: true, isPopular: false },
+                    { name: 'beIN SPORTS HABER', streamUrl: 'https://www.youtube.com/embed/live_stream?channel=UCPe9vNjHF1kEExT5kHwc7aw', type: 'iframe', isLive: true, isPopular: true },
+                    { name: 'TRT SPOR', streamUrl: 'https://tv-trtspor1.medya.trt.com.tr/master.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'TRT SPOR YILDIZ', streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'TABİİ SPOR 1', streamUrl: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 2', streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 3', streamUrl: 'https://uJnF69oP16X2fiIyWxCNx41Q8.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'TABİİ SPOR 4', streamUrl: 'https://bfxy3jgeydpbphtk8qfqwm3hr.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 5', streamUrl: 'https://z3mmimwz148csv0vaxtphqspf.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 6', streamUrl: 'https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR 7', streamUrl: 'https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'Tabii SPOR', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', isLive: true, isPopular: false },
+                    { name: 'DAZN LaLiga', streamUrl: 'https://dlhd.dad/plus/stream-538.php', type: 'iframe', isLive: true, isPopular: false }
+                ]
+            };
+
+            let displayedChannels = [];
+            const playerWrapper = document.getElementById('player-wrapper');
+            const playerContentArea = document.getElementById('player-content-area');
+            const currentChannelName = document.getElementById('currentChannelName');
+            const statusMessage = document.getElementById('statusMessage');
+            const tabMenu = document.getElementById('tabMenu');
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const cinemaModeBtn = document.getElementById('cinemaModeBtn');
+            let hlsInstance = null;
+            let isCinemaMode = false;
+
+            const clearPlayer = () => {
+                playerContentArea.innerHTML = '';
+                if (hlsInstance) {
+                    hlsInstance.destroy();
+                    hlsInstance = null;
+                }
+            };
+
+            const playChannel = (channel) => {
+                clearPlayer();
+                statusMessage.textContent = 'Yükleniyor...';
+                currentChannelName.textContent = channel.name;
+
+                if (channel.type === 'hls' && Hls.isSupported()) {
+                    const video = document.createElement('video');
+                    video.id = 'video-player';
+                    video.className = 'w-full h-full object-contain';
+                    video.controls = true;
+                    playerContentArea.appendChild(video);
+
+                    hlsInstance = new Hls();
+                    hlsInstance.loadSource(channel.streamUrl);
+                    hlsInstance.attachMedia(video);
+                    hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+                        video.play();
+                        statusMessage.textContent = '';
+                    });
+                    hlsInstance.on(Hls.Events.ERROR, (event, data) => {
+                        if (data.fatal) {
+                            statusMessage.textContent = 'Hata: Kanal yüklenemedi.';
+                            clearPlayer();
+                        }
+                    });
+                } else if (channel.type === 'iframe') {
+                    const iframe = document.createElement('iframe');
+                    iframe.id = 'iframe-player';
+                    iframe.setAttribute('allowfullscreen', '');
+                    iframe.setAttribute('allow', 'autoplay');
+                    iframe.src = channel.streamUrl;
+                    playerContentArea.appendChild(iframe);
+                    statusMessage.textContent = '';
+                } else {
+                    statusMessage.textContent = 'Hata: Bu yayın türü desteklenmiyor veya HLS.js yüklenemedi.';
+                    clearPlayer();
+                }
+            };
+
+            const renderChannelGrid = (query = '') => {
+                const grid = document.getElementById('channel-grid');
+                grid.innerHTML = '';
+
+                const filteredChannels = displayedChannels.filter(channel =>
+                    channel.name.toLowerCase().includes(query.toLowerCase())
+                );
+
+                if (filteredChannels.length === 0) {
+                    grid.innerHTML = '<div class="text-center text-gray-500 col-span-full">Hiç kanal bulunamadı.</div>';
+                    return;
+                }
+
+                filteredChannels.forEach(channel => {
+                    const card = document.createElement('div');
+                    card.className = 'channel-card bg-gray-800 hover:bg-gray-700 transition-colors cursor-pointer';
+                    card.innerHTML = `<p>${channel.name}</p>`;
+                    card.addEventListener('click', () => {
+                        document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('active'));
+                        card.classList.add('active');
+                        playChannel(channel);
+                    });
+                    grid.appendChild(card);
                 });
-            });
+            };
 
-            // Hata yönetimi (isteğe bağlı)
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                var errorType = data.type;
-                var errorDetails = data.details;
-                var errorFatal = data.fatal;
-
-                if (errorFatal) {
-                    switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                            console.error("Kritik ağ hatası, yeniden yüklemeye çalışılıyor:", data.details);
-                            hls.recoverMediaError();
-                            break;
-                        case Hls.ErrorTypes.MEDIA_ERROR:
-                            console.error("Kritik medya hatası, yeniden yaratmaya çalışılıyor:", data.details);
-                            hls.recoverMediaError();
-                            break;
-                        default:
-                            // Diğer tüm kritik hatalarda oynatıcıyı yok et ve yeniden başlat
-                            hls.destroy();
-                            break;
+            const renderTabs = () => {
+                const categories = Object.keys(channelsByCategory);
+                categories.forEach((category, index) => {
+                    const tab = document.createElement('div');
+                    tab.className = `tab-item`;
+                    if (index === 0) {
+                        tab.classList.add('active-tab');
                     }
+                    tab.textContent = category;
+                    tab.dataset.category = category;
+                    tabMenu.appendChild(tab);
+                });
+            };
+
+            const toggleCinemaMode = () => {
+                const body = document.body;
+                isCinemaMode = !isCinemaMode;
+
+                if (isCinemaMode) {
+                    body.classList.add('overflow-hidden');
+                    document.documentElement.requestFullscreen();
+                } else {
+                    body.classList.remove('overflow-hidden');
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+            };
+
+            searchInput.addEventListener('input', () => renderChannelGrid(searchInput.value));
+            searchButton.addEventListener('click', () => renderChannelGrid(searchInput.value));
+
+            tabMenu.addEventListener('click', (event) => {
+                const target = event.target;
+                if (target.classList.contains('tab-item')) {
+                    document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active-tab'));
+                    target.classList.add('active-tab');
+                    const selectedCategory = target.dataset.category;
+                    displayedChannels = channelsByCategory[selectedCategory];
+                    renderChannelGrid(searchInput.value);
                 }
             });
 
-        } 
-        // Tarayıcının kendi HLS desteği varsa (çoğunlukla Safari/iOS)
-        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = videoSrc;
-            video.addEventListener('loadedmetadata', function() {
-                video.play().catch(error => {
-                    console.log("Yerel otomatik oynatma başarısız oldu:", error);
-                });
-            });
-        }
-        // Hiçbir destek yoksa kullanıcıya bilgi verin
-        else {
-            video.poster = "hata.jpg"; // Yükleme hatası resmi
-            video.controls = false;
-            video.innerHTML = "<p>Üzgünüz, tarayıcınız bu video formatını desteklemiyor.</p>";
-        }
-    </script>
+            cinemaModeBtn.addEventListener('click', toggleCinemaMode);
 
+            const initializeApp = () => {
+                renderTabs();
+                displayedChannels = channelsByCategory['Tüm Kanallar'];
+                renderChannelGrid();
+                
+                // 🔥 Telegram Pop-up'ı başlat
+                showTelegramPopup(); 
+            };
+
+            initializeApp();
+        });
+    </script>
 </body>
 </html>

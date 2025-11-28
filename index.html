@@ -3,66 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trafik Yönlendirme Sayfası</title>
+    <title>Birazcıkspor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS: Sayfa Stilini Belirler */
+        /* Genel Ayarlar */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            background-color: #0f002b; /* Görseldeki koyu mor arka plan */
+            font-family: 'Poppins', sans-serif;
+            color: white;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f9;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        .redirect-button {
-            background-color: #007bff; /* Mavi Buton Rengi */
-            color: white;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
         }
 
-        .redirect-button:hover {
-            background-color: #0056b3; /* Buton Üzerine Gelince Daha Koyu Mavi */
+        /* Başlık Alanı */
+        header {
+            margin-bottom: 40px;
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 20px;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            font-weight: 400;
+        }
+
+        /* Kartların Düzeni (Grid) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Kart Tasarımı */
+        .card {
+            display: flex;
+            flex-direction: column; /* İçeriği alt alta dizebilmek için */
+            justify-content: center;
+            align-items: flex-start; /* Sola hizalı */
+            padding: 30px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            min-height: 180px; /* Kart yüksekliği */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* İkon Tasarımı */
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        /* Kart Yazıları */
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        /* Renkler (Gradients) */
+        
+        /* 1. Canlı Maç (Altın Sarısı/Kahve) */
+        .gold {
+            background: linear-gradient(135deg, #b87b00 0%, #8a5c00 100%);
+        }
+
+        /* 2. Dizi & Film (Mor) */
+        .purple {
+            background: linear-gradient(135deg, #d500f9 0%, #aa00ff 100%);
+        }
+
+        /* 3. Twitter (Mavi) */
+        .blue {
+            background: linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%);
+        }
+
+        /* 4. Telegram (Açık Mavi) */
+        .lightblue {
+            background: linear-gradient(135deg, #00b0ff 0%, #0091ea 100%);
+        }
+
+        /* Mobil Uyumluluk */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .card { min-height: 150px; }
         }
     </style>
 </head>
 <body>
 
-    <h1>Hemen Hedef Siteye Gitmek İçin Tıklayın!</h1>
+    <div class="container">
+        <header>
+            <h1>Birazcıkspor</h1>
+            <p class="subtitle">Spora dair her şey</p>
+        </header>
 
-    <button class="redirect-button" onclick="redirectToTarget()">
-        Sitenize Trafik Gönder
-    </button>
+        <div class="grid-container">
+            
+            <a href="#" class="card gold">
+                <div class="icon"><i class="fa-solid fa-futbol"></i></div>
+                <div class="card-title">Canlı Maç Girişi</div>
+                <div class="card-desc">Tüm Spor Müsabakaları</div>
+            </a>
 
-    <script>
-        // JavaScript: Yönlendirme İşlemini Gerçekleştirir
+            <a href="#" class="card purple">
+                <div class="icon"><i class="fa-solid fa-desktop"></i></div>
+                <div class="card-title">Dizi & Film Girişi</div>
+                <div class="card-desc">170.000+ içerik, altyazılı & dublajlı</div>
+            </a>
 
-        /**
-         * Yönlendirmek istediğiniz web sitesinin URL'sini buraya girin.
-         * Örneğin: "https://www.ornek-hedef-site.com"
-         */
-        const targetURL = "https://www.google.com"; // **BURAYI DEĞİŞTİRİN**
+            <a href="https://twitter.com" target="_blank" class="card blue">
+                <div class="icon"><i class="fa-brands fa-x-twitter"></i></div> <div class="card-title">Twitter</div>
+                <div class="card-desc">Spora Dair Her Şey</div>
+            </a>
 
-        function redirectToTarget() {
-            // Yeni sekmede açmak için: window.open(targetURL, '_blank');
-            // Aynı sekmede açmak için: window.location.href = targetURL;
+            <a href="https://t.me" target="_blank" class="card lightblue">
+                <div class="icon"><i class="fa-brands fa-telegram"></i></div>
+                <div class="card-title">Telegram</div>
+                <div class="card-desc">Kanalımıza katıl</div>
+            </a>
 
-            // Genellikle yeni sekmede açmak, kullanıcıyı mevcut siteden tamamen uzaklaştırmamak için tercih edilir.
-            window.open(targetURL, '_blank');
-        }
-    </script>
+        </div>
+    </div>
 
 </body>
 </html>

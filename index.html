@@ -3,159 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Larcivert Sports Linkler</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    
+    <title>PSA Kart Değerleme Uzmanı</title>
     <style>
-        /* Genel Ayarlar */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root {
+            --primary: #c8102e; /* PSA Kırmızısı */
+            --dark: #1a1a1a;
+            --light: #f4f4f4;
+            --card-bg: #ffffff;
         }
 
         body {
-            background-color: #0f002b; /* Arka plan rengi */
-            font-family: 'Poppins', sans-serif;
-            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 1000px;
-            text-align: center;
-        }
-
-        /* Başlık Alanı */
-        header {
-            margin-bottom: 40px;
+            max-width: 500px;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
         h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
-        p.subtitle {
-            font-size: 1.1rem;
-            color: #b0b0b0;
-            font-weight: 400;
+        .logo {
+            text-align: center;
+            font-weight: 900;
+            font-size: 24px;
+            color: var(--primary);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border: 2px solid var(--primary);
+            display: inline-block;
+            padding: 5px 10px;
         }
 
-        /* Kartların Düzeni (Grid) */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Kartlar biraz daha kompakt */
-            gap: 20px;
-            justify-content: center;
+        .form-group {
+            margin-bottom: 1rem;
         }
 
-        /* Kart Tasarımı */
-        .card {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start; /* Sola hizalı içerik */
-            padding: 25px;
-            border-radius: 20px;
-            text-decoration: none;
-            color: white;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            min-height: 160px;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        /* İkon Tasarımı */
-        .icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-
-        /* Kart Yazıları */
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .card-desc {
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
             font-size: 0.9rem;
-            opacity: 0.8;
-            font-weight: 400;
         }
 
-        /* Renkler (Gradients) */
-        
-        /* 1. Canlı Maç (Altın Sarısı) */
-        .gold { background: linear-gradient(135deg, #b87b00 0%, #8a5c00 100%); }
-
-        /* 2. Instagram (Marka Rengi) */
-        .insta-color { 
-            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); 
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box; /* Padding taşmasını önler */
         }
 
-        /* 3. Twitter/X (Mavi) */
-        .blue { background: linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%); }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
 
-        /* 4. Telegram (Açık Mavi) */
-        .lightblue { background: linear-gradient(135deg, #00b0ff 0%, #0091ea 100%); }
+        button:hover {
+            background-color: #a00d25;
+        }
 
-        /* Mobil Uyumluluk */
-        @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
-            .card { min-height: 140px; padding: 20px; }
-            .icon { font-size: 2rem; }
+        /* Sonuç Alanı */
+        #result-area {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+            display: none; /* Başlangıçta gizli */
+        }
+
+        .price-tag {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #27ae60;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .market-info {
+            font-size: 0.85rem;
+            color: #777;
+            text-align: center;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Larcivert Sports</h1>
-            <p class="subtitle">Spora dair her şey</p>
-        </header>
+<div class="container">
+    <div style="text-align: center;">
+        <div class="logo">PSA CHECKER</div>
+    </div>
+    <h1>Kart Değerleme</h1>
+    
+    <div class="form-group">
+        <label for="cardName">Kart İsmi (Örn: Charizard Base Set)</label>
+        <input type="text" id="cardName" placeholder="Kart ismini giriniz...">
+    </div>
 
-        <div class="grid-container">
-            
-            <a href="#" class="card gold">
-                <div class="icon"><i class="fa-solid fa-futbol"></i></div>
-                <div class="card-title">Canlı Maç Girişi</div>
-                <div class="card-desc">Tüm Spor Müsabakaları</div>
-            </a>
+    <div class="form-group">
+        <label for="cardNumber">Set Numarası (Örn: 4/102)</label>
+        <input type="text" id="cardNumber" placeholder="Kartın altındaki numara">
+    </div>
 
-            <a href="https://instagram.com" target="_blank" class="card insta-color">
-                <div class="icon"><i class="fa-brands fa-instagram"></i></div>
-                <div class="card-title">Instagram</div>
-                <div class="card-desc">Bizi takip et</div>
-            </a>
+    <div class="form-group">
+        <label for="grade">PSA Puanı</label>
+        <select id="grade">
+            <option value="10">PSA 10 (Gem Mint)</option>
+            <option value="9">PSA 9 (Mint)</option>
+            <option value="8">PSA 8 (NM-MT)</option>
+            <option value="7">PSA 7 (NM)</option>
+            <option value="raw">Derecelendirilmemiş (Raw)</option>
+        </select>
+    </div>
 
-            <a href="https://twitter.com" target="_blank" class="card blue">
-                <div class="icon"><i class="fa-brands fa-x-twitter"></i></div> 
-                <div class="card-title">Twitter</div>
-                <div class="card-desc">Spora Dair Her Şey</div>
-            </a>
+    <button onclick="calculateValue()">Değeri Sorgula</button>
 
-            <a href="https://t.me" target="_blank" class="card lightblue">
-                <div class="icon"><i class="fa-brands fa-telegram"></i></div>
-                <div class="card-title">Telegram</div>
-                <div class="card-desc">Kanalımıza katıl</div>
-            </a>
+    <div class="loader" id="loader"></div>
 
+    <div id="result-area">
+        <div style="text-align: center; font-weight: bold; color: #333;" id="result-title"></div>
+        <div class="price-tag" id="price-display">$0.00</div>
+        <div class="market-info">
+            Son 30 gündeki eBay satış ortalaması baz alınmıştır.<br>
+            <small>*Bu veriler simülasyondur.</small>
         </div>
     </div>
+</div>
+
+<script>
+    function calculateValue() {
+        // Elementleri seç
+        const cardName = document.getElementById('cardName').value;
+        const grade = document.getElementById('grade').value;
+        const resultArea = document.getElementById('result-area');
+        const loader = document.getElementById('loader');
+        const priceDisplay = document.getElementById('price-display');
+        const resultTitle = document.getElementById('result-title');
+
+        if(cardName === "") {
+            alert("Lütfen bir kart ismi giriniz.");
+            return;
+        }
+
+        // Yükleniyor animasyonunu göster
+        resultArea.style.display = 'none';
+        loader.style.display = 'block';
+
+        // API ÇAĞRISI SİMÜLASYONU
+        // Gerçek bir sitede burada fetch() ile eBay veya PriceCharting API'ına istek atılır.
+        setTimeout(() => {
+            // Rastgele fiyat oluştur (Simülasyon için)
+            let basePrice = Math.floor(Math.random() * 200) + 50; 
+            
+            // Puana göre çarpan ekle
+            if (grade === "10") basePrice *= 5;
+            if (grade === "9") basePrice *= 2;
+            if (grade === "8") basePrice *= 1.2;
+            
+            // Sonucu formatla
+            const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(basePrice);
+
+            // Verileri ekrana yaz
+            resultTitle.innerText = `${cardName} (PSA ${grade})`;
+            priceDisplay.innerText = formattedPrice;
+
+            // Animasyonu gizle, sonucu göster
+            loader.style.display = 'none';
+            resultArea.style.display = 'block';
+
+        }, 1500); // 1.5 saniye bekleme süresi
+    }
+</script>
 
 </body>
 </html>

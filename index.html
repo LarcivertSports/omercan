@@ -3,213 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSA Kart Değerleme Uzmanı</title>
+    <title>eBay Kart Değer Bulucu</title>
     <style>
         :root {
-            --primary: #c8102e; /* PSA Kırmızısı */
-            --dark: #1a1a1a;
-            --light: #f4f4f4;
-            --card-bg: #ffffff;
+            --ebay-color: #0064D2;
+            --psa-red: #c8102e;
+            --dark: #333;
+            --light: #f7f7f7;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             background-color: var(--light);
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            margin: 0;
         }
 
-        .container {
+        .card-container {
+            background: white;
             width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
+            max-width: 480px;
             padding: 2rem;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
         }
 
-        h1 {
+        h2 {
+            text-align: center;
             color: var(--dark);
-            text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 25px;
         }
 
-        .logo {
-            text-align: center;
-            font-weight: 900;
-            font-size: 24px;
-            color: var(--primary);
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            border: 2px solid var(--primary);
-            display: inline-block;
+        .badge {
+            background: var(--psa-red);
+            color: white;
             padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            vertical-align: middle;
+            margin-right: 5px;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
+        .input-group {
+            margin-bottom: 15px;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: #666;
-            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
         }
 
         input, select {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-            box-sizing: border-box; /* Padding taşmasını önler */
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
         }
 
-        button {
+        input:focus, select:focus {
+            border-color: var(--ebay-color);
+            outline: none;
+        }
+
+        .btn-search {
             width: 100%;
-            padding: 14px;
-            background-color: var(--primary);
+            padding: 15px;
+            background-color: var(--ebay-color);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            margin-top: 10px;
+            transition: background 0.2s;
         }
 
-        button:hover {
-            background-color: #a00d25;
+        .btn-search:hover {
+            background-color: #004bb3;
         }
 
-        /* Sonuç Alanı */
-        #result-area {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #eee;
-            display: none; /* Başlangıçta gizli */
-        }
-
-        .price-tag {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #27ae60;
-            text-align: center;
-            margin: 10px 0;
-        }
-
-        .market-info {
+        .info-text {
+            margin-top: 20px;
             font-size: 0.85rem;
             color: #777;
-            text-align: center;
-        }
-
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-            display: none;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            background: #eef5ff;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid var(--ebay-color);
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div style="text-align: center;">
-        <div class="logo">PSA CHECKER</div>
-    </div>
-    <h1>Kart Değerleme</h1>
+<div class="card-container">
+    <h2><span class="badge">PSA</span> Değer Bulucu</h2>
     
-    <div class="form-group">
-        <label for="cardName">Kart İsmi (Örn: Charizard Base Set)</label>
-        <input type="text" id="cardName" placeholder="Kart ismini giriniz...">
+    <div class="input-group">
+        <label>Kart / Karakter İsmi</label>
+        <input type="text" id="cardName" placeholder="Örn: Charizard, Pikachu, Luka Doncic...">
     </div>
 
-    <div class="form-group">
-        <label for="cardNumber">Set Numarası (Örn: 4/102)</label>
-        <input type="text" id="cardNumber" placeholder="Kartın altındaki numara">
+    <div class="input-group">
+        <label>Kart Numarası (Set No)</label>
+        <input type="text" id="cardNo" placeholder="Örn: 4/102 veya #155">
     </div>
 
-    <div class="form-group">
-        <label for="grade">PSA Puanı</label>
-        <select id="grade">
+    <div class="input-group">
+        <label>PSA Puanı</label>
+        <select id="cardGrade">
             <option value="10">PSA 10 (Gem Mint)</option>
             <option value="9">PSA 9 (Mint)</option>
             <option value="8">PSA 8 (NM-MT)</option>
-            <option value="7">PSA 7 (NM)</option>
-            <option value="raw">Derecelendirilmemiş (Raw)</option>
+            <option value="Raw">Derecelendirilmemiş (Raw)</option>
         </select>
     </div>
 
-    <button onclick="calculateValue()">Değeri Sorgula</button>
+    <button class="btn-search" onclick="findValue()">eBay Değerini Göster ↗</button>
 
-    <div class="loader" id="loader"></div>
-
-    <div id="result-area">
-        <div style="text-align: center; font-weight: bold; color: #333;" id="result-title"></div>
-        <div class="price-tag" id="price-display">$0.00</div>
-        <div class="market-info">
-            Son 30 gündeki eBay satış ortalaması baz alınmıştır.<br>
-            <small>*Bu veriler simülasyondur.</small>
-        </div>
+    <div class="info-text">
+        <strong>Nasıl Çalışır?</strong><br>
+        Bu araç, girdiğiniz bilgileri eBay'in "Satılmış Ürünler" veritabanında aratır. Böylece satıcıların istediği uçuk fiyatları değil, kartın <strong>gerçek piyasa satış değerini</strong> görürsünüz.
     </div>
 </div>
 
 <script>
-    function calculateValue() {
-        // Elementleri seç
-        const cardName = document.getElementById('cardName').value;
-        const grade = document.getElementById('grade').value;
-        const resultArea = document.getElementById('result-area');
-        const loader = document.getElementById('loader');
-        const priceDisplay = document.getElementById('price-display');
-        const resultTitle = document.getElementById('result-title');
+    function findValue() {
+        // Değerleri al
+        var name = document.getElementById('cardName').value.trim();
+        var number = document.getElementById('cardNo').value.trim();
+        var grade = document.getElementById('cardGrade').value;
 
-        if(cardName === "") {
-            alert("Lütfen bir kart ismi giriniz.");
+        // Kontrol
+        if(name === "") {
+            alert("Lütfen en azından bir kart veya karakter ismi girin.");
             return;
         }
 
-        // Yükleniyor animasyonunu göster
-        resultArea.style.display = 'none';
-        loader.style.display = 'block';
+        // Arama terimini oluştur
+        // Örnek çıktı: "Charizard 4/102 PSA 10"
+        var searchQuery = name + " " + number + " PSA " + grade;
+        
+        // Eğer Raw (Derecesiz) seçildiyse "PSA" kelimesini arama teriminden çıkarabiliriz
+        // Ama genelde "NM" (Near Mint) gibi terimler eklemek daha iyidir.
+        if(grade === "Raw") {
+            searchQuery = name + " " + number + " -PSA"; // PSA olmayanları ara
+        }
 
-        // API ÇAĞRISI SİMÜLASYONU
-        // Gerçek bir sitede burada fetch() ile eBay veya PriceCharting API'ına istek atılır.
-        setTimeout(() => {
-            // Rastgele fiyat oluştur (Simülasyon için)
-            let basePrice = Math.floor(Math.random() * 200) + 50; 
-            
-            // Puana göre çarpan ekle
-            if (grade === "10") basePrice *= 5;
-            if (grade === "9") basePrice *= 2;
-            if (grade === "8") basePrice *= 1.2;
-            
-            // Sonucu formatla
-            const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(basePrice);
+        // eBay URL Parametreleri:
+        // _nkw = Arama Kelimesi
+        // LH_Sold=1 = Satılmış İlanlar
+        // LH_Complete=1 = Tamamlanmış İlanlar
+        var ebayUrl = "https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent(searchQuery) + "&LH_Sold=1&LH_Complete=1&_ipg=50";
 
-            // Verileri ekrana yaz
-            resultTitle.innerText = `${cardName} (PSA ${grade})`;
-            priceDisplay.innerText = formattedPrice;
-
-            // Animasyonu gizle, sonucu göster
-            loader.style.display = 'none';
-            resultArea.style.display = 'block';
-
-        }, 1500); // 1.5 saniye bekleme süresi
+        // Yeni sekmede aç
+        window.open(ebayUrl, '_blank');
     }
 </script>
 

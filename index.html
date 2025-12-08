@@ -77,7 +77,7 @@
             box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
         }
 
-        /* Tam Ekran Stilleri */
+        /* Tam Ekran Düzenlemeleri */
         :fullscreen .player-container {
             width: 100vw;
             height: 100vh;
@@ -87,8 +87,8 @@
             justify-content: center;
             background: black;
         }
-        /* Webkit uyumluluğu */
-        ::-webkit-full-screen .player-container { width: 100%; height: 100%; }
+        /* Webkit (Safari/Chrome) */
+        ::-webkit-media-controls { display:none !important; } /* İsteğe bağlı native kontrolleri gizleme */
 
         /* Loader */
         .loader {
@@ -129,237 +129,6 @@
                     <h1 class="font-bold text-lg md:text-xl tracking-tight text-white">LARCIVERT <span class="text-blue-500">SPORTS</span></h1>
                 </div>
             </div>
-            <div class="relative w-full md:max-w-md group">
-                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"></i>
-                <input type="text" id="searchInput" placeholder="Kanal ara..." 
-                    class="w-full bg-brand-dark/50 border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600 text-white">
-            </div>
-        </header>
-
-        <div class="p-4 md:p-8 space-y-6 max-w-[1600px] mx-auto w-full">
-            
-            <div class="relative group" id="player-wrapper">
-                <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-1000"></div>
-                
-                <div id="player-container" class="player-container relative bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10 aspect-video md:aspect-[21/9] lg:aspect-video flex items-center justify-center">
-                    
-                    <div class="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent z-20 flex justify-between items-start opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        <div class="pointer-events-auto">
-                            <h2 id="currentChannelTitle" class="text-white font-bold text-lg drop-shadow-md">Kanal Seçimi Bekleniyor</h2>
-                            <p id="playerStatus" class="text-xs text-slate-300">İzlemek için listeden seçim yapın</p>
-                        </div>
-                        <div class="flex gap-2 pointer-events-auto">
-                            <button id="pipBtn" class="p-2 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-md text-white transition-all hidden" title="Pencere İçinde Pencere">
-                                <i class="fa-solid fa-images"></i>
-                            </button>
-                            <button id="fullscreenBtn" class="p-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white shadow-lg shadow-blue-600/30 transition-all" title="Tam Ekran">
-                                <i class="fa-solid fa-expand"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="player-area" class="w-full h-full flex items-center justify-center bg-[#050505]">
-                        <div class="text-center p-8">
-                            <div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 animate-float ring-1 ring-white/10">
-                                <i class="fa-solid fa-tv text-3xl text-slate-600"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-200 mb-2">Yayın Yok</h3>
-                            <p class="text-slate-500 text-sm">Aşağıdaki listeden bir kanal seçerek yayını başlatın.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2 pb-2 border-b border-white/5">
-                <i class="fa-solid fa-layer-group text-blue-500"></i>
-                <h2 class="text-lg font-bold text-white">Tüm Kanallar</h2>
-                <span id="channelCount" class="text-xs bg-white/10 px-2 py-0.5 rounded text-slate-400 ml-2">0</span>
-            </div>
-
-            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 pb-10"></div>
-
-            <footer class="mt-10 py-6 text-center text-slate-600 text-xs border-t border-white/5">
-                <p>© 2024 Larcivert Sports. İyi seyirler.</p>
-            </footer>
-        </div>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            const allChannels = [
-                { name: 'Bein Sports 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs1', type: 'iframe' },
-                { name: 'Exxen 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn1 ', type: 'iframe' },
-                { name: 'Bein Sports 2', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs2', type: 'iframe' },
-                { name: 'Exxen 2', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn2', type: 'iframe' },
-                { name: 'Bein Sports 3', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs3', type: 'iframe' },
-                { name: 'Exxen 3', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn3', type: 'iframe' },
-                { name: 'Bein Sports 4', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs4', type: 'iframe' },
-                { name: 'Exxen 4', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn4', type: 'iframe' },
-                { name: 'Bein Sports 5', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs5', type: 'iframe' },
-                { name: 'Exxen 5', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn5', type: 'iframe' },
-                { name: 'Bein Sports Max 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebsm1', type: 'iframe' },
-                { name: 'HT Spor', streamUrl: 'https://ciner.daioncdn.net/ht-spor/ht-spor.m3u8?app=web', type: 'iframe' },
-                { name: 'Bein Sports Max 2', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebsm2', type: 'iframe' },
-                { name: 'Bein Sports HABER', streamUrl: 'https://www.youtube.com/embed/live_stream?channel=UCPe9vNjHF1kEExT5kHwc7aw', type: 'iframe' },
-                { name: 'Tivibu Spor 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivets1', type: 'iframe' },
-                { name: 'S Sport', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivess1', type: 'iframe' },
-                { name: 'NBA TV', streamUrl: 'https://dlhd.dad/stream/stream-404.php', type: 'iframe' },
-                { name: 'S Sport 2', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivess2', type: 'iframe' },
-                { name: 'S Sport Plus 1', streamUrl: 'https://df16ea90s1u1080.739ce0e51c3d11ca.live/live/sssplus1/playlist.m3u8', type: 'iframe' },
-                { name: 'S Sport Plus 2', streamUrl: 'https://df16ea90s1u1080.739ce0e51c3d11ca.live/live/sssplus2/playlist.m3u8', type: 'iframe' },
-                { name: 'Smart Spor', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivesm1', type: 'iframe' },
-                { name: 'A Spor', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveas', type: 'iframe' },
-                { name: 'TV 8,5', streamUrl: 'https://tv8.daioncdn.net/tv8bucuk/tv8bucuk_1080p.m3u8?=&sid=7x5tz77dj2dd&app=bf58ab52-4865-4c81-b223-26b41009801e&ce=3', type: 'iframe' },
-                { name: 'TRT1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe' },
-                { name: 'TV 8', streamUrl: 'https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788&ce=3', type: 'iframe' },
-                { name: 'TRT SPOR', streamUrl: 'https://tv-trtspor1.medya.trt.com.tr/master.m3u8', type: 'hls' },
-                { name: 'TRT SPOR YILDIZ', streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'Tabii SPOR 1', streamUrl: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8', type: 'hls' },
-                { name: 'Tabii SPOR 2', streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'DAZN LaLiga', streamUrl: 'https://dlhd.dad/cast/stream-538.php', type: 'iframe' }
-            ];
-
-            let hlsInstance = null;
-            const grid = document.getElementById('channel-grid');
-            const playerContainer = document.getElementById('player-container');
-            const playerArea = document.getElementById('player-area');
-            const playerStatus = document.getElementById('playerStatus');
-            const currentChannelTitle = document.getElementById('currentChannelTitle');
-            const searchInput = document.getElementById('searchInput');
-            const channelCountFn = document.getElementById('channelCount');
-            const fullscreenBtn = document.getElementById('fullscreenBtn');
-            const pipBtn = document.getElementById('pipBtn');
-
-            // --- TAM EKRAN FONKSİYONU ---
-            const toggleFullscreen = () => {
-                if (!document.fullscreenElement) {
-                    // Sadece player container'ı tam ekran yap
-                    playerContainer.requestFullscreen().catch(err => {
-                        console.log(`Tam ekran hatası: ${err.message}`);
-                    });
-                } else {
-                    document.exitFullscreen();
-                }
-            };
-
-            // İkonu Güncelle
-            document.addEventListener('fullscreenchange', () => {
-                if (document.fullscreenElement) {
-                    fullscreenBtn.innerHTML = '<i class="fa-solid fa-compress"></i>';
-                } else {
-                    fullscreenBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
-                }
-            });
-
-            // Buton ve Çift Tıklama Eventleri
-            fullscreenBtn.addEventListener('click', toggleFullscreen);
-            playerContainer.addEventListener('dblclick', toggleFullscreen);
-
-            // --- OYNATICI ---
-            const playChannel = (channel) => {
-                if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-                playerArea.innerHTML = '';
-
-                currentChannelTitle.textContent = channel.name;
-                playerStatus.className = 'text-green-400 font-medium text-xs flex items-center gap-1';
-                playerStatus.innerHTML = '<span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> CANLI';
-                
-                const loader = document.createElement('div');
-                loader.className = 'absolute inset-0 flex items-center justify-center bg-black z-10 pointer-events-none';
-                loader.innerHTML = '<div class="loader"></div>';
-                playerArea.appendChild(loader);
-                setTimeout(() => loader.remove(), 1500);
-
-                if (channel.type === 'hls' && Hls.isSupported()) {
-                    const video = document.createElement('video');
-                    video.className = 'w-full h-full object-contain';
-                    video.controls = true;
-                    video.autoplay = true;
-                    video.playsInline = true;
-                    playerArea.appendChild(video);
-                    
-                    hlsInstance = new Hls();
-                    hlsInstance.loadSource(channel.streamUrl);
-                    hlsInstance.attachMedia(video);
-                    hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(e => console.log(e)));
-                    
-                    if (document.pictureInPictureEnabled) {
-                        pipBtn.classList.remove('hidden');
-                        pipBtn.onclick = async () => {
-                            if (document.pictureInPictureElement) await document.exitPictureInPicture();
-                            else await video.requestPictureInPicture();
-                        };
-                    } else pipBtn.classList.add('hidden');
-                } else {
-                    pipBtn.classList.add('hidden'); 
-                    const iframe = document.createElement('iframe');
-                    iframe.src = channel.streamUrl;
-                    iframe.className = 'w-full h-full border-none';
-                    iframe.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
-                    playerArea.appendChild(iframe);
-                }
-
-                if(window.innerWidth < 768) window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
-
-            const renderGrid = (query = '') => {
-                grid.innerHTML = '';
-                const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
-                channelCountFn.textContent = filtered.length;
-
-                if (filtered.length === 0) {
-                    grid.innerHTML = '<div class="col-span-full text-center py-10 text-slate-500">Kanal bulunamadı.</div>';
-                    return;
-                }
-
-                filtered.forEach(channel => {
-                    const card = document.createElement('div');
-                    card.className = `channel-card group relative bg-brand-card rounded-xl p-4 cursor-pointer border border-white/5 overflow-hidden`;
-                    card.innerHTML = `
-                        <div class="flex flex-col items-center justify-center h-20 gap-3 relative z-10">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/5">
-                                <i class="fa-solid fa-play text-slate-400 text-xs group-hover:text-blue-500 transition-colors"></i>
-                            </div>
-                            <h3 class="text-sm font-semibold text-center text-slate-300 group-hover:text-white line-clamp-2 leading-tight">${channel.name}</h3>
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    `;
-                    card.onclick = () => {
-                        document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('active'));
-                        card.classList.add('active');
-                        playChannel(channel);
-                    };
-                    grid.appendChild(card);
-                });
-            };
-
-            searchInput.addEventListener('input', (e) => renderGrid(e.target.value));
-            renderGrid();
-        });
-    </script>
-</body>
-</html>
-                <i class="fa-solid fa-tv"></i>
-            </div>
-            </div>
-
-        <a href="https://t.me/+mSNjtNrQ0xozNWNk" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[#229ED9]/20 hover:text-[#229ED9] transition-all text-slate-500" title="Telegram">
-            <i class="fa-brands fa-telegram text-2xl"></i>
-        </a>
-    </aside>
-
-    <main id="main-content" class="flex-1 flex flex-col h-full overflow-y-auto relative scroll-smooth">
-        
-        <header class="sticky top-0 z-30 glass border-b border-white/5 px-4 py-4 md:px-8 flex flex-col md:flex-row gap-4 justify-between items-center">
-            <div class="flex items-center gap-3 w-full md:w-auto">
-                <div class="md:hidden w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <i class="fa-solid fa-play text-white text-xs"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg md:text-xl tracking-tight text-white">LARCIVERT <span class="text-blue-500">SPORTS</span></h1>
-                </div>
-            </div>
 
             <div class="relative w-full md:max-w-md group">
                 <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"></i>
@@ -373,18 +142,19 @@
             <div class="relative group">
                 <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-1000"></div>
                 
-                <div class="player-container relative bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10 aspect-video md:aspect-[21/9] lg:aspect-video">
-                    <div class="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent z-20 flex justify-between items-start opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <div id="player-container" class="player-container relative bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10 aspect-video md:aspect-[21/9] lg:aspect-video">
+                    
+                    <div class="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent z-20 flex justify-between items-start opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div class="pointer-events-auto">
                             <h2 id="currentChannelTitle" class="text-white font-bold text-lg drop-shadow-md">Kanal Seçimi Bekleniyor</h2>
                             <p id="playerStatus" class="text-xs text-slate-300">İzlemek için listeden seçim yapın</p>
                         </div>
                         <div class="flex gap-2 pointer-events-auto">
-                            <button id="pipBtn" class="p-2 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-md text-white transition-all hidden" title="Pencere İçinde Pencere">
+                            <button id="pipBtn" class="p-2.5 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-md text-white transition-all hidden" title="Pencere İçinde Pencere">
                                 <i class="fa-solid fa-images"></i>
                             </button>
-                            <button id="cinemaModeBtn" class="p-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white shadow-lg shadow-blue-600/30 transition-all">
-                                <i class="fa-solid fa-expand"></i>
+                            <button id="fullscreenBtn" class="p-2.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-white shadow-lg shadow-blue-600/30 transition-all transform hover:scale-105">
+                                <i class="fa-solid fa-expand" id="fsIcon"></i>
                             </button>
                         </div>
                     </div>
@@ -411,7 +181,7 @@
                 </div>
 
             <footer class="mt-10 py-6 text-center text-slate-600 text-xs border-t border-white/5">
-                <p>&copy; 2024 Larcivert Sports. İyi seyirler.</p>
+                <p>© 2024 Larcivert Sports. İyi seyirler.</p>
             </footer>
         </div>
     </main>
@@ -419,7 +189,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- KANAL VERİLERİ (Tek Liste) ---
+            // --- KANAL VERİLERİ ---
             const allChannels = [
                 { name: 'Bein Sports 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs1', type: 'iframe' },
                 { name: 'Exxen 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn1 ', type: 'iframe' },
@@ -457,32 +227,30 @@
             let hlsInstance = null;
             const grid = document.getElementById('channel-grid');
             const playerArea = document.getElementById('player-area');
+            const playerContainer = document.getElementById('player-container');
             const playerStatus = document.getElementById('playerStatus');
             const currentChannelTitle = document.getElementById('currentChannelTitle');
             const searchInput = document.getElementById('searchInput');
             const channelCountFn = document.getElementById('channelCount');
-            const cinemaModeBtn = document.getElementById('cinemaModeBtn');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const fsIcon = document.getElementById('fsIcon');
             const pipBtn = document.getElementById('pipBtn');
 
             // --- OYNATICI FONKSİYONU ---
             const playChannel = (channel) => {
-                // Temizlik
                 if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
                 playerArea.innerHTML = '';
 
-                // UI Bilgi
                 currentChannelTitle.textContent = channel.name;
                 playerStatus.className = 'text-green-400 font-medium text-xs flex items-center gap-1';
                 playerStatus.innerHTML = '<span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> CANLI';
                 
-                // Loader
                 const loader = document.createElement('div');
                 loader.className = 'absolute inset-0 flex items-center justify-center bg-black z-10 pointer-events-none';
                 loader.innerHTML = '<div class="loader"></div>';
                 playerArea.appendChild(loader);
                 setTimeout(() => loader.remove(), 1500);
 
-                // Yayın Türüne Göre Oynat
                 if (channel.type === 'hls' && Hls.isSupported()) {
                     const video = document.createElement('video');
                     video.className = 'w-full h-full object-contain';
@@ -496,7 +264,6 @@
                     hlsInstance.attachMedia(video);
                     hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(e => console.log("Otomatik oynatma engellendi")));
                     
-                    // PiP Desteği
                     if (document.pictureInPictureEnabled) {
                         pipBtn.classList.remove('hidden');
                         pipBtn.onclick = async () => {
@@ -506,12 +273,9 @@
                                 await video.requestPictureInPicture();
                             }
                         };
-                    } else {
-                         pipBtn.classList.add('hidden');
-                    }
+                    } else { pipBtn.classList.add('hidden'); }
 
                 } else {
-                    // Iframe
                     pipBtn.classList.add('hidden'); 
                     const iframe = document.createElement('iframe');
                     iframe.src = channel.streamUrl;
@@ -520,16 +284,67 @@
                     playerArea.appendChild(iframe);
                 }
 
-                // Mobilde yukarı kaydır
                 if(window.innerWidth < 768) {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             };
 
-            // --- LİSTELEME FONKSİYONU ---
+            // --- TAM EKRAN (YATAY) FONKSİYONU ---
+            const toggleFullscreen = async () => {
+                try {
+                    if (!document.fullscreenElement) {
+                        // Tam ekrana geç
+                        if (playerContainer.requestFullscreen) {
+                            await playerContainer.requestFullscreen();
+                        } else if (playerContainer.webkitRequestFullscreen) { /* Safari */
+                            await playerContainer.webkitRequestFullscreen();
+                        } else if (playerContainer.msRequestFullscreen) { /* IE11 */
+                            await playerContainer.msRequestFullscreen();
+                        }
+                        
+                        // Yatay (Landscape) moda kilitle (Mobil için)
+                        if (screen.orientation && screen.orientation.lock) {
+                            try {
+                                await screen.orientation.lock('landscape');
+                            } catch (e) {
+                                console.log('Yatay mod kilidi desteklenmiyor veya izin verilmedi:', e);
+                            }
+                        }
+                        fsIcon.classList.replace('fa-expand', 'fa-compress');
+                    } else {
+                        // Tam ekrandan çık
+                        if (document.exitFullscreen) {
+                            await document.exitFullscreen();
+                        } else if (document.webkitExitFullscreen) { 
+                            await document.webkitExitFullscreen();
+                        } else if (document.msExitFullscreen) { 
+                            await document.msExitFullscreen();
+                        }
+
+                        // Oryantasyon kilidini kaldır
+                        if (screen.orientation && screen.orientation.unlock) {
+                            screen.orientation.unlock();
+                        }
+                        fsIcon.classList.replace('fa-compress', 'fa-expand');
+                    }
+                } catch (err) {
+                    console.error("Tam ekran hatası:", err);
+                }
+            };
+
+            // Tam ekran olayını dinle (ESC tuşu için)
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) {
+                    fsIcon.classList.replace('fa-compress', 'fa-expand');
+                    if (screen.orientation && screen.orientation.unlock) {
+                        screen.orientation.unlock();
+                    }
+                }
+            });
+
+            // --- LİSTELEME ---
             const renderGrid = (query = '') => {
                 grid.innerHTML = '';
-                
                 const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
                 channelCountFn.textContent = filtered.length;
 
@@ -541,7 +356,6 @@
                 filtered.forEach(channel => {
                     const card = document.createElement('div');
                     card.className = `channel-card group relative bg-brand-card rounded-xl p-4 cursor-pointer border border-white/5 overflow-hidden`;
-                    
                     card.innerHTML = `
                         <div class="flex flex-col items-center justify-center h-20 gap-3 relative z-10">
                             <div class="w-10 h-10 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/5">
@@ -551,30 +365,18 @@
                         </div>
                         <div class="absolute inset-0 bg-gradient-to-t from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     `;
-                    
                     card.onclick = () => {
                         document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('active'));
                         card.classList.add('active');
                         playChannel(channel);
                     };
-
                     grid.appendChild(card);
                 });
             };
 
-            // --- EVENT LISTENERS ---
+            // --- BAŞLAT ---
             searchInput.addEventListener('input', (e) => renderGrid(e.target.value));
-
-            cinemaModeBtn.addEventListener('click', () => {
-                document.body.classList.toggle('cinema-active');
-                if(document.body.classList.contains('cinema-active')) {
-                    document.documentElement.requestFullscreen().catch(e=>console.log(e));
-                } else {
-                    if(document.exitFullscreen) document.exitFullscreen();
-                }
-            });
-
-            // Başlat
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
             renderGrid();
         });
     </script>

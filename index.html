@@ -1,237 +1,352 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini AI Sohbet Asistanı</title>
+    <title>Larcivert Sports | Lite Stream</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0B0F19',
+                            card: '#151A25',
+                            accent: '#3B82F6', 
+                        }
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* Modern ve Temiz CSS Tasarımı */
-        :root {
-            --primary-color: #4a90e2;
-            --bg-color: #f4f7f6;
-            --chat-bg: #ffffff;
-            --user-msg-bg: #4a90e2;
-            --ai-msg-bg: #e9ecef;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            background-color: #050505;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.1) 0%, transparent 50%);
+            color: #e2e8f0;
         }
 
-        .chat-container {
-            width: 90%;
-            max-width: 600px;
-            background: var(--chat-bg);
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 80vh;
+        /* Özel Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0B0F19; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3B82F6; }
+
+        /* Cam Efekti */
+        .glass {
+            background: rgba(21, 26, 37, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .header {
-            background: var(--primary-color);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2rem;
+        /* Kart Stilleri */
+        .channel-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .channel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        .channel-card.active {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(21, 26, 37, 0.9));
+            border-color: #3B82F6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
         }
 
-        #chat-history {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        /* Sinema Modu */
+        .cinema-active header, .cinema-active .sidebar, .cinema-active footer {
+            display: none !important;
+        }
+        .cinema-active #main-content { margin: 0; padding: 0; max-width: 100%; }
+        .cinema-active .player-container { 
+            height: 100vh; 
+            border-radius: 0; 
+            z-index: 9999;
+            position: fixed; top: 0; left: 0; width: 100%; 
         }
 
-        .message {
-            max-width: 80%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            line-height: 1.5;
-            font-size: 0.95rem;
+        /* Loader */
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid #3B82F6;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
         }
-
-        .user-message {
-            align-self: flex-end;
-            background-color: var(--user-msg-bg);
-            color: white;
-            border-bottom-right-radius: 2px;
-        }
-
-        .ai-message {
-            align-self: flex-start;
-            background-color: var(--ai-msg-bg);
-            color: #333;
-            border-bottom-left-radius: 2px;
-        }
-
-        .input-area {
-            padding: 20px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-            background: #fff;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--primary-color);
-        }
-
-        button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #357abd;
-        }
-
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .loading {
-            font-size: 0.8rem;
-            color: #888;
-            margin-left: 10px;
-            display: none;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body class="flex h-screen overflow-hidden antialiased selection:bg-blue-500 selection:text-white">
 
-<div class="chat-container">
-    <div class="header">
-        ✨ Gemini AI Asistanı
-    </div>
-    
-    <div id="chat-history">
-        <div class="message ai-message">Merhaba! Ben Gemini. Size nasıl yardımcı olabilirim?</div>
-    </div>
+    <aside class="sidebar hidden md:flex flex-col w-20 lg:w-24 h-full glass border-r border-white/5 z-40 items-center py-6 gap-8">
+        <div class="w-12 h-12 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <i class="fa-solid fa-play text-white text-xl"></i>
+        </div>
 
-    <div class="input-area">
-        <input type="text" id="user-input" placeholder="Bir şeyler sorun..." onkeypress="handleEnter(event)">
-        <button id="send-btn" onclick="sendMessage()">Gönder</button>
-    </div>
-    <div id="loading-indicator" class="loading">Yazıyor...</div>
-</div>
+        <div class="flex flex-col gap-6 w-full items-center flex-1 justify-center">
+            <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-blue-400">
+                <i class="fa-solid fa-tv"></i>
+            </div>
+            </div>
 
-<script>
-    // --- YAPILANDIRMA ---
-    // NOT: Güvenlik için gerçek projelerde API anahtarını sunucu tarafında saklayın.
-    // Bu sadece test amaçlı bir istemci (client-side) kodudur.
-    
-    const API_KEY = "AIzaSyB_H6JbM2yz5AhMqE5ISG1xelobDxuPyvs"; 
-    
-    // Şu an kararlı sürüm için gemini-1.5-flash kullanıyoruz. 
-    // Eğer "Gemini 3" erişiminiz varsa model ismini güncelleyebilirsiniz.
-    const MODEL_NAME = "gemini-1.5-flash"; 
+        <a href="https://t.me/+mSNjtNrQ0xozNWNk" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-[#229ED9]/20 hover:text-[#229ED9] transition-all text-slate-500" title="Telegram">
+            <i class="fa-brands fa-telegram text-2xl"></i>
+        </a>
+    </aside>
 
-    const chatHistory = document.getElementById('chat-history');
-    const userInput = document.getElementById('user-input');
-    const sendBtn = document.getElementById('send-btn');
-    const loadingIndicator = document.getElementById('loading-indicator');
-
-    function handleEnter(e) {
-        if (e.key === 'Enter') sendMessage();
-    }
-
-    async function sendMessage() {
-        const text = userInput.value.trim();
-        if (!text) return;
-
-        // 1. Kullanıcı mesajını ekrana ekle
-        addMessage(text, 'user-message');
-        userInput.value = '';
+    <main id="main-content" class="flex-1 flex flex-col h-full overflow-y-auto relative scroll-smooth">
         
-        // Yükleniyor durumunu aç
-        setLoading(true);
+        <header class="sticky top-0 z-30 glass border-b border-white/5 px-4 py-4 md:px-8 flex flex-col md:flex-row gap-4 justify-between items-center">
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="md:hidden w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-play text-white text-xs"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg md:text-xl tracking-tight text-white">LARCIVERT <span class="text-blue-500">SPORTS</span></h1>
+                </div>
+            </div>
 
-        try {
-            // 2. API İsteği Gönder
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: text
-                        }]
-                    }]
-                })
+            <div class="relative w-full md:max-w-md group">
+                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-500 transition-colors"></i>
+                <input type="text" id="searchInput" placeholder="Kanal ara..." 
+                    class="w-full bg-brand-dark/50 border border-white/10 rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600 text-white">
+            </div>
+        </header>
+
+        <div class="p-4 md:p-8 space-y-6 max-w-[1600px] mx-auto w-full">
+            
+            <div class="relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-1000"></div>
+                
+                <div class="player-container relative bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10 aspect-video md:aspect-[21/9] lg:aspect-video">
+                    <div class="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent z-20 flex justify-between items-start opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        <div class="pointer-events-auto">
+                            <h2 id="currentChannelTitle" class="text-white font-bold text-lg drop-shadow-md">Kanal Seçimi Bekleniyor</h2>
+                            <p id="playerStatus" class="text-xs text-slate-300">İzlemek için listeden seçim yapın</p>
+                        </div>
+                        <div class="flex gap-2 pointer-events-auto">
+                            <button id="pipBtn" class="p-2 bg-white/10 hover:bg-white/20 rounded-lg backdrop-blur-md text-white transition-all hidden" title="Pencere İçinde Pencere">
+                                <i class="fa-solid fa-images"></i>
+                            </button>
+                            <button id="cinemaModeBtn" class="p-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white shadow-lg shadow-blue-600/30 transition-all">
+                                <i class="fa-solid fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="player-area" class="w-full h-full flex items-center justify-center bg-[#050505]">
+                        <div class="text-center p-8">
+                            <div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 animate-float ring-1 ring-white/10">
+                                <i class="fa-solid fa-tv text-3xl text-slate-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-200 mb-2">Yayın Yok</h3>
+                            <p class="text-slate-500 text-sm">Aşağıdaki listeden bir kanal seçerek yayını başlatın.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 pb-2 border-b border-white/5">
+                <i class="fa-solid fa-layer-group text-blue-500"></i>
+                <h2 class="text-lg font-bold text-white">Tüm Kanallar</h2>
+                <span id="channelCount" class="text-xs bg-white/10 px-2 py-0.5 rounded text-slate-400 ml-2">0</span>
+            </div>
+
+            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 pb-10">
+                </div>
+
+            <footer class="mt-10 py-6 text-center text-slate-600 text-xs border-t border-white/5">
+                <p>&copy; 2024 Larcivert Sports. İyi seyirler.</p>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- KANAL VERİLERİ (Tek Liste) ---
+            const allChannels = [
+                { name: 'Bein Sports 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs1', type: 'iframe' },
+                { name: 'Exxen 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn1 ', type: 'iframe' },
+                { name: 'Bein Sports 2', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs2', type: 'iframe' },
+                { name: 'Exxen 2', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn2', type: 'iframe' },
+                { name: 'Bein Sports 3', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs3', type: 'iframe' },
+                { name: 'Exxen 3', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn3', type: 'iframe' },
+                { name: 'Bein Sports 4', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs4', type: 'iframe' },
+                { name: 'Exxen 4', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn4', type: 'iframe' },
+                { name: 'Bein Sports 5', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebs5', type: 'iframe' },
+                { name: 'Exxen 5', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn5', type: 'iframe' },
+                { name: 'Bein Sports Max 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebsm1', type: 'iframe' },
+                { name: 'HT Spor', streamUrl: 'https://ciner.daioncdn.net/ht-spor/ht-spor.m3u8?app=web', type: 'iframe' },
+                { name: 'Bein Sports Max 2', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivebsm2', type: 'iframe' },
+                { name: 'Bein Sports HABER', streamUrl: 'https://www.youtube.com/embed/live_stream?channel=UCPe9vNjHF1kEExT5kHwc7aw', type: 'iframe' },
+                { name: 'Tivibu Spor 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivets1', type: 'iframe' },
+                { name: 'S Sport', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivess1', type: 'iframe' },
+                { name: 'NBA TV', streamUrl: 'https://dlhd.dad/stream/stream-404.php', type: 'iframe' },
+                { name: 'S Sport 2', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivess2', type: 'iframe' },
+                { name: 'S Sport Plus 1', streamUrl: 'https://df16ea90s1u1080.739ce0e51c3d11ca.live/live/sssplus1/playlist.m3u8', type: 'iframe' },
+                { name: 'S Sport Plus 2', streamUrl: 'https://df16ea90s1u1080.739ce0e51c3d11ca.live/live/sssplus2/playlist.m3u8', type: 'iframe' },
+                { name: 'Smart Spor', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamlivesm1', type: 'iframe' },
+                { name: 'A Spor', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveas', type: 'iframe' },
+                { name: 'TV 8,5', streamUrl: 'https://tv8.daioncdn.net/tv8bucuk/tv8bucuk_1080p.m3u8?=&sid=7x5tz77dj2dd&app=bf58ab52-4865-4c81-b223-26b41009801e&ce=3', type: 'iframe' },
+                { name: 'TRT1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe' },
+                { name: 'TV 8', streamUrl: 'https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788&ce=3', type: 'iframe' },
+                { name: 'TRT SPOR', streamUrl: 'https://tv-trtspor1.medya.trt.com.tr/master.m3u8', type: 'hls' },
+                { name: 'TRT SPOR YILDIZ', streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
+                { name: 'Tabii SPOR 1', streamUrl: 'https://iaqzu4szhtzeqd0edpsayinle.medya.trt.com.tr/master_720p.m3u8', type: 'hls' },
+                { name: 'Tabii SPOR 2', streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
+                { name: 'DAZN LaLiga', streamUrl: 'https://dlhd.dad/cast/stream-538.php', type: 'iframe' }
+            ];
+
+            // --- DEĞİŞKENLER & DOM ---
+            let hlsInstance = null;
+            const grid = document.getElementById('channel-grid');
+            const playerArea = document.getElementById('player-area');
+            const playerStatus = document.getElementById('playerStatus');
+            const currentChannelTitle = document.getElementById('currentChannelTitle');
+            const searchInput = document.getElementById('searchInput');
+            const channelCountFn = document.getElementById('channelCount');
+            const cinemaModeBtn = document.getElementById('cinemaModeBtn');
+            const pipBtn = document.getElementById('pipBtn');
+
+            // --- OYNATICI FONKSİYONU ---
+            const playChannel = (channel) => {
+                // Temizlik
+                if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+                playerArea.innerHTML = '';
+
+                // UI Bilgi
+                currentChannelTitle.textContent = channel.name;
+                playerStatus.className = 'text-green-400 font-medium text-xs flex items-center gap-1';
+                playerStatus.innerHTML = '<span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> CANLI';
+                
+                // Loader
+                const loader = document.createElement('div');
+                loader.className = 'absolute inset-0 flex items-center justify-center bg-black z-10 pointer-events-none';
+                loader.innerHTML = '<div class="loader"></div>';
+                playerArea.appendChild(loader);
+                setTimeout(() => loader.remove(), 1500);
+
+                // Yayın Türüne Göre Oynat
+                if (channel.type === 'hls' && Hls.isSupported()) {
+                    const video = document.createElement('video');
+                    video.className = 'w-full h-full object-contain';
+                    video.controls = true;
+                    video.autoplay = true;
+                    video.playsInline = true;
+                    
+                    playerArea.appendChild(video);
+                    hlsInstance = new Hls();
+                    hlsInstance.loadSource(channel.streamUrl);
+                    hlsInstance.attachMedia(video);
+                    hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(e => console.log("Otomatik oynatma engellendi")));
+                    
+                    // PiP Desteği
+                    if (document.pictureInPictureEnabled) {
+                        pipBtn.classList.remove('hidden');
+                        pipBtn.onclick = async () => {
+                            if (document.pictureInPictureElement) {
+                                await document.exitPictureInPicture();
+                            } else {
+                                await video.requestPictureInPicture();
+                            }
+                        };
+                    } else {
+                         pipBtn.classList.add('hidden');
+                    }
+
+                } else {
+                    // Iframe
+                    pipBtn.classList.add('hidden'); 
+                    const iframe = document.createElement('iframe');
+                    iframe.src = channel.streamUrl;
+                    iframe.className = 'w-full h-full border-none';
+                    iframe.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
+                    playerArea.appendChild(iframe);
+                }
+
+                // Mobilde yukarı kaydır
+                if(window.innerWidth < 768) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            };
+
+            // --- LİSTELEME FONKSİYONU ---
+            const renderGrid = (query = '') => {
+                grid.innerHTML = '';
+                
+                const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
+                channelCountFn.textContent = filtered.length;
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = '<div class="col-span-full text-center py-10 text-slate-500">Kanal bulunamadı.</div>';
+                    return;
+                }
+
+                filtered.forEach(channel => {
+                    const card = document.createElement('div');
+                    card.className = `channel-card group relative bg-brand-card rounded-xl p-4 cursor-pointer border border-white/5 overflow-hidden`;
+                    
+                    card.innerHTML = `
+                        <div class="flex flex-col items-center justify-center h-20 gap-3 relative z-10">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 ring-1 ring-white/5">
+                                <i class="fa-solid fa-play text-slate-400 text-xs group-hover:text-blue-500 transition-colors"></i>
+                            </div>
+                            <h3 class="text-sm font-semibold text-center text-slate-300 group-hover:text-white line-clamp-2 leading-tight">${channel.name}</h3>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    `;
+                    
+                    card.onclick = () => {
+                        document.querySelectorAll('.channel-card').forEach(c => c.classList.remove('active'));
+                        card.classList.add('active');
+                        playChannel(channel);
+                    };
+
+                    grid.appendChild(card);
+                });
+            };
+
+            // --- EVENT LISTENERS ---
+            searchInput.addEventListener('input', (e) => renderGrid(e.target.value));
+
+            cinemaModeBtn.addEventListener('click', () => {
+                document.body.classList.toggle('cinema-active');
+                if(document.body.classList.contains('cinema-active')) {
+                    document.documentElement.requestFullscreen().catch(e=>console.log(e));
+                } else {
+                    if(document.exitFullscreen) document.exitFullscreen();
+                }
             });
 
-            const data = await response.json();
-
-            // 3. Hata Kontrolü
-            if (data.error) {
-                throw new Error(data.error.message);
-            }
-
-            // 4. AI Cevabını Al ve Ekrana Yaz
-            const aiResponse = data.candidates[0].content.parts[0].text;
-            
-            // Markdown benzeri yıldızları temizle (isteğe bağlı basit temizlik)
-            const cleanResponse = aiResponse.replace(/\*\*/g, ''); 
-            
-            addMessage(cleanResponse, 'ai-message');
-
-        } catch (error) {
-            console.error("Hata:", error);
-            addMessage("Üzgünüm, bir hata oluştu: " + error.message, 'ai-message');
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    function addMessage(text, className) {
-        const div = document.createElement('div');
-        div.classList.add('message', className);
-        div.innerText = text;
-        chatHistory.appendChild(div);
-        // Otomatik aşağı kaydır
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-    }
-
-    function setLoading(isLoading) {
-        sendBtn.disabled = isLoading;
-        loadingIndicator.style.display = isLoading ? 'block' : 'none';
-        if(isLoading) {
-            sendBtn.innerText = "...";
-        } else {
-            sendBtn.innerText = "Gönder";
-        }
-    }
-</script>
-
+            // Başlat
+            renderGrid();
+        });
+    </script>
 </body>
 </html>

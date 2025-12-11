@@ -14,11 +14,11 @@
             background-color: #141414;
             color: white;
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Yatay taşmayı engeller */
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        /* Scrollbar (İnce ve Şık) */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #141414; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #E50914; }
@@ -26,15 +26,18 @@
         .brand-font { font-family: 'Bebas Neue', cursive; }
         
         .channel-card {
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease;
             z-index: 1;
         }
-        .channel-card:hover {
-            transform: scale(1.05);
-            z-index: 10;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            cursor: pointer;
+        /* Masaüstü hover efekti */
+        @media (hover: hover) {
+            .channel-card:hover {
+                transform: scale(1.05);
+                z-index: 10;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+                border: 2px solid rgba(255, 255, 255, 0.2);
+                cursor: pointer;
+            }
         }
 
         .loader {
@@ -49,9 +52,9 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <nav class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/90 to-transparent px-4 md:px-6 py-4 flex items-center justify-between transition-all duration-300" id="navbar">
-        <div class="flex items-center gap-4 md:gap-8">
-            <h1 class="text-3xl md:text-4xl text-[#E50914] brand-font tracking-wider cursor-pointer select-none" onclick="closePlayer()">NETSPORTS</h1>
+    <nav class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/90 to-transparent px-5 py-4 flex items-center justify-between transition-all duration-300" id="navbar">
+        <div class="flex items-center gap-6">
+            <h1 class="text-3xl text-[#E50914] brand-font tracking-wider cursor-pointer select-none" onclick="closePlayer()">NETSPORTS</h1>
             <ul class="hidden md:flex gap-6 text-sm text-gray-300 font-medium">
                 <li class="hover:text-white cursor-pointer transition">Ana Sayfa</li>
                 <li class="hover:text-white cursor-pointer transition">Canlı</li>
@@ -64,34 +67,34 @@
         </div>
     </nav>
 
-    <header id="stage-area" class="relative w-full min-h-[60vh] md:h-[85vh] bg-black group overflow-hidden">
+    <header id="stage-area" class="relative w-full aspect-video max-h-[80vh] bg-black group overflow-hidden mx-auto">
         
-        <div id="hero-content" class="absolute inset-0 transition-opacity duration-500 flex items-center">
+        <div id="hero-content" class="absolute inset-0 transition-opacity duration-500 flex items-center justify-start">
             <div class="absolute inset-0 bg-[url('https://wallpaperaccess.com/full/1569485.jpg')] bg-cover bg-center">
-                <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent"></div>
             </div>
             
-            <div class="relative z-10 w-full px-6 md:px-16 max-w-3xl pt-20">
+            <div class="relative z-10 w-full px-6 md:px-12 pt-16 max-w-4xl">
                 <div class="flex items-center gap-2 text-[#E50914] font-bold tracking-widest text-sm animate-pulse mb-2">
-                    <span class="text-xl md:text-2xl brand-font">CANLI</span> YAYIN AKIŞI
+                    <span class="text-xl brand-font">CANLI</span> YAYIN AKIŞI
                 </div>
                 
-                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-xl mb-4">
+                <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight drop-shadow-xl mb-3">
                     MAÇ KEYFİ BAŞLASIN
                 </h1>
                 
-                <p class="text-base md:text-lg text-gray-200 line-clamp-3 drop-shadow-md mb-6 md:max-w-2xl">
+                <p class="text-sm md:text-base text-gray-200 line-clamp-3 drop-shadow-md mb-5 max-w-xl">
                     Süper Lig, Şampiyonlar Ligi ve Avrupa'nın en büyük ligleri tek adreste. Aşağıdan kanalını seç ve kesintisiz izlemeye başla.
                 </p>
                 
-                <div class="flex flex-wrap gap-4">
-                    <button onclick="playRandom()" class="bg-white text-black px-6 py-3 rounded md:rounded-md hover:bg-gray-200 transition font-bold flex items-center gap-2 shadow-lg">
-                        <i class="fa-solid fa-play text-xl"></i> 
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="playRandom()" class="bg-white text-black px-6 py-2.5 rounded hover:bg-gray-200 transition font-bold flex items-center gap-2 shadow-lg text-sm md:text-base">
+                        <i class="fa-solid fa-play"></i> 
                         <span>Rastgele İzle</span>
                     </button>
-                    <button class="bg-gray-600/40 text-white px-6 py-3 rounded md:rounded-md hover:bg-gray-600/60 transition font-semibold flex items-center gap-2 backdrop-blur-sm">
-                        <i class="fa-solid fa-circle-info text-xl"></i>
+                    <button class="bg-gray-600/40 text-white px-6 py-2.5 rounded hover:bg-gray-600/60 transition font-semibold flex items-center gap-2 backdrop-blur-sm text-sm md:text-base">
+                        <i class="fa-solid fa-circle-info"></i>
                         <span>Bilgi Al</span>
                     </button>
                 </div>
@@ -100,27 +103,26 @@
 
         <div id="player-wrapper" class="absolute inset-0 z-20 bg-black hidden flex-col group/player">
             
-            <div class="absolute top-0 left-0 w-full p-4 md:p-6 z-40 flex justify-between items-start bg-gradient-to-b from-black/90 to-transparent transition-opacity duration-300 pointer-events-none">
+            <div class="absolute top-0 left-0 w-full px-6 pt-4 pb-12 z-40 flex justify-between items-start bg-gradient-to-b from-black/90 to-transparent pointer-events-none mt-14 md:mt-16">
                 
-                <div class="pointer-events-auto mt-14 md:mt-4">
+                <div class="pointer-events-auto">
                     <div class="flex flex-col">
-                        <h2 id="playing-title" class="text-2xl md:text-3xl font-bold text-white drop-shadow-md pl-3 border-l-4 border-[#E50914] leading-none py-1">
-                            Kanal Adı
+                        <h2 id="playing-title" class="text-xl md:text-2xl font-bold text-white drop-shadow-md pl-3 border-l-4 border-[#E50914] leading-none py-1">
+                            Kanal Yükleniyor...
                         </h2>
-                        <span class="text-xs text-green-400 pl-4 mt-1 font-medium tracking-wide uppercase flex items-center gap-1">
-                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Şu an oynatılıyor
+                        <span class="text-[10px] md:text-xs text-green-400 pl-4 mt-1 font-medium tracking-wide uppercase flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> CANLI YAYIN
                         </span>
                     </div>
                 </div>
 
-                <div class="pointer-events-auto mt-14 md:mt-4 flex items-center gap-3">
-                    
-                    <button onclick="toggleFullscreen()" class="bg-white/10 hover:bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-lg border border-white/10 group" title="Tam Ekran">
-                        <i id="fs-icon" class="fa-solid fa-expand text-lg group-hover:scale-110 transition-transform"></i>
+                <div class="pointer-events-auto flex items-center gap-3">
+                    <button onclick="toggleFullscreen()" class="bg-white/10 hover:bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all border border-white/10" title="Tam Ekran">
+                        <i id="fs-icon" class="fa-solid fa-expand text-sm"></i>
                     </button>
 
-                    <button onclick="closePlayer()" class="bg-red-600/80 hover:bg-red-700 text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-lg border border-white/10 group">
-                        <i class="fa-solid fa-xmark text-xl group-hover:scale-110 transition-transform"></i>
+                    <button onclick="closePlayer()" class="bg-red-600/90 hover:bg-red-700 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all border border-white/10 shadow-lg">
+                        <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
             </div>
@@ -130,10 +132,10 @@
         </div>
     </header>
 
-    <main class="relative z-20 bg-[#141414] px-4 md:px-16 pt-8 pb-20 space-y-10" id="main-list">
+    <main class="relative z-20 bg-[#141414] px-4 md:px-8 pb-10 space-y-8" id="main-list">
         </main>
 
-    <footer class="bg-black py-8 text-center text-gray-500 text-xs md:text-sm mt-auto border-t border-white/10">
+    <footer class="bg-black py-6 text-center text-gray-600 text-xs mt-auto border-t border-white/5">
         <p>NETSPORTS © 2025</p>
     </footer>
 
@@ -201,19 +203,19 @@
                 const section = document.createElement('section');
                 
                 section.innerHTML = `
-                    <h3 class="text-lg md:text-xl font-semibold text-gray-200 mb-3 pl-2 border-l-4 border-[#E50914] ml-1">${cat.title}</h3>
-                    <div class="flex overflow-x-auto pb-4 gap-3 md:gap-4 px-1 scroll-smooth" style="scrollbar-width: thin;">
+                    <h3 class="text-base md:text-lg font-semibold text-gray-200 mb-3 pl-2 border-l-4 border-[#E50914] ml-1">${cat.title}</h3>
+                    <div class="flex overflow-x-auto pb-4 gap-3 px-1 scroll-smooth" style="scrollbar-width: thin;">
                         ${filtered.map(channel => `
                             <div onclick="openPlayer('${channel.name}')" 
-                                 class="channel-card flex-none w-[160px] md:w-[240px] bg-[#1f1f1f] rounded-md overflow-hidden relative group aspect-video shadow-lg select-none">
+                                 class="channel-card flex-none w-[160px] md:w-[200px] bg-[#1f1f1f] rounded-md overflow-hidden relative group aspect-video shadow-lg select-none">
                                 
                                 <div class="w-full h-full bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] flex items-center justify-center relative">
                                     <div class="absolute top-2 right-2 text-[10px] font-bold bg-black/60 px-1.5 py-0.5 rounded text-white border border-white/10">HD</div>
-                                    <i class="fa-solid fa-play text-3xl md:text-4xl text-white/20 group-hover:text-[#E50914] transition duration-300"></i>
+                                    <i class="fa-solid fa-play text-3xl text-white/20 group-hover:text-[#E50914] transition duration-300"></i>
                                 </div>
                                 
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 flex flex-col justify-end p-3">
-                                    <h4 class="text-white font-medium text-xs md:text-sm truncate">${channel.name}</h4>
+                                    <h4 class="text-white font-medium text-xs truncate">${channel.name}</h4>
                                 </div>
                             </div>
                         `).join('')}
@@ -263,23 +265,25 @@
             }, 600);
         }
 
-        // --- TAM EKRAN FONKSİYONU ---
+        // --- TAM EKRAN (YATAY) FONKSİYONU ---
         function toggleFullscreen() {
             const player = document.getElementById('player-wrapper');
 
             if (!document.fullscreenElement) {
+                // Tam ekranı başlat
                 if (player.requestFullscreen) {
                     player.requestFullscreen();
                 } else if (player.webkitRequestFullscreen) {
                     player.webkitRequestFullscreen();
                 }
                 
-                // Mobilde yatay modu zorlama (Android destekler)
+                // Mobilde Yatay Kilitleme Denemesi (Destekleyen cihazlar için)
                 if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(e => console.log('Oryantasyon kilitlenemedi'));
+                    screen.orientation.lock('landscape').catch(e => console.log('Oryantasyon kilitlenemedi, tarayıcı desteklemiyor olabilir.'));
                 }
                 fsIcon.classList.replace('fa-expand', 'fa-compress');
             } else {
+                // Çıkış
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 }
@@ -288,7 +292,6 @@
         }
 
         function closePlayer() {
-            // Tam ekrandan çıkma kontrolü
             if (document.fullscreenElement) {
                 document.exitFullscreen();
             }
@@ -305,7 +308,7 @@
             openPlayer(randomChannel.name);
         }
 
-        // Navbar Scroll
+        // Navbar Scroll Efekti
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if (window.scrollY > 20) {

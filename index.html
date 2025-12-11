@@ -17,6 +17,7 @@
             overflow-x: hidden;
         }
 
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #141414; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
@@ -24,6 +25,7 @@
 
         .brand-font { font-family: 'Bebas Neue', cursive; }
         
+        /* Kart Efektleri */
         .channel-card {
             transition: transform 0.2s ease;
             z-index: 1;
@@ -39,7 +41,7 @@
         }
 
         .loader {
-            border: 4px solid rgba(255,255,255,0.1);
+            border: 3px solid rgba(255,255,255,0.1);
             border-left-color: #E50914;
             border-radius: 50%;
             width: 40px; height: 40px;
@@ -65,53 +67,42 @@
         </div>
     </nav>
 
-    <header id="stage-area" class="relative w-full min-h-[40vh] md:h-[65vh] bg-black group overflow-hidden mx-auto border-b border-white/10 shadow-2xl">
+    <header id="stage-area" class="relative w-full md:w-[85%] mx-auto mt-0 md:mt-20 min-h-[40vh] md:aspect-video md:max-h-[70vh] bg-black group overflow-hidden rounded-none md:rounded-xl shadow-2xl border-b md:border border-white/10 transition-all duration-500">
         
         <div id="hero-content" class="absolute inset-0 transition-opacity duration-500">
             <div class="absolute inset-0 bg-[url('https://wallpaperaccess.com/full/1569485.jpg')] bg-cover bg-center">
                 <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent"></div>
             </div>
             
             <div class="relative z-10 w-full h-full flex flex-col justify-center px-6 md:px-12 pt-16 md:pt-0 max-w-4xl">
                 <div class="flex items-center gap-2 text-[#E50914] font-bold tracking-widest text-sm animate-pulse mb-2">
-                    <span class="text-xl brand-font">CANLI</span> YAYIN AKIŞI
+                    <span class="text-xl brand-font">CANLI</span> YAYIN
                 </div>
-                
                 <h1 class="text-3xl md:text-5xl font-bold leading-tight drop-shadow-xl mb-3">
-                    MAÇ KEYFİ BAŞLASIN
+                    MAÇ KEYFİ
                 </h1>
-                
-                <p class="text-sm md:text-base text-gray-200 line-clamp-2 drop-shadow-md mb-5 max-w-xl">
-                    Süper Lig, Şampiyonlar Ligi ve Avrupa'nın devleri burada. Kanalını seç, arkanı yaslan ve anın tadını çıkar.
+                <p class="text-xs md:text-base text-gray-300 line-clamp-2 drop-shadow-md mb-5 max-w-lg">
+                    Süper Lig ve Avrupa'nın devleri burada. Kanalını seç, arkanı yaslan.
                 </p>
-                
-                <div class="flex flex-wrap gap-4">
-                    <button onclick="playRandom()" class="bg-white text-black px-5 py-2.5 rounded hover:bg-gray-200 transition font-bold flex items-center gap-2 shadow-lg text-sm">
-                        <i class="fa-solid fa-play"></i> 
-                        <span>Rastgele İzle</span>
-                    </button>
-                    <button class="bg-gray-600/40 text-white px-5 py-2.5 rounded hover:bg-gray-600/60 transition font-semibold flex items-center gap-2 backdrop-blur-sm text-sm">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>Bilgi Al</span>
+                <div class="flex gap-3">
+                    <button onclick="playRandom()" class="bg-white text-black px-5 py-2 rounded hover:bg-gray-200 transition font-bold flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-play"></i> <span>Rastgele</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="player-wrapper" class="absolute inset-0 z-20 bg-black hidden flex-col">
+        <div id="player-wrapper" class="absolute inset-0 z-20 bg-black hidden flex-col group/player">
             
-            <div class="absolute top-0 right-0 p-4 md:p-6 z-40 flex justify-end items-start mt-16 pointer-events-none w-full">
+            <div class="absolute top-4 right-4 z-50 flex items-center gap-3 opacity-0 group-hover/player:opacity-100 transition-opacity duration-300">
                 
-                <div class="pointer-events-auto flex items-center gap-3">
-                    <button onclick="toggleFullscreen()" class="bg-white/10 hover:bg-blue-600 text-white w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center backdrop-blur-md transition-all border border-white/10" title="Tam Ekran">
-                        <i id="fs-icon" class="fa-solid fa-expand text-sm md:text-base"></i>
-                    </button>
+                <button onclick="toggleFullscreen()" class="text-white/70 hover:text-white hover:scale-110 transition-all drop-shadow-md" title="Tam Ekran">
+                    <i id="fs-icon" class="fa-solid fa-expand text-xl"></i>
+                </button>
 
-                    <button onclick="closePlayer()" class="bg-red-600/90 hover:bg-red-700 text-white w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center backdrop-blur-md transition-all border border-white/10 shadow-lg">
-                        <i class="fa-solid fa-xmark text-base md:text-lg"></i>
-                    </button>
-                </div>
+                <button onclick="closePlayer()" class="text-white/70 hover:text-[#E50914] hover:scale-110 transition-all drop-shadow-md" title="Kapat">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
             </div>
 
             <div id="video-container" class="w-full h-full flex items-center justify-center relative bg-black">
@@ -119,7 +110,7 @@
         </div>
     </header>
 
-    <main class="relative z-20 bg-[#141414] px-4 md:px-8 py-6 space-y-8 flex-1" id="main-list">
+    <main class="relative z-20 bg-[#141414] px-4 md:px-12 py-8 space-y-8 flex-1" id="main-list">
         </main>
 
     <footer class="bg-black py-8 text-center text-gray-600 text-xs border-t border-white/10 mt-auto">
@@ -166,7 +157,6 @@
 
         let hlsInstance = null;
         
-        // --- DOM ELEMENTLERİ ---
         const mainList = document.getElementById('main-list');
         const heroContent = document.getElementById('hero-content');
         const playerWrapper = document.getElementById('player-wrapper');
@@ -174,13 +164,13 @@
         const fsIcon = document.getElementById('fs-icon');
 
         const categories = [
-            { id: 'bein', title: 'Bein Sports Koleksiyonu' },
-            { id: 'exxen', title: 'Exxen Avrupa Geceleri' },
-            { id: 'spor', title: 'Global Spor Kanalları' },
-            { id: 'ulusal', title: 'Ulusal ve Tabii Platformu' }
+            { id: 'bein', title: 'Bein Sports' },
+            { id: 'exxen', title: 'Exxen Spor' },
+            { id: 'spor', title: 'Global' },
+            { id: 'ulusal', title: 'Ulusal' }
         ];
 
-        // --- RENDER (LİSTELEME) ---
+        // --- RENDER ---
         function renderChannels() {
             categories.forEach(cat => {
                 const filtered = allChannels.filter(c => c.category === cat.id);
@@ -189,19 +179,19 @@
                 const section = document.createElement('section');
                 
                 section.innerHTML = `
-                    <h3 class="text-base md:text-xl font-semibold text-gray-200 mb-3 pl-2 border-l-4 border-[#E50914] ml-1">${cat.title}</h3>
+                    <h3 class="text-base md:text-lg font-semibold text-gray-200 mb-3 pl-2 border-l-4 border-[#E50914] ml-1">${cat.title}</h3>
                     <div class="flex overflow-x-auto pb-4 gap-3 px-1 scroll-smooth" style="scrollbar-width: thin;">
                         ${filtered.map(channel => `
                             <div onclick="openPlayer('${channel.name}')" 
-                                 class="channel-card flex-none w-[150px] md:w-[220px] bg-[#1f1f1f] rounded-md overflow-hidden relative group aspect-video shadow-lg select-none">
+                                 class="channel-card flex-none w-[140px] md:w-[200px] bg-[#1f1f1f] rounded-md overflow-hidden relative group aspect-video shadow-lg select-none">
                                 
                                 <div class="w-full h-full bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] flex items-center justify-center relative">
                                     <div class="absolute top-2 right-2 text-[10px] font-bold bg-black/60 px-1.5 py-0.5 rounded text-white border border-white/10">HD</div>
-                                    <i class="fa-solid fa-play text-3xl text-white/20 group-hover:text-[#E50914] transition duration-300"></i>
+                                    <i class="fa-solid fa-play text-2xl md:text-3xl text-white/20 group-hover:text-[#E50914] transition duration-300"></i>
                                 </div>
                                 
-                                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 flex flex-col justify-end p-3">
-                                    <h4 class="text-white font-medium text-xs md:text-sm truncate">${channel.name}</h4>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 flex flex-col justify-end p-2 md:p-3">
+                                    <h4 class="text-white font-medium text-[10px] md:text-xs truncate">${channel.name}</h4>
                                 </div>
                             </div>
                         `).join('')}
@@ -211,29 +201,26 @@
             });
         }
 
-        // --- PLAYER BAŞLATMA ---
+        // --- PLAYER ---
         function openPlayer(channelName) {
             const channel = allChannels.find(c => c.name === channelName);
             if (!channel) return;
 
-            // Yukarı Kaydır
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // Arayüz Değişimi
             heroContent.classList.add('hidden');
             playerWrapper.classList.remove('hidden');
             playerWrapper.classList.add('flex');
             
-            // Player Temizliği
+            // Başlık kodu tamamen kaldırıldı.
+
             videoContainer.innerHTML = '';
             if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
 
-            // Yükleniyor...
             const loader = document.createElement('div');
             loader.className = 'loader absolute z-0';
             videoContainer.appendChild(loader);
 
-            // Yayını Başlat
             setTimeout(() => {
                 if (channel.type === 'hls' && Hls.isSupported()) {
                     const video = document.createElement('video');
@@ -245,9 +232,7 @@
                     hlsInstance = new Hls();
                     hlsInstance.loadSource(channel.streamUrl);
                     hlsInstance.attachMedia(video);
-                    
-                    video.play().catch(e => console.log("Otomatik oynatma engellendi."));
-
+                    video.play().catch(e => console.log("Otomatik oynatma engellendi"));
                 } else {
                     const iframe = document.createElement('iframe');
                     iframe.src = channel.streamUrl;
@@ -255,36 +240,27 @@
                     iframe.allow = 'autoplay; encrypted-media; fullscreen';
                     videoContainer.appendChild(iframe);
                 }
-            }, 500);
+            }, 400);
         }
 
-        // --- TAM EKRAN (YATAY) ---
         function toggleFullscreen() {
             const player = document.getElementById('player-wrapper');
-
             if (!document.fullscreenElement) {
-                if (player.requestFullscreen) {
-                    player.requestFullscreen();
-                } else if (player.webkitRequestFullscreen) {
-                    player.webkitRequestFullscreen();
-                }
+                if (player.requestFullscreen) player.requestFullscreen();
+                else if (player.webkitRequestFullscreen) player.webkitRequestFullscreen();
                 
                 if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(e => console.log('Oryantasyon kilitlenemedi'));
+                    screen.orientation.lock('landscape').catch(e => {});
                 }
                 fsIcon.classList.replace('fa-expand', 'fa-compress');
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                if (document.exitFullscreen) document.exitFullscreen();
                 fsIcon.classList.replace('fa-compress', 'fa-expand');
             }
         }
 
         function closePlayer() {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            }
+            if (document.fullscreenElement) document.exitFullscreen();
 
             playerWrapper.classList.add('hidden');
             playerWrapper.classList.remove('flex');
@@ -298,6 +274,7 @@
             openPlayer(randomChannel.name);
         }
 
+        // Navbar Scroll
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if (window.scrollY > 20) {
@@ -319,3 +296,4 @@
     </script>
 </body>
 </html>
+ 

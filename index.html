@@ -17,7 +17,6 @@
             overflow-x: hidden;
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #141414; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
@@ -61,9 +60,16 @@
                 <li class="hover:text-white cursor-pointer transition">Listem</li>
             </ul>
         </div>
+        
         <div class="flex items-center gap-4 text-white">
-            <i class="fa-solid fa-search cursor-pointer hover:text-gray-300 text-lg"></i>
-            <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold text-xs">U</div>
+            <div id="player-controls" class="hidden items-center gap-3 transition-opacity duration-300">
+                <button onclick="toggleFullscreen()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all backdrop-blur-sm" title="Tam Ekran">
+                    <i id="fs-icon" class="fa-solid fa-expand text-sm"></i>
+                </button>
+                <button onclick="closePlayer()" class="w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center transition-all shadow-lg" title="Kapat">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -93,18 +99,6 @@
         </div>
 
         <div id="player-wrapper" class="absolute inset-0 z-20 bg-black hidden flex-col group/player">
-            
-            <div class="absolute top-4 right-4 z-50 flex items-center gap-3 opacity-0 group-hover/player:opacity-100 transition-opacity duration-300">
-                
-                <button onclick="toggleFullscreen()" class="text-white/70 hover:text-white hover:scale-110 transition-all drop-shadow-md" title="Tam Ekran">
-                    <i id="fs-icon" class="fa-solid fa-expand text-xl"></i>
-                </button>
-
-                <button onclick="closePlayer()" class="text-white/70 hover:text-[#E50914] hover:scale-110 transition-all drop-shadow-md" title="Kapat">
-                    <i class="fa-solid fa-xmark text-2xl"></i>
-                </button>
-            </div>
-
             <div id="video-container" class="w-full h-full flex items-center justify-center relative bg-black">
                 </div>
         </div>
@@ -120,7 +114,7 @@
     <script>
         // --- KANAL VERİLERİ ---
         const allChannels = [
-            { name: 'Bein Sports 1', streamUrl: 'https://inattv1208.xyz/channel.html?id=yayinzirve', type: 'iframe', category: 'bein' },
+            { name: 'Bein Sports 1', streamUrl: 'https://inattv1204.xyz/channel.html?id=yayinzirve', type: 'iframe', category: 'bein' },
             { name: 'Bein Sports 2', streamUrl: 'https://inattv1208.xyz/channel.html?id=yayinb2', type: 'iframe', category: 'bein' },
             { name: 'Bein Sports 3', streamUrl: 'https://inattv1208.xyz/channel.html?id=yayinb3', type: 'iframe', category: 'bein' },
             { name: 'Bein Sports 4', streamUrl: 'https://inattv1208.xyz/channel.html?id=yayinb4', type: 'iframe', category: 'bein' },
@@ -161,6 +155,7 @@
         const heroContent = document.getElementById('hero-content');
         const playerWrapper = document.getElementById('player-wrapper');
         const videoContainer = document.getElementById('video-container');
+        const playerControls = document.getElementById('player-controls'); // Navbar'daki kontroller
         const fsIcon = document.getElementById('fs-icon');
 
         const categories = [
@@ -212,7 +207,9 @@
             playerWrapper.classList.remove('hidden');
             playerWrapper.classList.add('flex');
             
-            // Başlık kodu tamamen kaldırıldı.
+            // NAV KONTROLLERİNİ AÇ (Arama ve Profil yerine)
+            playerControls.classList.remove('hidden');
+            playerControls.classList.add('flex');
 
             videoContainer.innerHTML = '';
             if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
@@ -244,10 +241,12 @@
         }
 
         function toggleFullscreen() {
-            const player = document.getElementById('player-wrapper');
+            // Tam ekran yapılacak element: Player Wrapper
+            const playerElement = document.getElementById('player-wrapper');
+            
             if (!document.fullscreenElement) {
-                if (player.requestFullscreen) player.requestFullscreen();
-                else if (player.webkitRequestFullscreen) player.webkitRequestFullscreen();
+                if (playerElement.requestFullscreen) playerElement.requestFullscreen();
+                else if (playerElement.webkitRequestFullscreen) playerElement.webkitRequestFullscreen();
                 
                 if (screen.orientation && screen.orientation.lock) {
                     screen.orientation.lock('landscape').catch(e => {});
@@ -265,6 +264,11 @@
             playerWrapper.classList.add('hidden');
             playerWrapper.classList.remove('flex');
             heroContent.classList.remove('hidden');
+            
+            // NAV KONTROLLERİNİ GİZLE
+            playerControls.classList.add('hidden');
+            playerControls.classList.remove('flex');
+
             videoContainer.innerHTML = '';
             if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
         }
@@ -296,4 +300,3 @@
     </script>
 </body>
 </html>
- 

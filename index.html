@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NETSPORTS | Inline Player</title>
+    <title>NETSPORTS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -17,7 +17,7 @@
             overflow-x: hidden;
         }
 
-        /* Netflix Scrollbar */
+        /* Scrollbar Tasarımı */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #141414; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
@@ -25,17 +25,17 @@
 
         .brand-font { font-family: 'Bebas Neue', cursive; }
         
-        /* Kart Hover Efektleri */
+        /* Kart Animasyonları */
         .channel-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
             z-index: 1;
         }
         .channel-card:hover {
             transform: scale(1.05);
             z-index: 10;
             box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-            cursor: pointer;
             border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
         }
 
         .loader {
@@ -50,53 +50,71 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <nav class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/90 to-transparent px-6 py-4 flex items-center justify-between transition-all duration-300" id="navbar">
-        <div class="flex items-center gap-8">
-            <h1 class="text-4xl text-[#E50914] brand-font tracking-wider cursor-pointer" onclick="closePlayer()">NETSPORTS</h1>
+    <nav class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/90 to-transparent px-4 md:px-6 py-4 flex items-center justify-between transition-all duration-300" id="navbar">
+        <div class="flex items-center gap-4 md:gap-8">
+            <h1 class="text-3xl md:text-4xl text-[#E50914] brand-font tracking-wider cursor-pointer select-none" onclick="closePlayer()">NETSPORTS</h1>
             <ul class="hidden md:flex gap-6 text-sm text-gray-300 font-medium">
                 <li class="hover:text-white cursor-pointer transition">Ana Sayfa</li>
-                <li class="hover:text-white cursor-pointer transition">Canlı Maçlar</li>
+                <li class="hover:text-white cursor-pointer transition">Canlı</li>
                 <li class="hover:text-white cursor-pointer transition">Listem</li>
             </ul>
         </div>
         <div class="flex items-center gap-4 text-white">
-            <i class="fa-solid fa-search cursor-pointer hover:text-gray-300"></i>
+            <i class="fa-solid fa-search cursor-pointer hover:text-gray-300 text-lg"></i>
             <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold text-xs">U</div>
         </div>
     </nav>
 
-    <header id="stage-area" class="relative w-full h-[56.25vw] max-h-[85vh] min-h-[400px] bg-black group overflow-hidden">
+    <header id="stage-area" class="relative w-full min-h-[60vh] md:h-[80vh] bg-black group overflow-hidden">
         
-        <div id="hero-content" class="absolute inset-0 transition-opacity duration-500">
+        <div id="hero-content" class="absolute inset-0 transition-opacity duration-500 flex items-center">
             <div class="absolute inset-0 bg-[url('https://wallpaperaccess.com/full/1569485.jpg')] bg-cover bg-center">
-                <div class="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent"></div>
             </div>
             
-            <div class="relative z-10 h-full flex flex-col justify-center px-6 md:px-16 gap-4 max-w-2xl pt-20">
-                <div class="flex items-center gap-2 text-[#E50914] font-bold tracking-widest text-sm animate-pulse">
-                    <span class="text-2xl brand-font">CANLI</span> YAYIN AKIŞI
+            <div class="relative z-10 w-full px-6 md:px-16 max-w-3xl pt-20">
+                <div class="flex items-center gap-2 text-[#E50914] font-bold tracking-widest text-sm animate-pulse mb-2">
+                    <span class="text-xl md:text-2xl brand-font">CANLI</span> YAYIN AKIŞI
                 </div>
-                <h1 class="text-5xl md:text-7xl font-bold leading-none drop-shadow-lg">MAÇ KEYFİ BAŞLASIN</h1>
-                <p class="text-lg text-gray-200 line-clamp-3 drop-shadow-md mt-2">
-                    Süper Lig, Şampiyonlar Ligi ve Avrupa'nın en büyük ligleri tek adreste. Aşağıdan kanalını seç ve izlemeye başla.
+                
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-xl mb-4">
+                    MAÇ KEYFİ BAŞLASIN
+                </h1>
+                
+                <p class="text-base md:text-lg text-gray-200 line-clamp-3 drop-shadow-md mb-6 md:max-w-2xl">
+                    Süper Lig, Şampiyonlar Ligi ve Avrupa'nın en büyük ligleri tek adreste. Aşağıdan kanalını seç ve kesintisiz izlemeye başla.
                 </p>
-                <div class="flex gap-4 mt-4">
-                    <button onclick="playRandom()" class="bg-white text-black px-8 py-3 rounded hover:bg-opacity-80 transition font-bold flex items-center gap-2">
-                        <i class="fa-solid fa-play"></i> Rastgele İzle
+                
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="playRandom()" class="bg-white text-black px-6 py-3 rounded md:rounded-md hover:bg-gray-200 transition font-bold flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-play text-xl"></i> 
+                        <span>Rastgele İzle</span>
+                    </button>
+                    <button class="bg-gray-600/40 text-white px-6 py-3 rounded md:rounded-md hover:bg-gray-600/60 transition font-semibold flex items-center gap-2 backdrop-blur-sm">
+                        <i class="fa-solid fa-circle-info text-xl"></i>
+                        <span>Bilgi Al</span>
                     </button>
                 </div>
             </div>
         </div>
 
         <div id="player-wrapper" class="absolute inset-0 z-20 bg-black hidden flex-col">
-            <div class="absolute top-0 left-0 w-full p-6 z-30 flex justify-between items-start bg-gradient-to-b from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <div class="pointer-events-auto mt-12 md:mt-4">
-                    <h2 id="playing-title" class="text-2xl font-bold text-white drop-shadow-md pl-4 border-l-4 border-[#E50914]">Kanal Adı</h2>
-                    <p class="text-xs text-gray-400 pl-5 mt-1">Şu an oynatılıyor</p>
+            <div class="absolute top-0 left-0 w-full p-4 md:p-6 z-30 flex justify-between items-start bg-gradient-to-b from-black/90 to-transparent pointer-events-none">
+                
+                <div class="pointer-events-auto mt-14 md:mt-4">
+                    <div class="flex flex-col">
+                        <h2 id="playing-title" class="text-2xl md:text-3xl font-bold text-white drop-shadow-md pl-3 border-l-4 border-[#E50914] leading-none py-1">
+                            Kanal Adı
+                        </h2>
+                        <span class="text-xs text-green-400 pl-4 mt-1 font-medium tracking-wide uppercase flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Şu an oynatılıyor
+                        </span>
+                    </div>
                 </div>
-                <button onclick="closePlayer()" class="pointer-events-auto bg-black/50 hover:bg-[#E50914] text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all border border-white/20">
-                    <i class="fa-solid fa-xmark"></i>
+
+                <button onclick="closePlayer()" class="pointer-events-auto mt-14 md:mt-4 bg-red-600/80 hover:bg-red-700 text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-lg group">
+                    <i class="fa-solid fa-xmark text-xl group-hover:scale-110 transition-transform"></i>
                 </button>
             </div>
 
@@ -105,15 +123,16 @@
         </div>
     </header>
 
-    <main class="relative z-20 px-6 md:px-16 pb-20 space-y-12 -mt-10" id="main-list">
+    <main class="relative z-20 bg-[#141414] px-4 md:px-16 pt-8 pb-20 space-y-10" id="main-list">
         </main>
 
-    <footer class="bg-black/40 py-8 text-center text-gray-500 text-sm mt-auto border-t border-gray-800">
-        <p>NETSPORTS © 2025. İyi seyirler.</p>
+    <footer class="bg-black py-8 text-center text-gray-500 text-xs md:text-sm mt-auto border-t border-white/10">
+        <p class="mb-2">NETSPORTS © 2025</p>
+        <p>Telif hakkı bildirimleri ve yasal uyarılar buraya gelebilir.</p>
     </footer>
 
     <script>
-        // --- TAM KANAL LİSTESİ ---
+        // --- KANAL LİSTESİ (Veri) ---
         const allChannels = [
             // BEIN SPORTS GRUBU
             { name: 'Bein Sports 1', streamUrl: 'https://inattv1204.xyz/channel.html?id=yayinzirve', type: 'iframe', category: 'bein' },
@@ -133,7 +152,7 @@
             { name: 'Exxen 4', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn4', type: 'iframe', category: 'exxen' },
             { name: 'Exxen 5', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn5', type: 'iframe', category: 'exxen' },
 
-            // DİĞER SPOR KANALLARI
+            // SPOR KANALLARI
             { name: 'S Sport', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivess1', type: 'iframe', category: 'spor' },
             { name: 'S Sport 2', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivess2', type: 'iframe', category: 'spor' },
             { name: 'Tivibu Spor 1', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivets1', type: 'iframe', category: 'spor' },
@@ -177,22 +196,21 @@
                 if (filtered.length === 0) return;
 
                 const section = document.createElement('section');
-                section.className = "space-y-4 mb-8";
                 
                 section.innerHTML = `
-                    <h3 class="text-xl md:text-2xl font-semibold text-white pl-2 border-l-4 border-[#E50914] ml-1 opacity-90">${cat.title}</h3>
-                    <div class="flex overflow-x-auto pb-6 gap-4 px-2 scroll-smooth" style="scrollbar-width: thin;">
+                    <h3 class="text-lg md:text-xl font-semibold text-gray-200 mb-3 pl-2 border-l-4 border-[#E50914] ml-1">${cat.title}</h3>
+                    <div class="flex overflow-x-auto pb-4 gap-3 md:gap-4 px-1 scroll-smooth" style="scrollbar-width: thin;">
                         ${filtered.map(channel => `
                             <div onclick="openPlayer('${channel.name}')" 
-                                 class="channel-card flex-none w-[200px] md:w-[260px] bg-[#1f1f1f] rounded-md overflow-hidden relative group aspect-video shadow-lg">
+                                 class="channel-card flex-none w-[160px] md:w-[240px] bg-[#1f1f1f] rounded-md overflow-hidden relative group aspect-video shadow-lg select-none">
                                 
-                                <div class="w-full h-full bg-gradient-to-br from-[#222] to-[#111] flex items-center justify-center relative">
+                                <div class="w-full h-full bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] flex items-center justify-center relative">
                                     <div class="absolute top-2 right-2 text-[10px] font-bold bg-black/60 px-1.5 py-0.5 rounded text-white border border-white/10">HD</div>
-                                    <i class="fa-solid fa-play text-4xl text-white/20 group-hover:text-[#E50914] transition duration-300"></i>
+                                    <i class="fa-solid fa-play text-3xl md:text-4xl text-white/20 group-hover:text-[#E50914] transition duration-300"></i>
                                 </div>
                                 
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 flex flex-col justify-end p-3">
-                                    <h4 class="text-white font-semibold text-sm truncate">${channel.name}</h4>
+                                    <h4 class="text-white font-medium text-xs md:text-sm truncate">${channel.name}</h4>
                                 </div>
                             </div>
                         `).join('')}
@@ -224,7 +242,7 @@
             setTimeout(() => {
                 if (channel.type === 'hls' && Hls.isSupported()) {
                     const video = document.createElement('video');
-                    video.className = 'w-full h-full object-contain relative z-10';
+                    video.className = 'w-full h-full object-contain relative z-10 bg-black';
                     video.controls = true;
                     video.autoplay = true;
                     videoContainer.appendChild(video);
@@ -235,7 +253,7 @@
                 } else {
                     const iframe = document.createElement('iframe');
                     iframe.src = channel.streamUrl;
-                    iframe.className = 'w-full h-full border-none relative z-10';
+                    iframe.className = 'w-full h-full border-none relative z-10 bg-black';
                     iframe.allow = 'autoplay; encrypted-media; fullscreen';
                     videoContainer.appendChild(iframe);
                 }
@@ -255,9 +273,10 @@
             openPlayer(randomChannel.name);
         }
 
+        // Navbar Scroll
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
+            if (window.scrollY > 20) {
                 nav.classList.replace('from-black/90', 'bg-[#141414]');
                 nav.classList.add('shadow-md');
             } else {

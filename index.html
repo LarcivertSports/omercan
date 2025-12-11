@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Larcivert Sports</title>
+    <title>NETSPORTS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -14,10 +14,10 @@
             background-color: #141414;
             color: white;
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* Yatay taşmayı engeller */
+            overflow-x: hidden;
         }
 
-        /* Scrollbar (İnce ve Şık) */
+        /* Şık Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #141414; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
@@ -25,11 +25,11 @@
 
         .brand-font { font-family: 'Bebas Neue', cursive; }
         
+        /* Kart Efektleri */
         .channel-card {
             transition: transform 0.2s ease;
             z-index: 1;
         }
-        /* Masaüstü hover efekti */
         @media (hover: hover) {
             .channel-card:hover {
                 transform: scale(1.05);
@@ -44,7 +44,7 @@
             border: 4px solid rgba(255,255,255,0.1);
             border-left-color: #E50914;
             border-radius: 50%;
-            width: 50px; height: 50px;
+            width: 40px; height: 40px;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -52,9 +52,9 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <nav class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/90 to-transparent px-5 py-4 flex items-center justify-between transition-all duration-300" id="navbar">
+    <nav class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/90 to-transparent px-4 md:px-8 py-4 flex items-center justify-between transition-all duration-300" id="navbar">
         <div class="flex items-center gap-6">
-            <h1 class="text-3xl text-[#E50914] brand-font tracking-wider cursor-pointer select-none" onclick="closePlayer()">Larcivert Sports</h1>
+            <h1 class="text-3xl text-[#E50914] brand-font tracking-wider cursor-pointer select-none" onclick="closePlayer()">NETSPORTS</h1>
             <ul class="hidden md:flex gap-6 text-sm text-gray-300 font-medium">
                 <li class="hover:text-white cursor-pointer transition">Ana Sayfa</li>
                 <li class="hover:text-white cursor-pointer transition">Canlı</li>
@@ -67,33 +67,33 @@
         </div>
     </nav>
 
-    <header id="stage-area" class="relative w-full aspect-video max-h-[80vh] bg-black group overflow-hidden mx-auto">
+    <header id="stage-area" class="relative w-full min-h-[60vh] md:min-h-0 md:aspect-video md:max-h-[85vh] bg-black group overflow-hidden mx-auto">
         
-        <div id="hero-content" class="absolute inset-0 transition-opacity duration-500 flex items-center justify-start">
+        <div id="hero-content" class="absolute inset-0 transition-opacity duration-500">
             <div class="absolute inset-0 bg-[url('https://wallpaperaccess.com/full/1569485.jpg')] bg-cover bg-center">
-                <div class="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent"></div>
             </div>
             
-            <div class="relative z-10 w-full px-6 md:px-12 pt-16 max-w-4xl">
+            <div class="relative z-10 w-full h-full flex flex-col justify-center px-6 md:px-12 pt-24 md:pt-0 max-w-4xl">
                 <div class="flex items-center gap-2 text-[#E50914] font-bold tracking-widest text-sm animate-pulse mb-2">
                     <span class="text-xl brand-font">CANLI</span> YAYIN AKIŞI
                 </div>
                 
-                <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight drop-shadow-xl mb-3">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight drop-shadow-xl mb-4">
                     MAÇ KEYFİ BAŞLASIN
                 </h1>
                 
-                <p class="text-sm md:text-base text-gray-200 line-clamp-3 drop-shadow-md mb-5 max-w-xl">
-                    Süper Lig, Şampiyonlar Ligi ve Avrupa'nın en büyük ligleri tek adreste. Aşağıdan kanalını seç ve kesintisiz izlemeye başla.
+                <p class="text-sm md:text-lg text-gray-200 line-clamp-3 drop-shadow-md mb-6 max-w-xl">
+                    Süper Lig, Şampiyonlar Ligi ve Avrupa'nın devleri burada. Kanalını seç, arkanı yaslan ve anın tadını çıkar.
                 </p>
                 
-                <div class="flex flex-wrap gap-3">
-                    <button onclick="playRandom()" class="bg-white text-black px-6 py-2.5 rounded hover:bg-gray-200 transition font-bold flex items-center gap-2 shadow-lg text-sm md:text-base">
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="playRandom()" class="bg-white text-black px-6 py-3 rounded hover:bg-gray-200 transition font-bold flex items-center gap-2 shadow-lg text-sm md:text-base">
                         <i class="fa-solid fa-play"></i> 
                         <span>Rastgele İzle</span>
                     </button>
-                    <button class="bg-gray-600/40 text-white px-6 py-2.5 rounded hover:bg-gray-600/60 transition font-semibold flex items-center gap-2 backdrop-blur-sm text-sm md:text-base">
+                    <button class="bg-gray-600/40 text-white px-6 py-3 rounded hover:bg-gray-600/60 transition font-semibold flex items-center gap-2 backdrop-blur-sm text-sm md:text-base">
                         <i class="fa-solid fa-circle-info"></i>
                         <span>Bilgi Al</span>
                     </button>
@@ -101,28 +101,27 @@
             </div>
         </div>
 
-        <div id="player-wrapper" class="absolute inset-0 z-20 bg-black hidden flex-col group/player">
+        <div id="player-wrapper" class="absolute inset-0 z-20 bg-black hidden flex-col">
             
-            <div class="absolute top-0 left-0 w-full px-6 pt-4 pb-12 z-40 flex justify-between items-start bg-gradient-to-b from-black/90 to-transparent pointer-events-none mt-14 md:mt-16">
+            <div class="absolute top-0 left-0 w-full px-4 md:px-8 py-4 z-40 flex justify-between items-start bg-gradient-to-b from-black/90 to-transparent pointer-events-none mt-16">
                 
                 <div class="pointer-events-auto">
-                    <div class="flex flex-col">
-                        <h2 id="playing-title" class="text-xl md:text-2xl font-bold text-white drop-shadow-md pl-3 border-l-4 border-[#E50914] leading-none py-1">
-                            Kanal Yükleniyor...
-                        </h2>
-                        <span class="text-[10px] md:text-xs text-green-400 pl-4 mt-1 font-medium tracking-wide uppercase flex items-center gap-1">
-                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> CANLI YAYIN
-                        </span>
+                    <h2 id="playing-title" class="text-xl md:text-3xl font-bold text-white drop-shadow-md pl-3 border-l-4 border-[#E50914] leading-none py-1">
+                        Kanal Yükleniyor...
+                    </h2>
+                    <div class="flex items-center gap-2 mt-2 pl-4">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-xs text-green-400 font-bold tracking-wider">CANLI YAYIN</span>
                     </div>
                 </div>
 
                 <div class="pointer-events-auto flex items-center gap-3">
-                    <button onclick="toggleFullscreen()" class="bg-white/10 hover:bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all border border-white/10" title="Tam Ekran">
-                        <i id="fs-icon" class="fa-solid fa-expand text-sm"></i>
+                    <button onclick="toggleFullscreen()" class="bg-white/10 hover:bg-blue-600 text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all border border-white/10" title="Tam Ekran">
+                        <i id="fs-icon" class="fa-solid fa-expand text-sm md:text-lg"></i>
                     </button>
 
-                    <button onclick="closePlayer()" class="bg-red-600/90 hover:bg-red-700 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all border border-white/10 shadow-lg">
-                        <i class="fa-solid fa-xmark text-lg"></i>
+                    <button onclick="closePlayer()" class="bg-red-600/90 hover:bg-red-700 text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all border border-white/10 shadow-lg">
+                        <i class="fa-solid fa-xmark text-lg md:text-xl"></i>
                     </button>
                 </div>
             </div>
@@ -132,15 +131,15 @@
         </div>
     </header>
 
-    <main class="relative z-20 bg-[#141414] px-4 md:px-8 pb-10 space-y-8" id="main-list">
+    <main class="relative z-20 bg-[#141414] px-4 md:px-8 py-8 space-y-8 flex-1" id="main-list">
         </main>
 
-    <footer class="bg-black py-6 text-center text-gray-600 text-xs mt-auto border-t border-white/5">
-        <p>Larcivert Sports © 2025</p>
+    <footer class="bg-black py-8 text-center text-gray-600 text-xs border-t border-white/10 mt-auto">
+        <p>NETSPORTS © 2025</p>
     </footer>
 
     <script>
-        // --- KANAL LİSTESİ ---
+        // --- KANAL VERİLERİ ---
         const allChannels = [
             { name: 'Bein Sports 1', streamUrl: 'https://inattv1204.xyz/channel.html?id=yayinzirve', type: 'iframe', category: 'bein' },
             { name: 'Bein Sports 2', streamUrl: 'https://inattv1208.xyz/channel.html?id=yayinb2', type: 'iframe', category: 'bein' },
@@ -194,7 +193,7 @@
             { id: 'ulusal', title: 'Ulusal ve Tabii Platformu' }
         ];
 
-        // --- RENDER ---
+        // --- RENDER (LİSTELEME) ---
         function renderChannels() {
             categories.forEach(cat => {
                 const filtered = allChannels.filter(c => c.category === cat.id);
@@ -203,11 +202,11 @@
                 const section = document.createElement('section');
                 
                 section.innerHTML = `
-                    <h3 class="text-base md:text-lg font-semibold text-gray-200 mb-3 pl-2 border-l-4 border-[#E50914] ml-1">${cat.title}</h3>
+                    <h3 class="text-base md:text-xl font-semibold text-gray-200 mb-3 pl-2 border-l-4 border-[#E50914] ml-1">${cat.title}</h3>
                     <div class="flex overflow-x-auto pb-4 gap-3 px-1 scroll-smooth" style="scrollbar-width: thin;">
                         ${filtered.map(channel => `
                             <div onclick="openPlayer('${channel.name}')" 
-                                 class="channel-card flex-none w-[160px] md:w-[200px] bg-[#1f1f1f] rounded-md overflow-hidden relative group aspect-video shadow-lg select-none">
+                                 class="channel-card flex-none w-[150px] md:w-[220px] bg-[#1f1f1f] rounded-md overflow-hidden relative group aspect-video shadow-lg select-none">
                                 
                                 <div class="w-full h-full bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] flex items-center justify-center relative">
                                     <div class="absolute top-2 right-2 text-[10px] font-bold bg-black/60 px-1.5 py-0.5 rounded text-white border border-white/10">HD</div>
@@ -215,7 +214,7 @@
                                 </div>
                                 
                                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 flex flex-col justify-end p-3">
-                                    <h4 class="text-white font-medium text-xs truncate">${channel.name}</h4>
+                                    <h4 class="text-white font-medium text-xs md:text-sm truncate">${channel.name}</h4>
                                 </div>
                             </div>
                         `).join('')}
@@ -225,25 +224,30 @@
             });
         }
 
-        // --- PLAYER MANTIĞI ---
+        // --- PLAYER BAŞLATMA ---
         function openPlayer(channelName) {
             const channel = allChannels.find(c => c.name === channelName);
             if (!channel) return;
 
+            // Yukarı Kaydır
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
+            // Arayüz Değişimi
             heroContent.classList.add('hidden');
             playerWrapper.classList.remove('hidden');
             playerWrapper.classList.add('flex');
             playingTitle.textContent = channel.name;
 
+            // Player Temizliği
             videoContainer.innerHTML = '';
             if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
 
+            // Yükleniyor...
             const loader = document.createElement('div');
             loader.className = 'loader absolute z-0';
             videoContainer.appendChild(loader);
 
+            // Yayını Başlat
             setTimeout(() => {
                 if (channel.type === 'hls' && Hls.isSupported()) {
                     const video = document.createElement('video');
@@ -255,6 +259,10 @@
                     hlsInstance = new Hls();
                     hlsInstance.loadSource(channel.streamUrl);
                     hlsInstance.attachMedia(video);
+                    
+                    // Otomatik oynatma hatası yakalama
+                    video.play().catch(e => console.log("Otomatik oynatma engellendi, kullanıcı etkileşimi bekleniyor."));
+
                 } else {
                     const iframe = document.createElement('iframe');
                     iframe.src = channel.streamUrl;
@@ -262,28 +270,26 @@
                     iframe.allow = 'autoplay; encrypted-media; fullscreen';
                     videoContainer.appendChild(iframe);
                 }
-            }, 600);
+            }, 500);
         }
 
-        // --- TAM EKRAN (YATAY) FONKSİYONU ---
+        // --- TAM EKRAN (YATAY) ---
         function toggleFullscreen() {
             const player = document.getElementById('player-wrapper');
 
             if (!document.fullscreenElement) {
-                // Tam ekranı başlat
                 if (player.requestFullscreen) {
                     player.requestFullscreen();
                 } else if (player.webkitRequestFullscreen) {
                     player.webkitRequestFullscreen();
                 }
                 
-                // Mobilde Yatay Kilitleme Denemesi (Destekleyen cihazlar için)
+                // Mobilde Yatay Kilit (Destekleyen cihazlarda)
                 if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(e => console.log('Oryantasyon kilitlenemedi, tarayıcı desteklemiyor olabilir.'));
+                    screen.orientation.lock('landscape').catch(e => console.log('Oryantasyon kilitlenemedi'));
                 }
                 fsIcon.classList.replace('fa-expand', 'fa-compress');
             } else {
-                // Çıkış
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 }
@@ -308,7 +314,7 @@
             openPlayer(randomChannel.name);
         }
 
-        // Navbar Scroll Efekti
+        // Navbar Scroll
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if (window.scrollY > 20) {
@@ -320,14 +326,16 @@
             }
         });
         
-        // Tam ekrandan ESC ile çıkınca ikonu düzelt
+        // Fullscreen Listener
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement) {
                 fsIcon.classList.replace('fa-compress', 'fa-expand');
             }
         });
 
+        // Başlat
         document.addEventListener('DOMContentLoaded', renderChannels);
     </script>
 </body>
 </html>
+ 

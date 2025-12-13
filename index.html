@@ -3,300 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Larcivert Sports</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
+    <title>Larcivert Sports | Bağlantılar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
+        /* --- Temel Ayarlar --- */
+        :root {
+            --primary-bg: #050a14;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+            --gold: #ffc107;
+            --insta: #d62976;
+            --twitter: #1da1f2;
+            --telegram: #0088cc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background-color: #141414;
-            color: white;
-            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top center, #1a2980, #000000); /* Derin Lacivert-Siyah */
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
             overflow-x: hidden;
         }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #141414; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #E50914; }
+        /* Arka plan hareketli ışık efekti */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
 
-        .brand-font { font-family: 'Bebas Neue', cursive; }
-        
-        /* Kart Efektleri */
-        .channel-card {
-            transition: transform 0.2s ease;
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px; /* Daha odaklı görünüm */
+            text-align: center;
             z-index: 1;
-        }
-        @media (hover: hover) {
-            .channel-card:hover {
-                transform: scale(1.05);
-                z-index: 10;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-                border: 2px solid rgba(255, 255, 255, 0.2);
-                cursor: pointer;
-            }
+            animation: fadeIn 1s ease-out;
         }
 
-        .loader {
-            border: 3px solid rgba(255,255,255,0.1);
-            border-left-color: #E50914;
-            border-radius: 50%;
-            width: 40px; height: 40px;
-            animation: spin 1s linear infinite;
+        /* --- Header --- */
+        header {
+            margin-bottom: 40px;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--gold), #ff8c00);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #fff;
+            box-shadow: 0 0 30px rgba(255, 193, 7, 0.3);
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, #fff, #aabbc3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- Kart Yapısı --- */
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 25px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Sol taraf (İkon ve Yazı) */
+        .card-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-box {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+
+        .text-group {
+            text-align: left;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        .card-desc {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 2px;
+        }
+
+        /* Sağ ok ikonu */
+        .arrow {
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        /* --- Hover Efektleri ve Renkler --- */
+        
+        /* Genel Hover */
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .card:hover .arrow {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        /* 1. Canlı Maç (Altın) */
+        .card.gold:hover {
+            box-shadow: 0 8px 30px rgba(255, 193, 7, 0.25);
+            border-color: var(--gold);
+        }
+        .card.gold:hover .icon-box { background: var(--gold); color: #000; }
+        .card.gold .icon-box { color: var(--gold); }
+
+        /* 2. Instagram */
+        .card.insta:hover {
+            box-shadow: 0 8px 30px rgba(214, 41, 118, 0.25);
+            border-color: var(--insta);
+        }
+        .card.insta:hover .icon-box { 
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); 
+            color: white; 
+        }
+        .card.insta .icon-box { color: var(--insta); }
+
+        /* 3. Twitter/X */
+        .card.twitter:hover {
+            box-shadow: 0 8px 30px rgba(29, 161, 242, 0.25);
+            border-color: var(--twitter);
+        }
+        .card.twitter:hover .icon-box { background: var(--twitter); color: white; }
+        .card.twitter .icon-box { color: var(--twitter); }
+
+        /* 4. Telegram */
+        .card.telegram:hover {
+            box-shadow: 0 8px 30px rgba(0, 136, 204, 0.25);
+            border-color: var(--telegram);
+        }
+        .card.telegram:hover .icon-box { background: var(--telegram); color: white; }
+        .card.telegram .icon-box { color: var(--telegram); }
+
+        /* --- Animasyon Keyframes --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobil */
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .card { padding: 15px 20px; }
+            .profile-img { width: 80px; height: 80px; font-size: 2rem; }
+        }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body>
 
-    <nav class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/90 to-transparent px-4 md:px-8 py-4 flex items-center justify-between transition-all duration-300" id="navbar">
-        <div class="flex items-center gap-6">
-            <h1 class="text-3xl text-[#E50914] brand-font tracking-wider cursor-pointer select-none" onclick="closePlayer()">Larcivert Sports</h1>
-            <ul class="hidden md:flex gap-6 text-sm text-gray-300 font-medium">
-                <li class="hover:text-white cursor-pointer transition">Ana Sayfa</li>
-                <li class="hover:text-white cursor-pointer transition">Canlı</li>
-                <li class="hover:text-white cursor-pointer transition">Listem</li>
-            </ul>
-        </div>
-        
-        <div class="flex items-center gap-4 text-white">
-            <div id="player-controls" class="hidden items-center gap-3 transition-opacity duration-300">
-                <button onclick="toggleFullscreen()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all backdrop-blur-sm" title="Tam Ekran">
-                    <i id="fs-icon" class="fa-solid fa-expand text-sm"></i>
-                </button>
-                <button onclick="closePlayer()" class="w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center transition-all shadow-lg" title="Kapat">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+    <div class="container">
+        <header>
+            <div class="profile-img">
+                <i class="fa-solid fa-bolt"></i>
             </div>
-        </div>
-    </nav>
+            <h1>Larcivert Sports</h1>
+            <p class="subtitle">Spora Dair Her Şey</p>
+        </header>
 
-    <header id="stage-area" class="relative w-full md:w-[85%] mx-auto mt-0 md:mt-20 min-h-[40vh] md:aspect-video md:max-h-[70vh] bg-black group overflow-hidden rounded-none md:rounded-xl shadow-2xl border-b md:border border-white/10 transition-all duration-500">
-        
-        <div id="hero-content" class="absolute inset-0 transition-opacity duration-500">
-            <div class="absolute inset-0 bg-[url('https://wallpaperaccess.com/full/38119.jpg')] bg-cover bg-center">
-                <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
-            </div>
-            
-            <div class="relative z-10 w-full h-full flex flex-col justify-center px-6 md:px-12 pt-16 md:pt-0 max-w-4xl">
-                <div class="flex items-center gap-2 text-[#E50914] font-bold tracking-widest text-sm animate-pulse mb-2">
-                    <span class="text-xl brand-font">CANLI</span> YAYIN
-                </div>
-                <h1 class="text-3xl md:text-5xl font-bold leading-tight drop-shadow-xl mb-3">
-                    MAÇ KEYFİ
-                </h1>
-                <p class="text-xs md:text-base text-gray-300 line-clamp-2 drop-shadow-md mb-5 max-w-lg">
-                    Süper Lig ve Avrupa'nın devleri burada. Kanalını seç, arkanı yaslan.
-                </p>
-                <div class="flex gap-3">
-                    <button onclick="playRandom()" class="bg-white text-black px-5 py-2 rounded hover:bg-gray-200 transition font-bold flex items-center gap-2 text-sm">
-                        <i class="fa-solid fa-play"></i> <span>Rastgele</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div id="player-wrapper" class="absolute inset-0 z-20 bg-black hidden flex-col group/player">
-            <div id="video-container" class="w-full h-full flex items-center justify-center relative bg-black">
-                </div>
-        </div>
-    </header>
-
-    <main class="relative z-20 bg-[#141414] px-4 md:px-12 py-8 space-y-8 flex-1" id="main-list">
-        </main>
-
-    <footer class="bg-black py-8 text-center text-gray-600 text-xs border-t border-white/10 mt-auto">
-        <p>Larcivert Sports © 2025</p>
-    </footer>
-
-    <script>
-        // --- KANAL VERİLERİ ---
-        const allChannels = [
-            { name: 'Bein Sports 1', streamUrl: 'https://inattv1208.xyz/channel.html?id=yayinzirve', type: 'iframe', category: 'bein' },
-            { name: 'Bein Sports 2', streamUrl: 'https://inattv1208.xyz/channel.html?id=yayinb2', type: 'iframe', category: 'bein' },
-            { name: 'Bein Sports 3', streamUrl: 'https://inattv1208.xyz/channel.html?id=yayinb3', type: 'iframe', category: 'bein' },
-            { name: 'Bein Sports 4', streamUrl: 'https://inattv1208.xyz/channel.html?id=yayinb4', type: 'iframe', category: 'bein' },
-            { name: 'Bein Sports 5', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivebs5', type: 'iframe', category: 'bein' },
-            { name: 'Bein Sports Max 1', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivebsm1', type: 'iframe', category: 'bein' },
-            { name: 'Bein Sports Max 2', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivebsm2', type: 'iframe', category: 'bein' },
-            { name: 'Bein Sports 1 4K', streamUrl: 'https://daddyhd.com/stream/stream-62.php', type: 'iframe', category: 'bein' },
-            { name: 'Bein Sports HABER', streamUrl: 'https://www.youtube.com/embed/live_stream?channel=UCPe9vNjHF1kEExT5kHwc7aw', type: 'iframe', category: 'bein' },
-
-            { name: 'Exxen 1', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn1 ', type: 'iframe', category: 'exxen' },
-            { name: 'Exxen 2', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn2', type: 'iframe', category: 'exxen' },
-            { name: 'Exxen 3', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn3', type: 'iframe', category: 'exxen' },
-            { name: 'Exxen 4', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn4', type: 'iframe', category: 'exxen' },
-            { name: 'Exxen 5', streamUrl: 'https://birazcikspor44.xyz/event.html?id=androstreamliveexn5', type: 'iframe', category: 'exxen' },
-
-            { name: 'S Sport', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivess1', type: 'iframe', category: 'spor' },
-            { name: 'S Sport 2', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivess2', type: 'iframe', category: 'spor' },
-            { name: 'Tivibu Spor 1', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivets1', type: 'iframe', category: 'spor' },
-            { name: 'Smart Spor', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamlivesm1', type: 'iframe', category: 'spor' },
-            { name: 'A Spor', streamUrl: 'https://inattv1208.xyz/event.html?id=androstreamliveas', type: 'iframe', category: 'spor' },
-            { name: 'HT Spor', streamUrl: 'https://ciner.daioncdn.net/ht-spor/ht-spor.m3u8?app=web', type: 'iframe', category: 'spor' },
-            { name: 'NBA TV', streamUrl: 'https://daddyhd.com/stream/stream-404.php', type: 'iframe', category: 'spor' },
-            { name: 'DAZN LaLiga', streamUrl: 'https://daddyhd.com/stream/stream-538.php', type: 'iframe', category: 'spor' },
-
-            { name: 'TV 8', streamUrl: 'https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788&ce=3', type: 'iframe', category: 'ulusal' },
-            { name: 'TV 8,5', streamUrl: 'https://tv8.daioncdn.net/tv8bucuk/tv8bucuk_1080p.m3u8?=&sid=7x5tz77dj2dd&app=bf58ab52-4865-4c81-b223-26b41009801e&ce=3', type: 'iframe', category: 'ulusal' },
-            { name: 'TRT1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe', category: 'ulusal' },
-            { name: 'TRT SPOR', streamUrl: 'https://tv-trtspor1.medya.trt.com.tr/master.m3u8', type: 'hls', category: 'ulusal' },
-            { name: 'TRT SPOR YILDIZ', streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'ulusal' },
-            { name: 'Tabii Spor', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'iframe', category: 'ulusal' },
-            { name: 'Tabii SPOR 1', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'ulusal' },
-            { name: 'Tabii SPOR 2', streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls', category: 'ulusal' }
-        ];
-
-        let hlsInstance = null;
-        
-        const mainList = document.getElementById('main-list');
-        const heroContent = document.getElementById('hero-content');
-        const playerWrapper = document.getElementById('player-wrapper');
-        const videoContainer = document.getElementById('video-container');
-        const playerControls = document.getElementById('player-controls'); // Navbar'daki kontroller
-        const fsIcon = document.getElementById('fs-icon');
-
-        const categories = [
-            { id: 'bein', title: 'Bein Sports' },
-            { id: 'exxen', title: 'Exxen Spor' },
-            { id: 'spor', title: 'Global' },
-            { id: 'ulusal', title: 'Ulusal' }
-        ];
-
-        // --- RENDER ---
-        function renderChannels() {
-            categories.forEach(cat => {
-                const filtered = allChannels.filter(c => c.category === cat.id);
-                if (filtered.length === 0) return;
-
-                const section = document.createElement('section');
-                
-                section.innerHTML = `
-                    <h3 class="text-base md:text-lg font-semibold text-gray-200 mb-3 pl-2 border-l-4 border-[#E50914] ml-1">${cat.title}</h3>
-                    <div class="flex overflow-x-auto pb-4 gap-3 px-1 scroll-smooth" style="scrollbar-width: thin;">
-                        ${filtered.map(channel => `
-                            <div onclick="openPlayer('${channel.name}')" 
-                                 class="channel-card flex-none w-[140px] md:w-[200px] bg-[#1f1f1f] rounded-md overflow-hidden relative group aspect-video shadow-lg select-none">
-                                
-                                <div class="w-full h-full bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] flex items-center justify-center relative">
-                                    <div class="absolute top-2 right-2 text-[10px] font-bold bg-black/60 px-1.5 py-0.5 rounded text-white border border-white/10">HD</div>
-                                    <i class="fa-solid fa-play text-2xl md:text-3xl text-white/20 group-hover:text-[#E50914] transition duration-300"></i>
-                                </div>
-                                
-                                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 flex flex-col justify-end p-2 md:p-3">
-                                    <h4 class="text-white font-medium text-[10px] md:text-xs truncate">${channel.name}</h4>
-                                </div>
-                            </div>
-                        `).join('')}
+        <div class="links-container">
+            <a href="https://larcivertsports1.blogspot.com/" class="card gold">
+                <div class="card-content">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-play"></i>
                     </div>
-                `;
-                mainList.appendChild(section);
-            });
-        }
+                    <div class="text-group">
+                        <span class="card-title">Canlı Maç Girişi</span>
+                        <span class="card-desc">Tüm Spor Müsabakaları (Kesintisiz)</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </a>
 
-        // --- PLAYER ---
-        function openPlayer(channelName) {
-            const channel = allChannels.find(c => c.name === channelName);
-            if (!channel) return;
+            <a href="https://instagram.com/larcivertsports" target="_blank" class="card insta">
+                <div class="card-content">
+                    <div class="icon-box">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <div class="text-group">
+                        <span class="card-title">Instagram</span>
+                        <span class="card-desc">Özel içerikler ve haberler</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </a>
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            <a href="https://x.com/LarcivertSports" target="_blank" class="card twitter">
+                <div class="card-content">
+                    <div class="icon-box">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </div>
+                    <div class="text-group">
+                        <span class="card-title">Twitter / X</span>
+                        <span class="card-desc">Anlık skorlar ve yorumlar</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </a>
 
-            heroContent.classList.add('hidden');
-            playerWrapper.classList.remove('hidden');
-            playerWrapper.classList.add('flex');
-            
-            // NAV KONTROLLERİNİ AÇ (Arama ve Profil yerine)
-            playerControls.classList.remove('hidden');
-            playerControls.classList.add('flex');
+            <a href="https://t.me/larcivertsports" target="_blank" class="card telegram">
+                <div class="card-content">
+                    <div class="icon-box">
+                        <i class="fa-brands fa-telegram"></i>
+                    </div>
+                    <div class="text-group">
+                        <span class="card-title">Telegram Kanalı</span>
+                        <span class="card-desc">Analizler ve sohbet</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </a>
+        </div>
+    </div>
 
-            videoContainer.innerHTML = '';
-            if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-
-            const loader = document.createElement('div');
-            loader.className = 'loader absolute z-0';
-            videoContainer.appendChild(loader);
-
-            setTimeout(() => {
-                if (channel.type === 'hls' && Hls.isSupported()) {
-                    const video = document.createElement('video');
-                    video.className = 'w-full h-full object-contain relative z-10 bg-black';
-                    video.controls = true;
-                    video.autoplay = true;
-                    videoContainer.appendChild(video);
-
-                    hlsInstance = new Hls();
-                    hlsInstance.loadSource(channel.streamUrl);
-                    hlsInstance.attachMedia(video);
-                    video.play().catch(e => console.log("Otomatik oynatma engellendi"));
-                } else {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = channel.streamUrl;
-                    iframe.className = 'w-full h-full border-none relative z-10 bg-black';
-                    iframe.allow = 'autoplay; encrypted-media; fullscreen';
-                    videoContainer.appendChild(iframe);
-                }
-            }, 400);
-        }
-
-        function toggleFullscreen() {
-            // Tam ekran yapılacak element: Player Wrapper
-            const playerElement = document.getElementById('player-wrapper');
-            
-            if (!document.fullscreenElement) {
-                if (playerElement.requestFullscreen) playerElement.requestFullscreen();
-                else if (playerElement.webkitRequestFullscreen) playerElement.webkitRequestFullscreen();
-                
-                if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch(e => {});
-                }
-                fsIcon.classList.replace('fa-expand', 'fa-compress');
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
-                fsIcon.classList.replace('fa-compress', 'fa-expand');
-            }
-        }
-
-        function closePlayer() {
-            if (document.fullscreenElement) document.exitFullscreen();
-
-            playerWrapper.classList.add('hidden');
-            playerWrapper.classList.remove('flex');
-            heroContent.classList.remove('hidden');
-            
-            // NAV KONTROLLERİNİ GİZLE
-            playerControls.classList.add('hidden');
-            playerControls.classList.remove('flex');
-
-            videoContainer.innerHTML = '';
-            if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-        }
-
-        function playRandom() {
-            const randomChannel = allChannels[Math.floor(Math.random() * allChannels.length)];
-            openPlayer(randomChannel.name);
-        }
-
-        // Navbar Scroll
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 20) {
-                nav.classList.replace('from-black/90', 'bg-[#141414]');
-                nav.classList.add('shadow-md');
-            } else {
-                nav.classList.replace('bg-[#141414]', 'from-black/90');
-                nav.classList.remove('shadow-md');
-            }
-        });
-        
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement) {
-                fsIcon.classList.replace('fa-compress', 'fa-expand');
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', renderChannels);
-    </script>
 </body>
 </html>

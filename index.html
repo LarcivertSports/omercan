@@ -2,89 +2,37 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basit Site Yük Testi Aracı</title>
+    <title>Trafik Test Sayfası</title>
+    <meta http-equiv="refresh" content="5; url=https://www.seninsiten.com">
+    
     <style>
-        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }
-        .container { background: white; max-width: 500px; margin: 0 auto; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        input { width: 80%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; }
-        .btn-start { background-color: #28a745; color: white; }
-        .btn-stop { background-color: #dc3545; color: white; }
-        #status { margin-top: 20px; font-weight: bold; color: #333; }
-        #counter { font-size: 2em; color: #007bff; margin: 10px 0; }
-        .log { font-size: 12px; color: #666; margin-top: 10px; height: 100px; overflow-y: scroll; border: 1px solid #eee; padding: 5px; text-align: left;}
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            flex-direction: column;
+        }
+        .status {
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Site Yük/Erişim Testi</h2>
-    <p>Hedef URL'yi giriniz (Kendi siteniz olmalı):</p>
-    <input type="text" id="targetUrl" placeholder="https://ornek-siteniz.com" value="">
-    
-    <br>
-    <button class="btn-start" onclick="baslat()">Testi Başlat</button>
-    <button class="btn-stop" onclick="durdur()">Durdur</button>
-
-    <div id="status">Durum: Bekleniyor</div>
-    <div>Gönderilen İstek: <span id="counter">0</span></div>
-    
-    <div class="log" id="logArea"></div>
-</div>
-
-<script>
-    let intervalId = null;
-    let count = 0;
-
-    function baslat() {
-        const url = document.getElementById('targetUrl').value;
-        const statusEl = document.getElementById('status');
-        const logEl = document.getElementById('logArea');
-
-        if (!url) {
-            alert("Lütfen geçerli bir URL girin!");
-            return;
-        }
-
-        if (intervalId) return; // Zaten çalışıyorsa tekrar başlatma
-
-        statusEl.innerText = "Durum: Test Çalışıyor...";
-        statusEl.style.color = "green";
-
-        // Tarayıcıyı kilitlememek için setInterval kullanıyoruz (1000ms = 1 saniye)
-        // Daha hızlı yapmak istersen 1000 sayısını küçültebilirsin.
-        intervalId = setInterval(() => {
-            // Resmi (Image) fetch ederek fake bir ziyaret simüle etmeye çalışıyoruz.
-            // Bu yöntem "Headless Browser" kadar etkili değildir ama basit bir ping görevi görür.
-            // Cache'i aşmak için URL sonuna rastgele sayı ekliyoruz.
-            const uniqueUrl = url + "?r=" + Math.random();
-            
-            // Sadece resim objesi oluşturup istek atıyoruz (Sayfayı komple yüklemez, sunucuya 'ben geldim' der)
-            const img = new Image();
-            img.src = uniqueUrl;
-            
-            count++;
-            document.getElementById('counter').innerText = count;
-            
-            // Log kaydı (Opsiyonel)
-            const div = document.createElement('div');
-            div.innerText = `#${count} İstek gönderildi -> ${uniqueUrl.substring(0, 30)}...`;
-            logEl.prepend(div);
-
-        }, 500); // 0.5 saniyede bir istek
-    }
-
-    function durdur() {
-        if (intervalId) {
-            clearInterval(intervalId);
-            intervalId = null;
-            document.getElementById('status').innerText = "Durum: Durduruldu";
-            document.getElementById('status').style.color = "red";
-        }
-    }
-</script>
+    <div class="status">
+        <h2>Yönlendirme Başlatıldı</h2>
+        <p>Hedef siteye istek gönderiliyor...</p>
+        <p>Her <strong>5 saniyede</strong> bir yenilenecektir.</p>
+        <small>Durdurmak için bu sekmeyi kapatın.</small>
+    </div>
 
 </body>
 </html>
-
+ 

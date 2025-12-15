@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Özel YouTube Oynatıcı</title>
-    
+    <title>Özel YouTube ve Canlı Yayın Oynatıcı</title>
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1280px-YouTube_full-color_icon_%282017%29.svg.png" type="image/png">
     
     <style>
@@ -105,23 +104,23 @@
 <body>
 
     <div class="container">
-        <h1>Basit Video Oynatıcı</h1>
-        <p>İzlemek istediğin YouTube video linkini aşağıya yapıştır.</p>
+        <h1>Video ve Canlı Yayın Oynatıcı</h1>
+        <p>İzlemek istediğin YouTube video veya canlı yayın linkini yapıştır.</p>
 
         <div class="input-group">
-            <input type="text" id="videoLink" placeholder="Örnek: https://www.youtube.com/watch?v=..." />
+            <input type="text" id="videoLink" placeholder="Örn: youtube.com/watch?v=... veya youtube.com/live/..." />
             <button onclick="playVideo()">İzle</button>
         </div>
         <div id="errorMsg" class="error-msg">Geçersiz YouTube linki!</div>
 
         <div class="video-wrapper" id="videoContainer">
-            <iframe id="videoFrame" src="" allowfullscreen></iframe>
+            <iframe id="videoFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
     </div>
 
     <script>
         function playVideo() {
-            const input = document.getElementById('videoLink').value;
+            const input = document.getElementById('videoLink').value.trim();
             const container = document.getElementById('videoContainer');
             const iframe = document.getElementById('videoFrame');
             const errorMsg = document.getElementById('errorMsg');
@@ -134,8 +133,8 @@
                 errorMsg.style.display = 'none';
                 container.style.display = 'block';
                 
-                // Embed URL oluşturma (autoplay ekledik)
-                // Düzeltme: `1{videoId}` kısmını `${videoId}` olarak ve embed URL'ini standart formata çevirdim.
+                // Embed URL oluşturma (Standart YouTube Embed yapısı kullanıldı)
+                // Canlı yayınlar için de aynı embed yapısı çalışır.
                 iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
             } else {
                 // Hata göster
@@ -146,10 +145,13 @@
         }
 
         function extractVideoID(url) {
-            // Farklı YouTube link formatlarını destekleyen Regex (Normal, Short, Embed)
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            // GÜNCELLENMİŞ REGEX:
+            // 1. 'live/' ibaresini tanır.
+            // 2. 'youtu.be', 'v=', 'embed/' gibi standart formatları tanır.
+            const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|live\/)([^#&?]*).*/;
             const match = url.match(regExp);
 
+            // YouTube ID'leri genelde 11 karakterdir
             return (match && match[2].length === 11) ? match[2] : null;
         }
     </script>

@@ -3,380 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Video İstasyonu v3</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Özel YouTube Oynatıcı</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --primary: #ff0033;
-            --secondary: #00d2ff;
-            --text-main: #ffffff;
-            --text-sec: #aaaaaa;
-            --accent: #292929;
+            --primary-color: #ff0000;
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
-            transition: background-color 0.5s;
+            margin: 0;
+            padding: 20px;
         }
 
-        /* Sinema Modu İçin */
-        body.cinema-mode {
-            background-color: #000;
-        }
-        body.cinema-mode .search-box, 
-        body.cinema-mode .list-section, 
-        body.cinema-mode header {
-            opacity: 0.1; /* Diğer her şeyi soluklaştır */
-            pointer-events: none;
-        }
-        body.cinema-mode .video-wrapper-outer {
-            opacity: 1;
-            z-index: 999;
-            transform: scale(1.02);
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
         }
 
-        .main-container { width: 100%; max-width: 1000px; }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        h1 {
             margin-bottom: 20px;
-            border-bottom: 1px solid var(--accent);
-            padding-bottom: 15px;
         }
 
-        .search-box {
+        .input-group {
             display: flex;
             gap: 10px;
-            background: var(--card-bg);
-            padding: 10px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        input {
-            flex: 1; background: transparent; border: none; color: white; padding: 10px; outline: none;
-        }
-        .btn {
-            padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; color: white;
-        }
-        .btn-play { background-color: var(--primary); }
-        .btn-play:hover { background-color: #cc0029; }
-
-        /* Video ve Kontroller */
-        .video-wrapper-outer {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 16px;
             margin-bottom: 30px;
-            display: none; /* Başlangıçta gizli */
-            transition: 0.3s;
+            justify-content: center;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            width: 70%;
+            background-color: #2a2a2a;
+            color: white;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        button {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background-color: #cc0000;
         }
 
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%;
+            padding-bottom: 56.25%; /* 16:9 oranı */
             height: 0;
             background: #000;
             border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none; /* Başlangıçta gizli */
         }
+
         .video-wrapper iframe {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
-        }
-
-        .video-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid var(--accent);
-        }
-
-        .action-btn {
-            background: none; border: none; color: var(--text-sec); cursor: pointer; font-size: 1.2rem; transition: 0.3s; display: flex; align-items: center; gap: 8px;
-        }
-        .action-btn:hover, .action-btn.active { color: var(--secondary); }
-        .action-btn.fav-btn:hover, .action-btn.fav-btn.active { color: var(--primary); }
-
-        /* Not Alanı */
-        .notes-area {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            background: #151515;
-            border: 1px solid var(--accent);
-            color: #ddd;
-            padding: 10px;
-            margin-top: 15px;
-            border-radius: 8px;
-            min-height: 80px;
-            resize: vertical;
-            font-family: monospace;
-            display: none; /* Butona basınca açılacak */
+            height: 100%;
+            border: 0;
         }
 
-        /* Alt Liste (Tablar) */
-        .list-section { background: var(--card-bg); padding: 20px; border-radius: 16px; }
-        .tabs { display: flex; gap: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--accent); }
-        .tab {
-            padding-bottom: 10px; cursor: pointer; color: var(--text-sec); font-weight: bold; border-bottom: 3px solid transparent;
+        .error-msg {
+            color: #ff4444;
+            margin-top: 10px;
+            font-size: 0.9em;
+            display: none;
         }
-        .tab.active { color: white; border-color: var(--primary); }
-
-        .item-list { list-style: none; padding: 0; max-height: 400px; overflow-y: auto; }
-        .list-item {
-            display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--accent);
-        }
-        .list-item:hover { background-color: #2a2a2a; }
-        .item-info { cursor: pointer; display: flex; align-items: center; gap: 10px; flex: 1; }
-        
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-        <header>
-            <h2><i class="fa-brands fa-youtube" style="color:var(--primary)"></i> ProStation v3</h2>
-            <button class="action-btn" onclick="toggleCinemaMode()"><i class="fa-solid fa-lightbulb"></i> Sinema Modu</button>
-        </header>
+    <div class="container">
+        <h1>Basit Video Oynatıcı</h1>
+        <p>İzlemek istediğin YouTube video linkini aşağıya yapıştır.</p>
 
-        <div class="search-box">
-            <input type="text" id="videoLink" placeholder="YouTube linkini buraya yapıştır..." autocomplete="off">
-            <button class="btn btn-play" onclick="handlePlayButton()">Oynat</button>
+        <div class="input-group">
+            <input type="text" id="videoLink" placeholder="Örnek: https://www.youtube.com/watch?v=..." />
+            <button onclick="playVideo()">İzle</button>
         </div>
+        <div id="errorMsg" class="error-msg">Geçersiz YouTube linki!</div>
 
-        <div class="video-wrapper-outer" id="mainVideoArea">
-            <div class="video-wrapper">
-                <iframe id="videoFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </div>
-            
-            <div class="video-controls">
-                <div id="currentVideoIdDisplay" style="color:#666; font-size:0.9rem;"></div>
-                <div style="display:flex; gap:15px;">
-                    <button class="action-btn" onclick="toggleNotes()"><i class="fa-solid fa-pen"></i> Notlar</button>
-                    <button class="action-btn fav-btn" id="favBtn" onclick="toggleFavorite()"><i class="fa-regular fa-heart"></i> Favorilere Ekle</button>
-                </div>
-            </div>
-            
-            <textarea id="videoNotes" class="notes-area" placeholder="Bu video için notlarını buraya al..." oninput="saveNote()"></textarea>
-            <div id="saveStatus" style="font-size:0.8rem; color:#666; margin-top:5px; text-align:right; display:none;">Kaydedildi...</div>
-        </div>
-
-        <div class="list-section">
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('history')">Son İzlenenler</div>
-                <div class="tab" onclick="switchTab('favorites')">Favorilerim</div>
-            </div>
-            <ul id="contentList" class="item-list">
-                </ul>
+        <div class="video-wrapper" id="videoContainer">
+            <iframe id="videoFrame" src="" allowfullscreen></iframe>
         </div>
     </div>
 
     <script>
-        let currentVideoId = null;
-        let activeTab = 'history'; // 'history' veya 'favorites'
+        function playVideo() {
+            const input = document.getElementById('videoLink').value;
+            const container = document.getElementById('videoContainer');
+            const iframe = document.getElementById('videoFrame');
+            const errorMsg = document.getElementById('errorMsg');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderList();
-        });
-
-        function handlePlayButton() {
-            const url = document.getElementById('videoLink').value;
-            if(!url) return;
-            playVideo(url);
-            document.getElementById('videoLink').value = '';
-        }
-
-        function playVideo(urlOrId) {
-            // Gelen veri tam link mi yoksa sadece ID mi?
-            let videoId = urlOrId.length === 11 ? urlOrId : extractVideoID(urlOrId);
+            // YouTube Video ID'sini çıkarma fonksiyonu
+            const videoId = extractVideoID(input);
 
             if (videoId) {
-                currentVideoId = videoId;
+                // Hata mesajını gizle, videoyu göster
+                errorMsg.style.display = 'none';
+                container.style.display = 'block';
                 
-                // UI Güncellemeleri
-                document.getElementById('mainVideoArea').style.display = 'block';
-                document.getElementById('videoFrame').src = `http://googleusercontent.com/youtube.com/8{videoId}?autoplay=1&rel=0`;
-                document.getElementById('currentVideoIdDisplay').innerText = `ID: ${videoId}`;
-                
-                // Sayfayı kaydır
-                document.getElementById('mainVideoArea').scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                // Geçmişe Ekle
-                addToHistory(videoId);
-                
-                // Bu video için not var mı? Varsa getir.
-                loadNotes(videoId);
-
-                // Bu video favorilerde mi? Kontrol et.
-                checkFavoriteStatus(videoId);
-
+                // Embed URL oluşturma (autoplay ekledik)
+                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
             } else {
-                alert("Geçersiz Video!");
+                // Hata göster
+                container.style.display = 'none';
+                errorMsg.style.display = 'block';
+                iframe.src = "";
             }
         }
 
         function extractVideoID(url) {
+            // Farklı YouTube link formatlarını destekleyen Regex (Normal, Short, Embed)
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
             const match = url.match(regExp);
+
             return (match && match[2].length === 11) ? match[2] : null;
         }
-
-        // --- FAVORİLER & GEÇMİŞ YÖNETİMİ ---
-
-        function addToHistory(videoId) {
-            let history = JSON.parse(localStorage.getItem('ytHistory')) || [];
-            history = history.filter(item => item.id !== videoId); // Tekrarı önle
-            
-            history.unshift({
-                id: videoId,
-                date: new Date().toLocaleDateString('tr-TR', {hour:'2-digit', minute:'2-digit'})
-            });
-            
-            localStorage.setItem('ytHistory', JSON.stringify(history));
-            if(activeTab === 'history') renderList();
-        }
-
-        function toggleFavorite() {
-            if(!currentVideoId) return;
-
-            let favs = JSON.parse(localStorage.getItem('ytFavorites')) || [];
-            const index = favs.findIndex(item => item.id === currentVideoId);
-            const btn = document.getElementById('favBtn');
-            const icon = btn.querySelector('i');
-
-            if (index === -1) {
-                // Ekle
-                favs.unshift({
-                    id: currentVideoId,
-                    date: new Date().toLocaleDateString('tr-TR')
-                });
-                icon.classList.remove('fa-regular');
-                icon.classList.add('fa-solid');
-                btn.innerHTML = '<i class="fa-solid fa-heart"></i> Favorilerde';
-                btn.classList.add('active');
-            } else {
-                // Çıkar
-                favs.splice(index, 1);
-                icon.classList.remove('fa-solid');
-                icon.classList.add('fa-regular');
-                btn.innerHTML = '<i class="fa-regular fa-heart"></i> Favorilere Ekle';
-                btn.classList.remove('active');
-            }
-
-            localStorage.setItem('ytFavorites', JSON.stringify(favs));
-            if(activeTab === 'favorites') renderList();
-        }
-
-        function checkFavoriteStatus(videoId) {
-            let favs = JSON.parse(localStorage.getItem('ytFavorites')) || [];
-            const isFav = favs.some(item => item.id === videoId);
-            const btn = document.getElementById('favBtn');
-            
-            if(isFav) {
-                btn.innerHTML = '<i class="fa-solid fa-heart"></i> Favorilerde';
-                btn.classList.add('active');
-            } else {
-                btn.innerHTML = '<i class="fa-regular fa-heart"></i> Favorilere Ekle';
-                btn.classList.remove('active');
-            }
-        }
-
-        // --- TAB & LİSTELEME ---
-
-        function switchTab(tabName) {
-            activeTab = tabName;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            // Tıklanan tab'ı bulmak için basit index mantığı veya event target
-            if(tabName === 'history') document.querySelector('.tabs .tab:first-child').classList.add('active');
-            else document.querySelector('.tabs .tab:last-child').classList.add('active');
-            
-            renderList();
-        }
-
-        function renderList() {
-            const listEl = document.getElementById('contentList');
-            const dataKey = activeTab === 'history' ? 'ytHistory' : 'ytFavorites';
-            const data = JSON.parse(localStorage.getItem(dataKey)) || [];
-
-            listEl.innerHTML = '';
-            
-            if(data.length === 0) {
-                listEl.innerHTML = '<li style="padding:20px; text-align:center; color:#666">Liste boş.</li>';
-                return;
-            }
-
-            data.forEach(item => {
-                const li = document.createElement('li');
-                li.className = 'list-item';
-                li.innerHTML = `
-                    <div class="item-info" onclick="playVideo('${item.id}')">
-                        <i class="fa-brands fa-youtube" style="color:${activeTab==='favorites' ? 'var(--secondary)' : 'var(--primary)'}"></i>
-                        <span>${item.id} <small style="color:#666">(${item.date})</small></span>
-                    </div>
-                    <button class="action-btn" onclick="deleteFromList('${item.id}', '${dataKey}')"><i class="fa-solid fa-trash"></i></button>
-                `;
-                listEl.appendChild(li);
-            });
-        }
-
-        function deleteFromList(id, key) {
-            let data = JSON.parse(localStorage.getItem(key)) || [];
-            data = data.filter(item => item.id !== id);
-            localStorage.setItem(key, JSON.stringify(data));
-            
-            // Eğer favorilerden sildiysek ve şu an o video açıksa, buton durumunu güncelle
-            if(key === 'ytFavorites' && id === currentVideoId) {
-                checkFavoriteStatus(currentVideoId);
-            }
-            renderList();
-        }
-
-        // --- NOT SİSTEMİ ---
-        
-        function toggleNotes() {
-            const area = document.getElementById('videoNotes');
-            if(area.style.display === 'block') {
-                area.style.display = 'none';
-            } else {
-                area.style.display = 'block';
-            }
-        }
-
-        function loadNotes(videoId) {
-            const allNotes = JSON.parse(localStorage.getItem('ytNotes')) || {};
-            document.getElementById('videoNotes').value = allNotes[videoId] || '';
-        }
-
-        function saveNote() {
-            if(!currentVideoId) return;
-            const content = document.getElementById('videoNotes').value;
-            const allNotes = JSON.parse(localStorage.getItem('ytNotes')) || {};
-            
-            allNotes[currentVideoId] = content;
-            localStorage.setItem('ytNotes', JSON.stringify(allNotes));
-
-            // Kaydedildi feedback'i
-            const status = document.getElementById('saveStatus');
-            status.style.display = 'block';
-            setTimeout(() => status.style.display = 'none', 1000);
-        }
-
-        // --- SİNEMA MODU ---
-        function toggleCinemaMode() {
-            document.body.classList.toggle('cinema-mode');
-        }
-
     </script>
 </body>
 </html>

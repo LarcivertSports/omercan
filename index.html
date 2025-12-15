@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Özel YouTube Oynatıcı</title>
+    
+    <link rel="icon" href="https://www.youtube.com/s/desktop/1f664402/img/favicon_144x144.png" type="image/png">
+    
     <style>
         :root {
             --primary-color: #ff0000;
@@ -132,6 +135,7 @@
                 container.style.display = 'block';
                 
                 // Embed URL oluşturma (autoplay ekledik)
+                // Düzeltme: `1{videoId}` kısmını `${videoId}` olarak ve embed URL'ini standart formata çevirdim.
                 iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
             } else {
                 // Hata göster

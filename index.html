@@ -3,247 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PULSE - Ultimate Dashboard</title>
+    <title>NET-FLOOD | Trafik Simülatörü</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --primary: #3b82f6; /* Mavi Neon */
-            --accent: #10b981;  /* Yeşil Neon */
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Courier New', Courier, monospace; /* Hacker/Terminal havası */
+            --bg: #050505;
+            --panel: #111;
+            --border: #333;
+            --primary: #8b5cf6; /* Mor */
+            --success: #10b981; /* Yeşil */
+            --danger: #ef4444; /* Kırmızı */
+            --text: #e5e5e5;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            margin: 0;
             overflow: hidden;
         }
 
-        /* Arkaplan Efekti */
-        .grid-bg {
-            position: absolute;
+        /* Matrix/Cyber Arkaplan */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background-image: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)),
-                              url('https://www.transparenttextures.com/patterns/cubes.png');
+            background: 
+                linear-gradient(rgba(5, 5, 5, 0.9), rgba(5, 5, 5, 0.9)),
+                repeating-linear-gradient(0deg, transparent, transparent 1px, #1a1a1a 1px, #1a1a1a 2px);
             z-index: -1;
         }
 
         .container {
-            width: 90%;
-            max-width: 800px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
-            padding: 2rem;
-            border: 1px solid rgba(255,255,255,0.05);
+            width: 900px;
+            max-width: 95%;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
+            padding: 20px;
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            gap: 20px;
         }
 
-        header {
+        /* Header */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
         }
 
         .logo {
             font-size: 1.5rem;
-            font-weight: bold;
+            font-weight: 800;
             color: var(--primary);
-            text-shadow: 0 0 10px var(--primary);
+            text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        .user-info {
-            display: flex;
-            gap: 15px;
+        .status {
             font-size: 0.9rem;
-        }
-
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .badge-vip {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-
-        .controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            align-items: center;
+            gap: 8px;
         }
 
-        input[type="text"] {
-            flex: 1;
-            padding: 12px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: white;
-            border-radius: 6px;
-            outline: none;
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
             transition: 0.3s;
         }
 
-        input[type="text"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        /* Controls */
+        .control-panel {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        input {
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: monospace;
         }
 
         button {
-            padding: 12px 24px;
-            background: var(--primary);
-            color: white;
             border: none;
-            border-radius: 6px;
-            cursor: pointer;
+            border-radius: 4px;
             font-weight: bold;
-            transition: 0.3s;
+            cursor: pointer;
+            transition: 0.2s;
+            color: white;
+        }
+
+        .btn-start {
+            background: var(--success);
+        }
+        .btn-start:hover { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+
+        .btn-stop {
+            background: var(--danger);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card {
+            background: #161616;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            font-family: monospace;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
             text-transform: uppercase;
         }
 
-        button:hover {
-            background: #2563eb;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-        }
-
-        .console-output {
-            background: #000;
-            height: 300px;
-            border-radius: 6px;
-            padding: 1rem;
+        /* Console Log */
+        .console-window {
+            background: black;
+            height: 250px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px;
             overflow-y: auto;
-            border: 1px solid #333;
+            font-family: 'Courier New', Courier, monospace;
             font-size: 0.85rem;
-            color: var(--text-dim);
         }
 
-        .log-entry {
-            margin-bottom: 5px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 2px;
+        .log-line {
+            margin-bottom: 4px;
+            border-bottom: 1px solid #111;
         }
+        .log-time { color: #555; margin-right: 10px; }
+        .log-ip { color: var(--primary); margin-right: 10px; }
+        .log-msg { color: #aaa; }
+        .log-success { color: var(--success); }
 
-        .success { color: var(--accent); }
-        .error { color: #ef4444; }
-        .info { color: var(--primary); }
-
-        /* Scrollbar düzeni */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; }
 
     </style>
 </head>
 <body>
 
-    <div class="grid-bg"></div>
+    <div class="bg-grid"></div>
 
     <div class="container">
-        <header>
-            <div class="logo">PULSE.IO</div>
-            <div class="user-info">
-                <span>Kullanıcı: <strong style="color:white">Admin</strong></span>
-                <span class="badge badge-vip">Kredi: ∞ (Sınırsız)</span>
+        <div class="header">
+            <div class="logo">NET-FLOOD <span style="font-size:0.8rem; color:#555">v2.0</span></div>
+            <div class="status">
+                DURUM: <span id="statusText">BEKLİYOR</span>
+                <div class="indicator" id="statusIndicator"></div>
             </div>
-        </header>
+        </div>
 
-        <div class="dashboard-content">
-            <p style="margin-bottom: 10px; color: var(--text-dim);">Hedef Parametre / URL Giriniz:</p>
-            
-            <div class="controls">
-                <input type="text" id="targetInput" placeholder="Örn: 192.168.1.1 veya test_data">
-                <button onclick="startProcess()" id="startBtn">BAŞLAT</button>
-                <button onclick="clearConsole()" style="background: #ef4444;">TEMİZLE</button>
-            </div>
+        <div class="control-panel">
+            <input type="text" id="targetUrl" placeholder="Hedef URL (Örn: https://hedef-site.com)" value="https://example.com">
+            <button class="btn-start" onclick="startSimulation()">TRAFİĞİ BAŞLAT</button>
+            <button class="btn-stop" onclick="stopSimulation()">DURDUR</button>
+        </div>
 
-            <div class="console-output" id="consoleOutput">
-                <div class="log-entry info">[SİSTEM] Pulse Paneline Hoşgeldiniz.</div>
-                <div class="log-entry info">[SİSTEM] Sınırsız kredi modu aktif.</div>
-                <div class="log-entry info">[SİSTEM] İşlem için hazır...</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="sentCount">0</div>
+                <div class="stat-label">Gönderilen İstek</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-value" id="successCount" style="color:var(--success)">0</div>
+                <div class="stat-label">Başarılı Ziyaret</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="failCount" style="color:var(--danger)">0</div>
+                <div class="stat-label">Engellenen</div>
+            </div>
+        </div>
+
+        <div class="console-window" id="consoleLogs">
+            <div class="log-line"><span class="log-msg">Sistem hazır. Hedef URL girin ve başlatın.</span></div>
         </div>
     </div>
 
     <script>
-        function logMessage(message, type = 'normal') {
-            const consoleDiv = document.getElementById('consoleOutput');
-            const entry = document.createElement('div');
-            entry.classList.add('log-entry');
-            
-            const time = new Date().toLocaleTimeString();
+        let isRunning = false;
+        let intervalId = null;
+        let sent = 0;
+        let success = 0;
+        let failed = 0;
 
-            if (type === 'success') entry.classList.add('success');
-            else if (type === 'error') entry.classList.add('error');
-            else if (type === 'info') entry.classList.add('info');
+        const userAgents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)",
+            "Mozilla/5.0 (Linux; Android 10; SM-G981B)",
+            "Googlebot/2.1 (+http://www.google.com/bot.html)"
+        ];
 
-            entry.innerHTML = `<span style="opacity:0.5">[${time}]</span> ${message}`;
-            consoleDiv.appendChild(entry);
-            consoleDiv.scrollTop = consoleDiv.scrollHeight; // Otomatik aşağı kaydır
+        function getRandomIP() {
+            return Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + 
+                   Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
         }
 
-        function startProcess() {
-            const input = document.getElementById('targetInput').value;
-            const btn = document.getElementById('startBtn');
+        function addLog(msg, type="normal") {
+            const consoleDiv = document.getElementById('consoleLogs');
+            const div = document.createElement('div');
+            div.className = 'log-line';
+            const time = new Date().toLocaleTimeString();
+            
+            let colorStyle = "";
+            if(type === "success") colorStyle = "color: #10b981";
+            if(type === "error") colorStyle = "color: #ef4444";
 
-            if (!input) {
-                logMessage('HATA: Lütfen geçerli bir hedef giriniz.', 'error');
+            div.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-msg" style="${colorStyle}">${msg}</span>`;
+            
+            consoleDiv.appendChild(div);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+
+            // Log sayısı çok artarsa temizle (performans için)
+            if (consoleDiv.children.length > 50) {
+                consoleDiv.removeChild(consoleDiv.firstChild);
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('sentCount').innerText = sent;
+            document.getElementById('successCount').innerText = success;
+            document.getElementById('failCount').innerText = failed;
+        }
+
+        function startSimulation() {
+            if (isRunning) return;
+            
+            const url = document.getElementById('targetUrl').value;
+            if (!url) {
+                alert("Lütfen bir URL girin!");
                 return;
             }
 
-            btn.disabled = true;
-            btn.innerText = "İşleniyor...";
-            logMessage(`İşlem başlatıldı: ${input}`, 'info');
+            isRunning = true;
+            document.getElementById('statusText').innerText = "SALDIRI/TEST AKTİF";
+            document.getElementById('statusText').style.color = "#10b981";
+            document.getElementById('statusIndicator').style.backgroundColor = "#10b981";
+            document.getElementById('statusIndicator').style.boxShadow = "0 0 15px #10b981";
 
-            // Simülasyon Döngüsü (Sahte işlem)
-            let count = 0;
-            const max = 5; // 5 tane sahte log atacak
+            addLog(`İşlem başlatıldı: ${url}`, "normal");
 
-            const interval = setInterval(() => {
-                count++;
+            intervalId = setInterval(() => {
+                // Hızlı artış simülasyonu
+                const batch = Math.floor(Math.random() * 5) + 1; // Her seferinde 1-5 istek
+                sent += batch;
                 
-                // Rastgele başarı/hata simülasyonu
-                const isSuccess = Math.random() > 0.3; 
-                
-                if (isSuccess) {
-                    logMessage(`[BAŞARILI] Veri paketi doğrulandı - ID: ${Math.floor(Math.random() * 99999)}`, 'success');
+                // %90 başarı oranı simülasyonu
+                if (Math.random() > 0.1) {
+                    success += batch;
+                    const ip = getRandomIP();
+                    const agent = userAgents[Math.floor(Math.random() * userAgents.length)];
+                    addLog(`[VISITOR] ${ip} siteye giriş yaptı. (200 OK)`, "success");
                 } else {
-                    logMessage(`[BAŞARISIZ] Zaman aşımı veya hatalı veri.`, 'error');
+                    failed += batch;
+                    addLog(`[BLOCKED] Firewall tarafından engellendi. (403 Forbidden)`, "error");
                 }
+                
+                updateStats();
 
-                if (count >= max) {
-                    clearInterval(interval);
-                    btn.disabled = false;
-                    btn.innerText = "BAŞLAT";
-                    logMessage('İşlem tamamlandı. Kredi düşülmedi (Sınırsız Mod).', 'info');
-                }
-            }, 800); // 0.8 saniyede bir log atar
+            }, 200); // 200ms'de bir güncelle
         }
 
-        function clearConsole() {
-            const consoleDiv = document.getElementById('consoleOutput');
-            consoleDiv.innerHTML = '<div class="log-entry info">[SİSTEM] Konsol temizlendi.</div>';
+        function stopSimulation() {
+            if (!isRunning) return;
+            
+            clearInterval(intervalId);
+            isRunning = false;
+            
+            document.getElementById('statusText').innerText = "DURDURULDU";
+            document.getElementById('statusText').style.color = "#ef4444";
+            document.getElementById('statusIndicator').style.backgroundColor = "#ef4444";
+            document.getElementById('statusIndicator').style.boxShadow = "0 0 10px #ef4444";
+            
+            addLog("İşlem kullanıcı tarafından durduruldu.", "error");
         }
     </script>
-
 </body>
 </html>
  

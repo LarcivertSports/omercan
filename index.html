@@ -3,158 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Özel YouTube ve Canlı Yayın Oynatıcı</title>
-    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1280px-YouTube_full-color_icon_%282017%29.svg.png" type="image/png">
-    
+    <title>PULSE - Ultimate Dashboard</title>
     <style>
         :root {
-            --primary-color: #ff0000;
-            --bg-color: #1a1a1a;
-            --text-color: #ffffff;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #3b82f6; /* Mavi Neon */
+            --accent: #10b981;  /* Yeşil Neon */
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace; /* Hacker/Terminal havası */
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Arkaplan Efekti */
+        .grid-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)),
+                              url('https://www.transparenttextures.com/patterns/cubes.png');
+            z-index: -1;
         }
 
         .container {
-            width: 100%;
+            width: 90%;
             max-width: 800px;
-            text-align: center;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        h1 {
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+            letter-spacing: 2px;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .badge-vip {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            justify-content: center;
-        }
-
         input[type="text"] {
+            flex: 1;
             padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            width: 70%;
-            background-color: #2a2a2a;
+            background: #0f172a;
+            border: 1px solid #334155;
             color: white;
+            border-radius: 6px;
             outline: none;
+            transition: 0.3s;
         }
 
         input[type="text"]:focus {
-            border-color: var(--primary-color);
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
         }
 
         button {
             padding: 12px 24px;
-            border-radius: 8px;
-            border: none;
-            background-color: var(--primary-color);
+            background: var(--primary);
             color: white;
-            font-weight: bold;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
-            transition: transform 0.2s;
+            font-weight: bold;
+            transition: 0.3s;
+            text-transform: uppercase;
         }
 
         button:hover {
-            transform: scale(1.05);
-            background-color: #cc0000;
+            background: #2563eb;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
         }
 
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 oranı */
-            height: 0;
+        .console-output {
             background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            display: none; /* Başlangıçta gizli */
+            height: 300px;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-y: auto;
+            border: 1px solid #333;
+            font-size: 0.85rem;
+            color: var(--text-dim);
         }
 
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
+        .log-entry {
+            margin-bottom: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 2px;
         }
 
-        .error-msg {
-            color: #ff4444;
-            margin-top: 10px;
-            font-size: 0.9em;
-            display: none;
-        }
+        .success { color: var(--accent); }
+        .error { color: #ef4444; }
+        .info { color: var(--primary); }
+
+        /* Scrollbar düzeni */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
     </style>
 </head>
 <body>
 
+    <div class="grid-bg"></div>
+
     <div class="container">
-        <h1>Video ve Canlı Yayın Oynatıcı</h1>
-        <p>İzlemek istediğin YouTube video veya canlı yayın linkini yapıştır.</p>
+        <header>
+            <div class="logo">PULSE.IO</div>
+            <div class="user-info">
+                <span>Kullanıcı: <strong style="color:white">Admin</strong></span>
+                <span class="badge badge-vip">Kredi: ∞ (Sınırsız)</span>
+            </div>
+        </header>
 
-        <div class="input-group">
-            <input type="text" id="videoLink" placeholder="Örn: youtube.com/watch?v=... veya youtube.com/live/..." />
-            <button onclick="playVideo()">İzle</button>
-        </div>
-        <div id="errorMsg" class="error-msg">Geçersiz YouTube linki!</div>
+        <div class="dashboard-content">
+            <p style="margin-bottom: 10px; color: var(--text-dim);">Hedef Parametre / URL Giriniz:</p>
+            
+            <div class="controls">
+                <input type="text" id="targetInput" placeholder="Örn: 192.168.1.1 veya test_data">
+                <button onclick="startProcess()" id="startBtn">BAŞLAT</button>
+                <button onclick="clearConsole()" style="background: #ef4444;">TEMİZLE</button>
+            </div>
 
-        <div class="video-wrapper" id="videoContainer">
-            <iframe id="videoFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <div class="console-output" id="consoleOutput">
+                <div class="log-entry info">[SİSTEM] Pulse Paneline Hoşgeldiniz.</div>
+                <div class="log-entry info">[SİSTEM] Sınırsız kredi modu aktif.</div>
+                <div class="log-entry info">[SİSTEM] İşlem için hazır...</div>
+            </div>
         </div>
     </div>
 
     <script>
-        function playVideo() {
-            const input = document.getElementById('videoLink').value.trim();
-            const container = document.getElementById('videoContainer');
-            const iframe = document.getElementById('videoFrame');
-            const errorMsg = document.getElementById('errorMsg');
+        function logMessage(message, type = 'normal') {
+            const consoleDiv = document.getElementById('consoleOutput');
+            const entry = document.createElement('div');
+            entry.classList.add('log-entry');
+            
+            const time = new Date().toLocaleTimeString();
 
-            // YouTube Video ID'sini çıkarma fonksiyonu
-            const videoId = extractVideoID(input);
+            if (type === 'success') entry.classList.add('success');
+            else if (type === 'error') entry.classList.add('error');
+            else if (type === 'info') entry.classList.add('info');
 
-            if (videoId) {
-                // Hata mesajını gizle, videoyu göster
-                errorMsg.style.display = 'none';
-                container.style.display = 'block';
-                
-                // Embed URL oluşturma (Standart YouTube Embed yapısı kullanıldı)
-                // Canlı yayınlar için de aynı embed yapısı çalışır.
-                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-            } else {
-                // Hata göster
-                container.style.display = 'none';
-                errorMsg.style.display = 'block';
-                iframe.src = "";
-            }
+            entry.innerHTML = `<span style="opacity:0.5">[${time}]</span> ${message}`;
+            consoleDiv.appendChild(entry);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight; // Otomatik aşağı kaydır
         }
 
-        function extractVideoID(url) {
-            // GÜNCELLENMİŞ REGEX:
-            // 1. 'live/' ibaresini tanır.
-            // 2. 'youtu.be', 'v=', 'embed/' gibi standart formatları tanır.
-            const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|live\/)([^#&?]*).*/;
-            const match = url.match(regExp);
+        function startProcess() {
+            const input = document.getElementById('targetInput').value;
+            const btn = document.getElementById('startBtn');
 
-            // YouTube ID'leri genelde 11 karakterdir
-            return (match && match[2].length === 11) ? match[2] : null;
+            if (!input) {
+                logMessage('HATA: Lütfen geçerli bir hedef giriniz.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "İşleniyor...";
+            logMessage(`İşlem başlatıldı: ${input}`, 'info');
+
+            // Simülasyon Döngüsü (Sahte işlem)
+            let count = 0;
+            const max = 5; // 5 tane sahte log atacak
+
+            const interval = setInterval(() => {
+                count++;
+                
+                // Rastgele başarı/hata simülasyonu
+                const isSuccess = Math.random() > 0.3; 
+                
+                if (isSuccess) {
+                    logMessage(`[BAŞARILI] Veri paketi doğrulandı - ID: ${Math.floor(Math.random() * 99999)}`, 'success');
+                } else {
+                    logMessage(`[BAŞARISIZ] Zaman aşımı veya hatalı veri.`, 'error');
+                }
+
+                if (count >= max) {
+                    clearInterval(interval);
+                    btn.disabled = false;
+                    btn.innerText = "BAŞLAT";
+                    logMessage('İşlem tamamlandı. Kredi düşülmedi (Sınırsız Mod).', 'info');
+                }
+            }, 800); // 0.8 saniyede bir log atar
+        }
+
+        function clearConsole() {
+            const consoleDiv = document.getElementById('consoleOutput');
+            consoleDiv.innerHTML = '<div class="log-entry info">[SİSTEM] Konsol temizlendi.</div>';
         }
     </script>
+
 </body>
 </html>
-
+ 

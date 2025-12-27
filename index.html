@@ -3,319 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NET-FLOOD | Trafik Simülatörü</title>
+    <title>DevShare - Yazılım Paylaşım Platformu</title>
     <style>
+        /* --- CSS (Tasarım) Kısmı --- */
         :root {
-            --bg: #050505;
-            --panel: #111;
-            --border: #333;
-            --primary: #8b5cf6; /* Mor */
-            --success: #10b981; /* Yeşil */
-            --danger: #ef4444; /* Kırmızı */
-            --text: #e5e5e5;
+            --primary-color: #00ff88; /* Neon Yeşil */
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #e0e0e0;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            overflow: hidden;
-        }
-
-        /* Matrix/Cyber Arkaplan */
-        .bg-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(rgba(5, 5, 5, 0.9), rgba(5, 5, 5, 0.9)),
-                repeating-linear-gradient(0deg, transparent, transparent 1px, #1a1a1a 1px, #1a1a1a 2px);
-            z-index: -1;
-        }
-
-        .container {
-            width: 900px;
-            max-width: 95%;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
-            padding: 20px;
-            display: grid;
-            grid-template-rows: auto auto 1fr;
-            gap: 20px;
+            padding: 0;
+            line-height: 1.6;
         }
 
         /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
+        header {
+            background-color: #000;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: var(--primary-color);
         }
 
-        .status {
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
         }
 
-        .indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--danger);
-            box-shadow: 0 0 10px var(--danger);
-            transition: 0.3s;
+        /* Paylaşım Alanı (Sadece senin göreceğin kısım gibi düşün) */
+        .post-creator {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+            border: 1px solid #444;
         }
 
-        /* Controls */
-        .control-panel {
-            display: grid;
-            grid-template-columns: 3fr 1fr 1fr;
-            gap: 10px;
-        }
+        .post-creator h2 { margin-top: 0; color: var(--primary-color); }
 
-        input {
-            background: #1a1a1a;
-            border: 1px solid var(--border);
-            color: white;
-            padding: 12px;
-            border-radius: 4px;
-            font-family: monospace;
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+            border-radius: 5px;
+            box-sizing: border-box; /* Padding taşmasını önler */
         }
 
         button {
+            background-color: var(--primary-color);
+            color: #000;
             border: none;
-            border-radius: 4px;
+            padding: 10px 20px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
-            color: white;
+            border-radius: 5px;
+            transition: 0.3s;
+            width: 100%;
         }
 
-        .btn-start {
-            background: var(--success);
-        }
-        .btn-start:hover { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
-
-        .btn-stop {
-            background: var(--danger);
+        button:hover {
+            background-color: #00cc6a;
         }
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 10px;
+        /* Gönderilerin Listelendiği Alan */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .stat-card {
-            background: #161616;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            text-align: center;
+        .post-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            animation: fadeIn 0.5s ease;
         }
 
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary);
-            font-family: monospace;
+        .post-card h3 { margin-top: 0; font-size: 1.5rem; }
+        .post-meta { font-size: 0.8rem; color: #888; margin-bottom: 10px; }
+        .post-content { white-space: pre-wrap; } /* Satır boşluklarını korur */
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #888;
-            text-transform: uppercase;
-        }
-
-        /* Console Log */
-        .console-window {
-            background: black;
-            height: 250px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 10px;
-            overflow-y: auto;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem;
-        }
-
-        .log-line {
-            margin-bottom: 4px;
-            border-bottom: 1px solid #111;
-        }
-        .log-time { color: #555; margin-right: 10px; }
-        .log-ip { color: var(--primary); margin-right: 10px; }
-        .log-msg { color: #aaa; }
-        .log-success { color: var(--success); }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #333; }
-
     </style>
 </head>
 <body>
 
-    <div class="bg-grid"></div>
+    <header>
+        <h1>DevShare 💻</h1>
+        <p>Kod, Bilgi ve Tecrübe Paylaşım Noktası</p>
+    </header>
 
     <div class="container">
-        <div class="header">
-            <div class="logo">NET-FLOOD <span style="font-size:0.8rem; color:#555">v2.0</span></div>
-            <div class="status">
-                DURUM: <span id="statusText">BEKLİYOR</span>
-                <div class="indicator" id="statusIndicator"></div>
+        
+        <div class="post-creator">
+            <h2>Yeni Bir Şey Paylaş</h2>
+            <input type="text" id="titleInput" placeholder="Konu Başlığı (Örn: JavaScript Döngüleri)">
+            <input type="text" id="authorInput" placeholder="Yazar Adı">
+            <textarea id="contentInput" rows="5" placeholder="Yazılım bilginizi buraya yazın..."></textarea>
+            <button onclick="addPost()">Yayınla</button>
+        </div>
+
+        <hr style="border-color: #333; margin: 30px 0;">
+
+        <h2 style="color: var(--primary-color);">Son Paylaşımlar</h2>
+        <div class="feed" id="feedArea">
+            <div class="post-card">
+                <h3>Merhaba Dünya!</h3>
+                <div class="post-meta">Yazar: Admin • Tarih: Bugün</div>
+                <div class="post-content">DevShare platformuna hoş geldiniz. İlk yazılım makalemiz yakında yayında olacak!</div>
             </div>
         </div>
 
-        <div class="control-panel">
-            <input type="text" id="targetUrl" placeholder="Hedef URL (Örn: https://hedef-site.com)" value="https://example.com">
-            <button class="btn-start" onclick="startSimulation()">TRAFİĞİ BAŞLAT</button>
-            <button class="btn-stop" onclick="stopSimulation()">DURDUR</button>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="sentCount">0</div>
-                <div class="stat-label">Gönderilen İstek</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="successCount" style="color:var(--success)">0</div>
-                <div class="stat-label">Başarılı Ziyaret</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="failCount" style="color:var(--danger)">0</div>
-                <div class="stat-label">Engellenen</div>
-            </div>
-        </div>
-
-        <div class="console-window" id="consoleLogs">
-            <div class="log-line"><span class="log-msg">Sistem hazır. Hedef URL girin ve başlatın.</span></div>
-        </div>
     </div>
 
     <script>
-        let isRunning = false;
-        let intervalId = null;
-        let sent = 0;
-        let success = 0;
-        let failed = 0;
+        /* --- JavaScript (Mantık) Kısmı --- */
+        
+        function addPost() {
+            // 1. Girdileri al
+            const title = document.getElementById("titleInput").value;
+            const author = document.getElementById("authorInput").value;
+            const content = document.getElementById("contentInput").value;
+            const feedArea = document.getElementById("feedArea");
 
-        const userAgents = [
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)",
-            "Mozilla/5.0 (Linux; Android 10; SM-G981B)",
-            "Googlebot/2.1 (+http://www.google.com/bot.html)"
-        ];
-
-        function getRandomIP() {
-            return Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + 
-                   Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
-        }
-
-        function addLog(msg, type="normal") {
-            const consoleDiv = document.getElementById('consoleLogs');
-            const div = document.createElement('div');
-            div.className = 'log-line';
-            const time = new Date().toLocaleTimeString();
-            
-            let colorStyle = "";
-            if(type === "success") colorStyle = "color: #10b981";
-            if(type === "error") colorStyle = "color: #ef4444";
-
-            div.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-msg" style="${colorStyle}">${msg}</span>`;
-            
-            consoleDiv.appendChild(div);
-            consoleDiv.scrollTop = consoleDiv.scrollHeight;
-
-            // Log sayısı çok artarsa temizle (performans için)
-            if (consoleDiv.children.length > 50) {
-                consoleDiv.removeChild(consoleDiv.firstChild);
-            }
-        }
-
-        function updateStats() {
-            document.getElementById('sentCount').innerText = sent;
-            document.getElementById('successCount').innerText = success;
-            document.getElementById('failCount').innerText = failed;
-        }
-
-        function startSimulation() {
-            if (isRunning) return;
-            
-            const url = document.getElementById('targetUrl').value;
-            if (!url) {
-                alert("Lütfen bir URL girin!");
+            // 2. Boş alan kontrolü
+            if (title === "" || content === "") {
+                alert("Lütfen başlık ve içerik alanlarını doldurun!");
                 return;
             }
 
-            isRunning = true;
-            document.getElementById('statusText').innerText = "SALDIRI/TEST AKTİF";
-            document.getElementById('statusText').style.color = "#10b981";
-            document.getElementById('statusIndicator').style.backgroundColor = "#10b981";
-            document.getElementById('statusIndicator').style.boxShadow = "0 0 15px #10b981";
+            // 3. Tarih oluştur
+            const date = new Date().toLocaleDateString('tr-TR');
 
-            addLog(`İşlem başlatıldı: ${url}`, "normal");
+            // 4. Yeni HTML kartını oluştur
+            const newPostHTML = `
+                <div class="post-card">
+                    <h3>${title}</h3>
+                    <div class="post-meta">Yazar: ${author || 'Anonim'} • Tarih: ${date}</div>
+                    <div class="post-content">${content}</div>
+                </div>
+            `;
 
-            intervalId = setInterval(() => {
-                // Hızlı artış simülasyonu
-                const batch = Math.floor(Math.random() * 5) + 1; // Her seferinde 1-5 istek
-                sent += batch;
-                
-                // %90 başarı oranı simülasyonu
-                if (Math.random() > 0.1) {
-                    success += batch;
-                    const ip = getRandomIP();
-                    const agent = userAgents[Math.floor(Math.random() * userAgents.length)];
-                    addLog(`[VISITOR] ${ip} siteye giriş yaptı. (200 OK)`, "success");
-                } else {
-                    failed += batch;
-                    addLog(`[BLOCKED] Firewall tarafından engellendi. (403 Forbidden)`, "error");
-                }
-                
-                updateStats();
+            // 5. Listeye en başa ekle (prepend)
+            feedArea.insertAdjacentHTML('afterbegin', newPostHTML);
 
-            }, 200); // 200ms'de bir güncelle
-        }
-
-        function stopSimulation() {
-            if (!isRunning) return;
+            // 6. Kutuları temizle
+            document.getElementById("titleInput").value = "";
+            document.getElementById("contentInput").value = "";
             
-            clearInterval(intervalId);
-            isRunning = false;
-            
-            document.getElementById('statusText').innerText = "DURDURULDU";
-            document.getElementById('statusText').style.color = "#ef4444";
-            document.getElementById('statusIndicator').style.backgroundColor = "#ef4444";
-            document.getElementById('statusIndicator').style.boxShadow = "0 0 10px #ef4444";
-            
-            addLog("İşlem kullanıcı tarafından durduruldu.", "error");
+            // Bilgilendirme (Gerçek veritabanı olmadığı için)
+            console.log("Not: Sayfa yenilenince bu yazı kaybolur çünkü veritabanı bağlı değil.");
         }
     </script>
 </body>
 </html>
- 
+

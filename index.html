@@ -1,142 +1,178 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSoft - Profesyonel Web Çözümleri</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Ömer Can Şişkolu | Profesyonel Web Çözümleri</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --accent: #3b82f6;
-            --text-gray: #64748b;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--light);
-            color: var(--dark);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Arka Plan Efekti */
+        .bg-glow {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(15,23,42,0) 50%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* Navbar */
         nav {
-            background: white;
-            padding: 1.5rem 5%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 8%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .logo {
             font-size: 1.5rem;
             font-weight: 800;
-            color: var(--primary);
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
         }
 
-        .nav-links a {
+        .nav-btn {
+            background: var(--gradient);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
             text-decoration: none;
-            color: var(--dark);
-            margin-left: 2rem;
-            font-weight: 500;
-            transition: 0.3s;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
         }
 
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .cta-btn {
-            background: var(--primary);
-            color: white !important;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
         }
 
         /* Hero Section */
         header {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            background: linear-gradient(rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.9)), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover;
-            background-position: center;
             padding: 0 20px;
-            margin-top: 60px;
+            padding-top: 80px;
         }
 
-        header h1 {
-            font-size: 3.5rem;
-            color: white;
-            margin-bottom: 1rem;
+        .hero-content h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
         }
 
-        header p {
-            font-size: 1.2rem;
-            color: #cbd5e1;
-            margin-bottom: 2rem;
+        .hero-content h1 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        .hero-btn {
+        .hero-cta {
+            display: inline-block;
+            background: white;
+            color: var(--bg-color);
             padding: 1rem 2.5rem;
-            background: var(--accent);
-            color: white;
+            border-radius: 50px;
+            font-weight: 700;
             text-decoration: none;
-            border-radius: 5px;
             font-size: 1.1rem;
             transition: 0.3s;
+            border: 2px solid transparent;
         }
 
-        .hero-btn:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
+        .hero-cta:hover {
+            background: transparent;
+            color: white;
+            border-color: white;
         }
 
-        /* Hizmetler & Paketler */
-        .packages {
-            padding: 5rem 10%;
+        .hero-social {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .hero-social i {
+            margin-right: 8px;
+            color: #E1306C; /* Instagram color */
         }
 
-        .section-title {
+        /* Hizmet Kartları */
+        .services {
+            padding: 6rem 8%;
+        }
+
+        .section-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
-        .section-title h2 {
+        .section-header h2 {
             font-size: 2.5rem;
-            color: var(--dark);
+            margin-bottom: 1rem;
         }
 
-        .cards-container {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
         }
 
         .card {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
             transition: 0.3s;
             position: relative;
             overflow: hidden;
@@ -144,248 +180,178 @@
 
         .card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
-        .card.popular {
-            border: 2px solid var(--primary);
-        }
-
-        .badge {
-            position: absolute;
-            top: 20px;
-            right: -30px;
-            background: var(--primary);
-            color: white;
-            padding: 5px 30px;
-            transform: rotate(45deg);
-            font-size: 0.8rem;
-        }
-
-        .price {
+        .card-icon {
             font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--dark);
-            margin: 1.5rem 0;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .price span {
-            font-size: 1rem;
-            color: var(--text-gray);
-            font-weight: 400;
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
         }
 
-        .features {
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .features-list {
             list-style: none;
             margin-bottom: 2rem;
-            text-align: left;
         }
 
-        .features li {
+        .features-list li {
             margin-bottom: 0.8rem;
-            color: var(--text-gray);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
         }
 
-        .features i {
-            color: #10b981;
+        .features-list li i {
+            color: var(--primary);
             margin-right: 10px;
+            font-size: 0.9rem;
         }
 
-        .buy-btn {
-            display: inline-block;
+        .card-btn {
+            display: block;
             width: 100%;
             padding: 1rem;
-            background: var(--dark);
+            text-align: center;
+            background: rgba(255,255,255,0.05);
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 8px;
             transition: 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .card.popular .buy-btn {
-            background: var(--primary);
-        }
-
-        .buy-btn:hover {
-            opacity: 0.9;
-        }
-
-        /* İletişim Formu */
-        .contact {
-            background: white;
-            padding: 5rem 10%;
-        }
-
-        .contact-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 3rem;
-        }
-
-        .contact-info, .contact-form {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .contact-form input, .contact-form textarea {
-            width: 100%;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 5px;
-            outline: none;
-        }
-
-        .contact-form button {
-            background: var(--primary);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
+        .card-btn:hover {
+            background: var(--gradient);
+            border-color: transparent;
         }
 
         /* Footer */
         footer {
-            background: var(--dark);
-            color: white;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 3rem 8%;
             text-align: center;
-            padding: 2rem;
+            color: var(--text-muted);
+            background: #0b1120;
         }
 
-        /* Responsive */
+        .social-link {
+            font-size: 1.5rem;
+            color: white;
+            margin-left: 1rem;
+            transition: 0.3s;
+        }
+        
+        .social-link:hover {
+            color: var(--primary);
+        }
+
         @media (max-width: 768px) {
-            nav { flex-direction: column; gap: 1rem; }
-            .nav-links { display: flex; flex-direction: column; gap: 1rem; text-align: center; }
-            .nav-links a { margin: 0; }
-            header h1 { font-size: 2.5rem; }
+            .hero-content h1 { font-size: 2.5rem; }
+            nav { padding: 1.5rem 5%; }
+            .nav-btn span { display: none; } /* Mobilde butonda sadece ikon kalsın istenirse */
         }
     </style>
 </head>
 <body>
 
+    <div class="bg-glow"></div>
+
     <nav>
-        <div class="logo">WebSoft.</div>
-        <div class="nav-links">
-            <a href="#home">Ana Sayfa</a>
-            <a href="#services">Hizmetler</a>
-            <a href="#contact">İletişim</a>
-            <a href="#services" class="cta-btn">Teklif Al</a>
-        </div>
+        <div class="logo">Ömer Can Şişkolu.</div>
+        <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="nav-btn">
+            <i class="fab fa-instagram"></i> İletişime Geç
+        </a>
     </nav>
 
-    <header id="home">
-        <div>
-            <h1>Dijital Dünyada<br>İşinizi Büyütün</h1>
-            <p>Modern, hızlı ve mobil uyumlu web siteleri ile müşterilerinize ulaşın. Hemen paketinizi seçin, 24 saatte kuruluma başlayalım.</p>
-            <a href="#services" class="hero-btn">Paketleri İncele</a>
+    <header>
+        <div class="hero-content">
+            <h1>Vizyonunuzu<br><span>Dijitale Dönüştürüyoruz</span></h1>
+            <p>Modern, hızlı ve estetik web siteleri ile markanızı bir adım öne taşıyın. Profesyonel çözümler için benimle iletişime geçin.</p>
+            
+            <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="hero-cta">
+                Fiyat ve Bilgi Alın <i class="fas fa-arrow-right" style="margin-left: 10px;"></i>
+            </a>
+
+            <div class="hero-social">
+                <p>Sorularınız için DM kutum açık <i class="fab fa-instagram"></i> @omercansiskolu.com.tr</p>
+            </div>
         </div>
     </header>
 
-    <section class="packages" id="services">
-        <div class="section-title">
-            <h2>Hizmet Paketlerimiz</h2>
-            <p>İhtiyacınıza en uygun çözümü seçin</p>
+    <section class="services">
+        <div class="section-header">
+            <h2>Hizmet Paketleri</h2>
+            <p style="color: var(--text-muted);">İhtiyacınıza uygun çözümü seçin, fiyatlandırma için Instagram üzerinden iletişime geçin.</p>
         </div>
 
-        <div class="cards-container">
+        <div class="grid">
             <div class="card">
-                <h3>Başlangıç Paketi</h3>
-                <div class="price">₺5.000<span>/tek seferlik</span></div>
-                <ul class="features">
-                    <li><i class="fas fa-check"></i> Tek Sayfa (Landing Page)</li>
-                    <li><i class="fas fa-check"></i> Mobil Uyumlu Tasarım</li>
-                    <li><i class="fas fa-check"></i> İletişim Formu</li>
-                    <li><i class="fas fa-check"></i> 1 Yıl Ücretsiz Hosting</li>
-                    <li><i class="fas fa-check"></i> Temel SEO Ayarları</li>
+                <i class="fas fa-briefcase card-icon"></i>
+                <h3>Kurumsal Web Sitesi</h3>
+                <p>Şirketinizin prestijini artıracak, mobil uyumlu ve yönetim panelli profesyonel web siteleri.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> Özel Arayüz Tasarımı</li>
+                    <li><i class="fas fa-check"></i> Mobil Uyumlu (Responsive)</li>
+                    <li><i class="fas fa-check"></i> Yönetim Paneli</li>
+                    <li><i class="fas fa-check"></i> Google SEO Altyapısı</li>
                 </ul>
-                <button class="buy-btn" onclick="orderPackage('Başlangıç Paketi')">Satın Al</button>
-            </div>
-
-            <div class="card popular">
-                <div class="badge">Popüler</div>
-                <h3>Kurumsal Paket</h3>
-                <div class="price">₺12.000<span>/tek seferlik</span></div>
-                <ul class="features">
-                    <li><i class="fas fa-check"></i> 5-7 Sayfa Kurumsal Site</li>
-                    <li><i class="fas fa-check"></i> Yönetim Paneli (CMS)</li>
-                    <li><i class="fas fa-check"></i> Blog Altyapısı</li>
-                    <li><i class="fas fa-check"></i> Kurumsal E-posta Kurulumu</li>
-                    <li><i class="fas fa-check"></i> Google Maps Kaydı</li>
-                    <li><i class="fas fa-check"></i> 7/24 Destek</li>
-                </ul>
-                <button class="buy-btn" onclick="orderPackage('Kurumsal Paket')">Satın Al</button>
+                <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="card-btn">
+                    Fiyat Sor <i class="fab fa-instagram"></i>
+                </a>
             </div>
 
             <div class="card">
-                <h3>E-Ticaret Paketi</h3>
-                <div class="price">₺25.000<span>/tek seferlik</span></div>
-                <ul class="features">
-                    <li><i class="fas fa-check"></i> Sınırsız Ürün Ekleme</li>
-                    <li><i class="fas fa-check"></i> Kredi Kartı Ödeme Altyapısı</li>
-                    <li><i class="fas fa-check"></i> Sepet & Üyelik Sistemi</li>
-                    <li><i class="fas fa-check"></i> Kargo Entegrasyonu</li>
-                    <li><i class="fas fa-check"></i> İleri Düzey SEO</li>
+                <i class="fas fa-shopping-cart card-icon"></i>
+                <h3>E-Ticaret Sitesi</h3>
+                <p>Ürünlerinizi online satmanız için gerekli tüm altyapı, ödeme sistemleri ve güvenli alışveriş.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> Sınırsız Ürün Yönetimi</li>
+                    <li><i class="fas fa-check"></i> Kredi Kartı Entegrasyonu</li>
+                    <li><i class="fas fa-check"></i> Sipariş Takip Sistemi</li>
+                    <li><i class="fas fa-check"></i> Pazaryeri Entegrasyonları</li>
                 </ul>
-                <button class="buy-btn" onclick="orderPackage('E-Ticaret Paketi')">Satın Al</button>
+                <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="card-btn">
+                    Fiyat Sor <i class="fab fa-instagram"></i>
+                </a>
             </div>
-        </div>
-    </section>
 
-    <section class="contact" id="contact">
-        <div class="section-title">
-            <h2>Bizimle İletişime Geçin</h2>
-        </div>
-        <div class="contact-wrapper">
-            <div class="contact-info">
-                <h3>Ofis Bilgileri</h3>
-                <p style="margin-top:1rem; color:#64748b;">Aklınıza takılan sorular mı var? Bize yazın veya arayın.</p>
-                <div style="margin-top: 2rem;">
-                    <p><i class="fas fa-phone" style="color:var(--primary); margin-right:10px;"></i> +90 555 123 45 67</p>
-                    <p style="margin-top:1rem;"><i class="fas fa-envelope" style="color:var(--primary); margin-right:10px;"></i> info@websoft.com</p>
-                    <p style="margin-top:1rem;"><i class="fas fa-map-marker-alt" style="color:var(--primary); margin-right:10px;"></i> Teknoloji Vadisi, İstanbul</p>
-                </div>
-            </div>
-            <div class="contact-form">
-                <form onsubmit="submitForm(event)">
-                    <input type="text" placeholder="Adınız Soyadınız" required>
-                    <input type="email" placeholder="E-posta Adresiniz" required>
-                    <textarea rows="5" placeholder="Mesajınız..." required></textarea>
-                    <button type="submit">Gönder</button>
-                </form>
+            <div class="card">
+                <i class="fas fa-code card-icon"></i>
+                <h3>Özel Yazılım Projeleri</h3>
+                <p>Standart kalıplara sığmayan fikirleriniz için size özel kodlanmış web uygulamaları.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> İhtiyaca Özel Kodlama</li>
+                    <li><i class="fas fa-check"></i> API Entegrasyonları</li>
+                    <li><i class="fas fa-check"></i> Veritabanı Yönetimi</li>
+                    <li><i class="fas fa-check"></i> Yüksek Performans</li>
+                </ul>
+                <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="card-btn">
+                    Fiyat Sor <i class="fab fa-instagram"></i>
+                </a>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2025 WebSoft Yazılım Hizmetleri. Tüm hakları saklıdır.</p>
+        <p>&copy; 2025 Ömer Can Şişkolu. Tüm hakları saklıdır.</p>
+        <div style="margin-top: 1rem;">
+            <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+            </div>
     </footer>
 
-    <script>
-        // Paket Sipariş Fonksiyonu
-        function orderPackage(packageName) {
-            // Gerçek bir sistemde burası ödeme sayfasına yönlendirir.
-            // Şimdilik WhatsApp'a yönlendirelim:
-            const message = `Merhaba, ${packageName} hakkında bilgi almak ve satın almak istiyorum.`;
-            const whatsappUrl = `https://wa.me/905551234567?text=${encodeURIComponent(message)}`;
-            
-            // Kullanıcı onayı
-            if(confirm(packageName + " için WhatsApp üzerinden iletişime geçmek ister misiniz?")) {
-                window.open(whatsappUrl, '_blank');
-            }
-        }
-
-        // Form Gönderme Simülasyonu
-        function submitForm(e) {
-            e.preventDefault();
-            alert("Mesajınız başarıyla alındı! En kısa sürede dönüş yapacağız.");
-            e.target.reset();
-        }
-    </script>
 </body>
 </html>
- 

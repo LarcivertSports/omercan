@@ -6,12 +6,14 @@
     <title>LarcivertSports Repo Görüntüleyici</title>
     <style>
         :root {
-            --bg-color: #0f172a; /* Lacivert tonlu koyu arka plan */
+            --bg-color: #0f172a;
             --card-bg: #1e293b;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
             --accent: #38bdf8;
             --border: #334155;
+            --error: #ef4444;
+            --success: #22c55e;
         }
 
         body {
@@ -36,16 +38,8 @@
             border-bottom: 2px solid var(--border);
         }
 
-        h1 {
-            color: var(--accent);
-            margin: 0;
-            font-size: 2rem;
-        }
-
-        p.subtitle {
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
+        h1 { color: var(--accent); margin: 0; font-size: 2rem; }
+        p.subtitle { color: var(--text-muted); margin-top: 5px; }
 
         .status-box {
             padding: 15px;
@@ -53,19 +47,19 @@
             margin-bottom: 20px;
             font-weight: bold;
             text-align: center;
-            display: none;
         }
 
-        .status-loading { background-color: #3b82f6; color: white; display: block; }
-        .status-error { background-color: #ef4444; color: white; }
-        .status-success { background-color: #22c55e; color: white; }
+        .status-loading { background-color: #3b82f6; color: white; animation: pulse 1.5s infinite; }
+        .status-error { background-color: var(--error); color: white; }
+        .status-success { background-color: var(--success); color: white; display: none; }
 
-        /* JSON İçerik Kartları */
-        .json-viewer {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
         }
+
+        .json-viewer { display: flex; flex-direction: column; gap: 15px; }
 
         .card {
             background-color: var(--card-bg);
@@ -76,17 +70,11 @@
             overflow-wrap: break-word;
         }
 
-        .key {
-            color: var(--accent);
-            font-weight: bold;
-            margin-right: 5px;
-        }
-
+        .key { color: var(--accent); font-weight: bold; margin-right: 5px; }
         .value-string { color: #a5f3fc; }
         .value-number { color: #fcd34d; }
         .value-boolean { color: #f472b6; }
-        .value-null { color: #94a3b8; font-style: italic; }
-
+        
         a.link-btn {
             display: inline-block;
             margin-top: 10px;
@@ -98,112 +86,100 @@
             font-weight: bold;
             transition: background 0.2s;
         }
+        a.link-btn:hover { background-color: #0ea5e9; }
 
-        a.link-btn:hover {
-            background-color: #0ea5e9;
-        }
-
-        /* Nesne ve Liste Gösterimi */
         .nested-object, .nested-array {
-            margin-left: 20px;
+            margin-left: 15px;
             border-left: 2px solid var(--border);
             padding-left: 10px;
             margin-top: 5px;
         }
 
-        .collapsible {
-            cursor: pointer;
-            user-select: none;
-        }
-        
+        .collapsible { cursor: pointer; user-select: none; }
         .collapsible::before {
-            content: '▼';
-            display: inline-block;
-            margin-right: 5px;
-            font-size: 0.8em;
-            transition: transform 0.2s;
+            content: '▼'; display: inline-block; margin-right: 5px;
+            font-size: 0.8em; transition: transform 0.2s;
         }
-        
-        .collapsed::before {
-            transform: rotate(-90deg);
-        }
-
-        .collapsed + .content {
-            display: none;
-        }
-
+        .collapsed::before { transform: rotate(-90deg); }
+        .collapsed + .content { display: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <h1>LarcivertSports Repo</h1>
-            <p class="subtitle">Veriler sunucudan çekiliyor...</p>
+            <h1>LarcivertSports</h1>
+            <p class="subtitle">Repo İçeriği</p>
         </header>
 
-        <div id="status" class="status-box status-loading">Yükleniyor...</div>
+        <div id="status" class="status-box status-loading">Sunucuya bağlanılıyor...</div>
         <div id="contentArea" class="json-viewer"></div>
     </div>
 
     <script>
-        // Hedef URL
-        const TARGET_URL = "https://raw.githubusercontent.com/LarcivertSports/LarcivertSports/master/repo.json";
-        
-        // CORS Proxy (GitHub raw dosyalarına doğrudan erişim engellenebilir, bu yüzden proxy kullanıyoruz)
-        const PROXY_URL = "https://api.allorigins.win/raw?url=";
+        // ÖNEMLİ DEĞİŞİKLİK: raw.githubusercontent yerine jsDelivr CDN kullanıyoruz.
+        // Bu servis CORS hatası vermez ve çok daha hızlıdır.
+        const REPO_USER = "LarcivertSports";
+        const REPO_NAME = "LarcivertSports";
+        const BRANCH = "master";
+        const FILE = "repo.json";
+
+        // URL'yi otomatik oluşturuyoruz
+        const TARGET_URL = `https://cdn.jsdelivr.net/gh/${REPO_USER}/${REPO_NAME}@${BRANCH}/${FILE}`;
 
         const statusBox = document.getElementById('status');
         const contentArea = document.getElementById('contentArea');
 
         async function fetchData() {
             try {
-                // Proxy üzerinden veriyi çek
-                const response = await fetch(PROXY_URL + encodeURIComponent(TARGET_URL));
+                console.log("İstek gönderiliyor: " + TARGET_URL);
                 
+                // Fetch isteği
+                const response = await fetch(TARGET_URL);
+
                 if (!response.ok) {
-                    throw new Error(`HTTP Hata: ${response.status}`);
+                    throw new Error(`Dosya bulunamadı veya sunucu hatası (Kod: ${response.status})`);
                 }
 
                 const data = await response.json();
                 
-                statusBox.className = "status-box status-success";
-                statusBox.textContent = "Veri başarıyla yüklendi!";
+                // Başarılı olursa yükleniyor yazısını kaldır
+                statusBox.style.display = 'none';
                 
-                // 2 saniye sonra başarı mesajını gizle
-                setTimeout(() => { statusBox.style.display = 'none'; }, 2000);
-
+                // Veriyi ekrana bas
                 renderData(data, contentArea);
 
             } catch (error) {
                 console.error(error);
                 statusBox.className = "status-box status-error";
-                statusBox.innerHTML = `Hata oluştu:<br>${error.message}<br><br>Lütfen internet bağlantınızı kontrol edin.`;
+                statusBox.innerHTML = `
+                    <strong>Veri çekilemedi!</strong><br>
+                    Hata detayı: ${error.message}<br><br>
+                    <small>İnternet bağlantınızı kontrol edin veya GitHub adresinin doğruluğundan emin olun.</small>
+                `;
             }
         }
 
-        // Veriyi ekrana basan fonksiyon (Recursive)
         function renderData(data, container) {
-            // Eğer veri bir dizi (liste) ise
             if (Array.isArray(data)) {
                 data.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'card';
                     
-                    // Eğer liste elemanı basit bir değerse direkt yaz, nesne ise detaylandır
                     if (typeof item === 'object' && item !== null) {
+                        // Eğer öğe "name" veya "title" içeriyorsa başlık olarak onu kullan
+                        let headerText = `Öğe #${index + 1}`;
+                        if(item.name) headerText = item.name;
+                        else if(item.title) headerText = item.title;
+
                         const title = document.createElement('div');
                         title.className = 'collapsible';
-                        title.innerHTML = `<span class="key">Öğe #${index + 1}</span>`;
-                        
-                        // Başlığa tıklayınca aç/kapa yap
-                        title.onclick = function() {
-                            this.classList.toggle('collapsed');
-                        };
+                        title.innerHTML = `<span class="key">${headerText}</span>`;
+                        title.onclick = function() { this.classList.toggle('collapsed'); };
                         
                         const contentDiv = document.createElement('div');
                         contentDiv.className = 'content';
-                        renderData(item, contentDiv); // Kendini tekrar çağır
+                        renderData(item, contentDiv);
                         
                         card.appendChild(title);
                         card.appendChild(contentDiv);
@@ -213,7 +189,6 @@
                     container.appendChild(card);
                 });
             } 
-            // Eğer veri bir nesne ise (Key: Value)
             else if (typeof data === 'object' && data !== null) {
                 for (const [key, value] of Object.entries(data)) {
                     const wrapper = document.createElement('div');
@@ -222,13 +197,11 @@
                     if (typeof value === 'object' && value !== null) {
                         const title = document.createElement('div');
                         title.className = 'collapsible';
-                        title.innerHTML = `<span class="key">${key}:</span>`;
-                        title.onclick = function() {
-                            this.classList.toggle('collapsed');
-                        };
+                        title.innerHTML = `<span class="key">${key}</span>`;
+                        title.onclick = function() { this.classList.toggle('collapsed'); };
 
                         const nestedContainer = document.createElement('div');
-                        nestedContainer.className = Array.isArray(value) ? 'nested-array content' : 'nested-object content';
+                        nestedContainer.className = 'nested-object content';
                         
                         wrapper.appendChild(title);
                         wrapper.appendChild(nestedContainer);
@@ -240,7 +213,6 @@
                 }
             }
             else {
-                // Tekil kök değer gelirse
                 const card = document.createElement('div');
                 card.className = 'card';
                 renderValue("Veri", data, card);
@@ -248,7 +220,6 @@
             }
         }
 
-        // Tekil değerleri renklendirip ekrana basan yardımcı fonksiyon
         function renderValue(key, value, container) {
             let html = "";
             if (key) html += `<span class="key">${key}:</span> `;
@@ -256,14 +227,15 @@
             let valueClass = "value-string";
             if (typeof value === 'number') valueClass = "value-number";
             else if (typeof value === 'boolean') valueClass = "value-boolean";
-            else if (value === null) valueClass = "value-null";
 
-            // Eğer değer bir URL ise tıklanabilir link yap
+            // Link kontrolü
             if (typeof value === 'string' && (value.startsWith('http') || value.startsWith('https'))) {
                 html += `<a href="${value}" target="_blank" class="value-string" style="text-decoration:underline;">${value}</a>`;
-                // Eğer doğrudan bir dosya veya çalıştırılabilir bir şeyse buton ekle
-                if (value.endsWith('.apk') || value.endsWith('.zip') || value.endsWith('.m3u')) {
-                    html += `<br><a href="${value}" class="link-btn" target="_blank">İndir / Çalıştır</a>`;
+                
+                // İndirme / İzleme butonları
+                const lowerVal = value.toLowerCase();
+                if (lowerVal.endsWith('.apk') || lowerVal.endsWith('.zip') || lowerVal.endsWith('.m3u') || lowerVal.endsWith('.json')) {
+                    html += `<br><a href="${value}" class="link-btn" target="_blank">İndir / Aç</a>`;
                 }
             } else {
                 html += `<span class="${valueClass}">${value}</span>`;
@@ -272,9 +244,8 @@
             container.innerHTML += html;
         }
 
-        // Sayfa yüklenince çalıştır
         fetchData();
     </script>
 </body>
 </html>
- 
+

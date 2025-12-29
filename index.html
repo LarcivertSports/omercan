@@ -1,357 +1,280 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ömercan Şişkolu</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>LarcivertSports Repo Görüntüleyici</title>
     <style>
         :root {
-            --bg-color: #0f172a;
+            --bg-color: #0f172a; /* Lacivert tonlu koyu arka plan */
             --card-bg: #1e293b;
-            --primary: #3b82f6;
-            --secondary: #8b5cf6;
-            --text-main: #f8fafc;
+            --text-main: #e2e8f0;
             --text-muted: #94a3b8;
-            --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
+            --accent: #38bdf8;
+            --border: #334155;
         }
 
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-        /* Arka Plan Efekti */
-        .bg-glow {
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(15,23,42,0) 50%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* Navbar */
-        nav {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem 8%;
+            margin: 0;
+            padding: 20px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-        }
-
-        .nav-btn {
-            background: var(--gradient);
-            color: white;
-            padding: 0.7rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-        }
-
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
-        }
-
-        /* Hero Section */
-        header {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
             justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        header {
             text-align: center;
-            padding: 0 20px;
-            padding-top: 80px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
         }
 
-        .hero-content h1 {
-            font-size: 4rem;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            font-weight: 800;
+        h1 {
+            color: var(--accent);
+            margin: 0;
+            font-size: 2rem;
         }
 
-        .hero-content h1 span {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-content p {
-            font-size: 1.25rem;
+        p.subtitle {
             color: var(--text-muted);
-            margin-bottom: 2.5rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin-top: 5px;
         }
 
-        .hero-cta {
-            display: inline-block;
-            background: white;
-            color: var(--bg-color);
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            font-weight: 700;
-            text-decoration: none;
-            font-size: 1.1rem;
-            transition: 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .hero-cta:hover {
-            background: transparent;
-            color: white;
-            border-color: white;
-        }
-
-        .hero-social {
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-        
-        .hero-social i {
-            margin-right: 8px;
-            color: #E1306C;
-        }
-
-        /* Hizmet Kartları */
-        .services {
-            padding: 6rem 8%;
-        }
-
-        .section-header {
+        .status-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
             text-align: center;
-            margin-bottom: 4rem;
+            display: none;
         }
 
-        .section-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
+        .status-loading { background-color: #3b82f6; color: white; display: block; }
+        .status-error { background-color: #ef4444; color: white; }
+        .status-success { background-color: #22c55e; color: white; }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
+        /* JSON İçerik Kartları */
+        .json-viewer {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .card {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .features-list {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .features-list li {
-            margin-bottom: 0.8rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-        }
-
-        .features-list li i {
-            color: var(--primary);
-            margin-right: 10px;
-            font-size: 0.9rem;
-        }
-
-        .card-btn {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            text-align: center;
-            background: rgba(255,255,255,0.05);
-            color: white;
-            text-decoration: none;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            transition: 0.3s;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            overflow-wrap: break-word;
         }
 
-        .card-btn:hover {
-            background: var(--gradient);
-            border-color: transparent;
+        .key {
+            color: var(--accent);
+            font-weight: bold;
+            margin-right: 5px;
         }
 
-        /* Footer */
-        footer {
-            border-top: 1px solid rgba(255,255,255,0.05);
-            padding: 3rem 8%;
-            text-align: center;
-            color: var(--text-muted);
-            background: #0b1120;
+        .value-string { color: #a5f3fc; }
+        .value-number { color: #fcd34d; }
+        .value-boolean { color: #f472b6; }
+        .value-null { color: #94a3b8; font-style: italic; }
+
+        a.link-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: var(--accent);
+            color: #0f172a;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.2s;
         }
 
-        .social-link {
-            font-size: 1.5rem;
-            color: white;
-            margin-left: 1rem;
-            transition: 0.3s;
+        a.link-btn:hover {
+            background-color: #0ea5e9;
+        }
+
+        /* Nesne ve Liste Gösterimi */
+        .nested-object, .nested-array {
+            margin-left: 20px;
+            border-left: 2px solid var(--border);
+            padding-left: 10px;
+            margin-top: 5px;
+        }
+
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
         }
         
-        .social-link:hover {
-            color: var(--primary);
+        .collapsible::before {
+            content: '▼';
+            display: inline-block;
+            margin-right: 5px;
+            font-size: 0.8em;
+            transition: transform 0.2s;
+        }
+        
+        .collapsed::before {
+            transform: rotate(-90deg);
         }
 
-        @media (max-width: 768px) {
-            .hero-content h1 { font-size: 2.5rem; }
-            nav { padding: 1.5rem 5%; }
-            .nav-btn span { display: none; }
+        .collapsed + .content {
+            display: none;
         }
+
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
+    <div class="container">
+        <header>
+            <h1>LarcivertSports Repo</h1>
+            <p class="subtitle">Veriler sunucudan çekiliyor...</p>
+        </header>
 
-    <nav>
-        <div class="logo">Ömercan Şişkolu</div>
-        <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="nav-btn">
-            <i class="fab fa-instagram"></i> İletişime Geç
-        </a>
-    </nav>
+        <div id="status" class="status-box status-loading">Yükleniyor...</div>
+        <div id="contentArea" class="json-viewer"></div>
+    </div>
 
-    <header>
-        <div class="hero-content">
-            <h1>Vizyonunuzu<br><span>Dijitale Dönüştürüyoruz</span></h1>
-            <p>Modern, hızlı ve estetik web siteleri ile markanızı bir adım öne taşıyın. Profesyonel çözümler için benimle iletişime geçin.</p>
+    <script>
+        // Hedef URL
+        const TARGET_URL = "https://raw.githubusercontent.com/LarcivertSports/LarcivertSports/master/repo.json";
+        
+        // CORS Proxy (GitHub raw dosyalarına doğrudan erişim engellenebilir, bu yüzden proxy kullanıyoruz)
+        const PROXY_URL = "https://api.allorigins.win/raw?url=";
+
+        const statusBox = document.getElementById('status');
+        const contentArea = document.getElementById('contentArea');
+
+        async function fetchData() {
+            try {
+                // Proxy üzerinden veriyi çek
+                const response = await fetch(PROXY_URL + encodeURIComponent(TARGET_URL));
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Hata: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                statusBox.className = "status-box status-success";
+                statusBox.textContent = "Veri başarıyla yüklendi!";
+                
+                // 2 saniye sonra başarı mesajını gizle
+                setTimeout(() => { statusBox.style.display = 'none'; }, 2000);
+
+                renderData(data, contentArea);
+
+            } catch (error) {
+                console.error(error);
+                statusBox.className = "status-box status-error";
+                statusBox.innerHTML = `Hata oluştu:<br>${error.message}<br><br>Lütfen internet bağlantınızı kontrol edin.`;
+            }
+        }
+
+        // Veriyi ekrana basan fonksiyon (Recursive)
+        function renderData(data, container) {
+            // Eğer veri bir dizi (liste) ise
+            if (Array.isArray(data)) {
+                data.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    // Eğer liste elemanı basit bir değerse direkt yaz, nesne ise detaylandır
+                    if (typeof item === 'object' && item !== null) {
+                        const title = document.createElement('div');
+                        title.className = 'collapsible';
+                        title.innerHTML = `<span class="key">Öğe #${index + 1}</span>`;
+                        
+                        // Başlığa tıklayınca aç/kapa yap
+                        title.onclick = function() {
+                            this.classList.toggle('collapsed');
+                        };
+                        
+                        const contentDiv = document.createElement('div');
+                        contentDiv.className = 'content';
+                        renderData(item, contentDiv); // Kendini tekrar çağır
+                        
+                        card.appendChild(title);
+                        card.appendChild(contentDiv);
+                    } else {
+                        renderValue(null, item, card);
+                    }
+                    container.appendChild(card);
+                });
+            } 
+            // Eğer veri bir nesne ise (Key: Value)
+            else if (typeof data === 'object' && data !== null) {
+                for (const [key, value] of Object.entries(data)) {
+                    const wrapper = document.createElement('div');
+                    wrapper.style.marginBottom = "8px";
+
+                    if (typeof value === 'object' && value !== null) {
+                        const title = document.createElement('div');
+                        title.className = 'collapsible';
+                        title.innerHTML = `<span class="key">${key}:</span>`;
+                        title.onclick = function() {
+                            this.classList.toggle('collapsed');
+                        };
+
+                        const nestedContainer = document.createElement('div');
+                        nestedContainer.className = Array.isArray(value) ? 'nested-array content' : 'nested-object content';
+                        
+                        wrapper.appendChild(title);
+                        wrapper.appendChild(nestedContainer);
+                        renderData(value, nestedContainer);
+                    } else {
+                        renderValue(key, value, wrapper);
+                    }
+                    container.appendChild(wrapper);
+                }
+            }
+            else {
+                // Tekil kök değer gelirse
+                const card = document.createElement('div');
+                card.className = 'card';
+                renderValue("Veri", data, card);
+                container.appendChild(card);
+            }
+        }
+
+        // Tekil değerleri renklendirip ekrana basan yardımcı fonksiyon
+        function renderValue(key, value, container) {
+            let html = "";
+            if (key) html += `<span class="key">${key}:</span> `;
             
-            <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="hero-cta">
-                Fiyat ve Bilgi Alın <i class="fas fa-arrow-right" style="margin-left: 10px;"></i>
-            </a>
+            let valueClass = "value-string";
+            if (typeof value === 'number') valueClass = "value-number";
+            else if (typeof value === 'boolean') valueClass = "value-boolean";
+            else if (value === null) valueClass = "value-null";
 
-            <div class="hero-social">
-                <p>Sorularınız için DM kutum açık <i class="fab fa-instagram"></i> @omercansiskolu.com.tr</p>
-            </div>
-        </div>
-    </header>
+            // Eğer değer bir URL ise tıklanabilir link yap
+            if (typeof value === 'string' && (value.startsWith('http') || value.startsWith('https'))) {
+                html += `<a href="${value}" target="_blank" class="value-string" style="text-decoration:underline;">${value}</a>`;
+                // Eğer doğrudan bir dosya veya çalıştırılabilir bir şeyse buton ekle
+                if (value.endsWith('.apk') || value.endsWith('.zip') || value.endsWith('.m3u')) {
+                    html += `<br><a href="${value}" class="link-btn" target="_blank">İndir / Çalıştır</a>`;
+                }
+            } else {
+                html += `<span class="${valueClass}">${value}</span>`;
+            }
 
-    <section class="services">
-        <div class="section-header">
-            <h2>Hizmet Paketleri</h2>
-            <p style="color: var(--text-muted);">İhtiyacınıza uygun çözümü seçin, fiyatlandırma için Instagram üzerinden iletişime geçin.</p>
-        </div>
+            container.innerHTML += html;
+        }
 
-        <div class="grid">
-            <div class="card">
-                <i class="fas fa-briefcase card-icon"></i>
-                <h3>Kurumsal Web Sitesi</h3>
-                <p>Şirketinizin prestijini artıracak, mobil uyumlu ve yönetim panelli profesyonel web siteleri.</p>
-                <ul class="features-list">
-                    <li><i class="fas fa-check"></i> Özel Arayüz Tasarımı</li>
-                    <li><i class="fas fa-check"></i> Mobil Uyumlu (Responsive)</li>
-                    <li><i class="fas fa-check"></i> Yönetim Paneli</li>
-                    <li><i class="fas fa-check"></i> Google SEO Altyapısı</li>
-                </ul>
-                <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="card-btn">
-                    Fiyat Sor <i class="fab fa-instagram"></i>
-                </a>
-            </div>
-
-            <div class="card">
-                <i class="fas fa-shopping-cart card-icon"></i>
-                <h3>E-Ticaret Sitesi</h3>
-                <p>Ürünlerinizi online satmanız için gerekli tüm altyapı, ödeme sistemleri ve güvenli alışveriş.</p>
-                <ul class="features-list">
-                    <li><i class="fas fa-check"></i> Sınırsız Ürün Yönetimi</li>
-                    <li><i class="fas fa-check"></i> Kredi Kartı Entegrasyonu</li>
-                    <li><i class="fas fa-check"></i> Sipariş Takip Sistemi</li>
-                    <li><i class="fas fa-check"></i> Pazaryeri Entegrasyonları</li>
-                </ul>
-                <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="card-btn">
-                    Fiyat Sor <i class="fab fa-instagram"></i>
-                </a>
-            </div>
-
-            <div class="card">
-                <i class="fas fa-user-tie card-icon"></i>
-                <h3>Kişisel Web Sitesi</h3>
-                <p>CV'nizi, portfolyonuzu ve yazılarınızı paylaşabileceğiniz size özel profesyonel dijital kimlik.</p>
-                <ul class="features-list">
-                    <li><i class="fas fa-check"></i> Biyografi & CV Sayfası</li>
-                    <li><i class="fas fa-check"></i> Blog & Makale Altyapısı</li>
-                    <li><i class="fas fa-check"></i> Sosyal Medya Entegrasyonu</li>
-                    <li><i class="fas fa-check"></i> İletişim Formu</li>
-                </ul>
-                <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="card-btn">
-                    Fiyat Sor <i class="fab fa-instagram"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2025 Ömercan Şişkolu Tüm hakları saklıdır.</p>
-        <div style="margin-top: 1rem;">
-            <a href="https://instagram.com/omercansiskolu.com.tr" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
-        </div>
-    </footer>
-
+        // Sayfa yüklenince çalıştır
+        fetchData();
+    </script>
 </body>
 </html>
  

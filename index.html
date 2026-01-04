@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Larcivert Sports | Lite Stream</title>
+    <title>Larcivert Sports | Pro Stream</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    [span_0](start_span)<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">[span_0](end_span)
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
@@ -15,9 +15,9 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    [span_1](start_span)fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },[span_1](end_span)
                     colors: {
-                        brand: { dark: '#0B0F19', card: '#151A25', accent: '#3B82F6' }
+                        [span_2](start_span)brand: { dark: '#05070A', card: '#0F131C', accent: '#3B82F6', secondary: '#1E293B' }[span_2](end_span)
                     }
                 }
             }
@@ -26,197 +26,244 @@
 
     <style>
         body {
-            background-color: #050505;
+            [span_3](start_span)background-color: #05070A;[span_3](end_span)
             background-image: 
-                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.1) 0%, transparent 50%);
-            color: #e2e8f0;
-            margin: 0;
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
+                [span_4](start_span)radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.1) 0px, transparent 50%);[span_4](end_span)
+            [span_5](start_span)color: #F8FAFC;[span_5](end_span)
         }
 
-        .glass {
-            background: rgba(21, 26, 37, 0.7);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; [span_6](start_span)}
+
+        .glass-header {
+            background: rgba(5, 7, 10, 0.8);
+            backdrop-filter: blur(12px);[span_6](end_span)
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .channel-card { transition: all 0.3s ease; }
-        .channel-card:hover {
-            transform: translateY(-3px);
-            border-color: #3B82F6;
-            background: rgba(59, 130, 246, 0.1);
-        }
-        .channel-card.active {
-            border-color: #3B82F6;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(21, 26, 37, 0.9));
+        .premium-card {
+            background: #0F131C;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            [span_7](start_span)transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);[span_7](end_span)
         }
 
-        .loader {
-            border: 3px solid rgba(255,255,255,0.1);
+        .premium-card:hover {
+            [span_8](start_span)border-color: #3B82F6;[span_8](end_span)
+            background: rgba(59, 130, 246, 0.05);
+            [span_9](start_span)transform: translateY(-4px);[span_9](end_span)
+            box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .premium-card.active {
+            [span_10](start_span)border-color: #3B82F6;[span_10](end_span)
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(15, 19, 28, 1));
+            [span_11](start_span)box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);[span_11](end_span)
+        }
+
+        .status-dot {
+            width: 8px; height: 8px;
+            background-color: #22C55E;
             border-radius: 50%;
-            border-top: 3px solid #3B82F6;
-            width: 40px; height: 40px;
-            animation: spin 1s linear infinite;
+            box-shadow: 0 0 10px #22C55E;
+            animation: pulse 2s infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden antialiased">
+<body class="antialiased custom-scrollbar">
 
-    <aside class="hidden md:flex flex-col w-20 h-full glass border-r border-white/5 items-center py-6 gap-8">
-        <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
-            <i class="fa-solid fa-play text-white text-xl"></i>
+    [span_12](start_span)<header class="glass-header sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">[span_12](end_span)
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
+                <i class="fa-solid fa-bolt-lightning text-white text-lg"></i>
+            </div>
+            [span_13](start_span)<h1 class="font-extrabold text-2xl tracking-tighter italic">LARCIVERT<span class="text-blue-500">SPORTS</span></h1>[span_13](end_span)
         </div>
-        <div class="flex-1 flex flex-col justify-center">
-             <i class="fa-solid fa-tv text-blue-400 text-xl"></i>
-        </div>
-        <a href="https://t.me/+mSNjtNrQ0xozNWNk" target="_blank" class="text-slate-500 hover:text-[#229ED9]">
-            <i class="fa-brands fa-telegram text-2xl"></i>
-        </a>
-    </aside>
 
-    <main class="flex-1 flex flex-col h-full overflow-y-auto">
+        <div class="relative w-full md:w-96">
+            <input type="text" id="searchInput" placeholder="Favori kanalını bul..." 
+                [span_14](start_span)class="w-full bg-brand-secondary/50 border border-white/5 rounded-xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">[span_14](end_span)
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+        </div>
+    </header>
+
+    <main class="max-w-[1600px] mx-auto p-4 md:p-8 space-y-10">
         
-        <header class="sticky top-0 z-30 glass border-b border-white/5 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <h1 class="font-bold text-xl tracking-tight text-white uppercase">Larcivert <span class="text-blue-500">Sports</span></h1>
-            
-            <div class="relative w-full md:max-w-md">
-                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                <input type="text" id="searchInput" placeholder="Kanal ara..." 
-                    class="w-full bg-black/40 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-blue-500 text-white">
-            </div>
-        </header>
-
-        <div class="p-4 md:p-8 space-y-6 max-w-[1400px] mx-auto w-full">
-            
-            <div id="player-container" class="relative bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 aspect-video">
-                <div id="player-overlay" class="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent z-20 flex justify-between items-start">
-                    <div>
-                        <h2 id="currentChannelTitle" class="text-white font-bold text-lg">Kanal Seçimi Bekleniyor</h2>
-                        <p id="playerStatus" class="text-xs text-slate-400">İzlemek için listeden bir kanal seçin</p>
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-9">
+                [span_15](start_span)<div id="player-container" class="relative group rounded-3xl overflow-hidden bg-black aspect-video border border-white/5 shadow-2xl">[span_15](end_span)
+                    <div id="player-area" class="w-full h-full flex items-center justify-center">
+                        <div class="text-center opacity-40">
+                            <i class="fa-solid fa-circle-play text-7xl mb-4"></i>
+                            <p class="text-lg font-medium">Başlamak için bir kanal seçin</p>
+                        </div>
                     </div>
-                    <button id="fullscreenBtn" class="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition">
-                        <i class="fa-solid fa-expand"></i>
-                    </button>
-                </div>
-                
-                <div id="player-area" class="w-full h-full flex items-center justify-center bg-zinc-950">
-                    <div class="text-center">
-                        <i class="fa-solid fa-tv text-5xl text-slate-700 mb-4 block"></i>
-                        <p class="text-slate-500">Yayını başlatmak için bir kanala tıklayın.</p>
+                    
+                    <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                [span_16](start_span)<h2 id="currentChannelTitle" class="text-xl font-bold">Yayın Seçilmedi</h2>[span_16](end_span)
+                                <div class="flex items-center gap-2 mt-1">
+                                    <div class="status-dot"></div>
+                                    <span class="text-xs text-slate-400 uppercase tracking-widest font-semibold">Sinyal Aktif</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                [span_17](start_span)<button id="pipBtn" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition hidden"><i class="fa-solid fa-clone text-sm"></i></button>[span_17](end_span)
+                                [span_18](start_span)<button id="fsBtn" class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 transition"><i class="fa-solid fa-expand text-sm"></i></button>[span_18](end_span)
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 border-b border-white/5 pb-2">
-                <i class="fa-solid fa-list-ul text-blue-500"></i>
-                <h2 class="text-lg font-bold">TÜM KANALLAR</h2>
-                <span id="channelCount" class="bg-blue-600/20 text-blue-400 text-xs px-2 py-0.5 rounded">0</span>
+            <div class="lg:col-span-3 space-y-6">
+                <div class="premium-card p-6 rounded-3xl">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Topluluk</h3>
+                    <p class="text-sm text-slate-400 mb-6">Yayınlar hakkında anlık bilgi almak için Telegram grubumuza katılın.</p>
+                    <a href="https://t.me/+mSNjtNrQ0xozNWNk" target="_blank" class="flex items-center justify-center gap-3 w-full py-3 bg-[#229ED9] hover:bg-[#1e8ec3] text-white rounded-2xl font-bold transition-all shadow-lg shadow-[#229ED9]/20">
+                        <i class="fa-brands fa-telegram text-xl"></i>
+                        TELEGRAM'A KATIL
+                    </a>
+                </div>
+                <div class="bg-blue-600/5 border border-blue-500/10 p-6 rounded-3xl">
+                    <div class="flex items-center gap-4">
+                        <div class="text-blue-500"><i class="fa-solid fa-circle-info text-2xl"></i></div>
+                        <div>
+                            <h4 class="font-bold text-sm">Hızlı İpucu</h4>
+                            <p class="text-xs text-slate-400 mt-1">Yayın takılırsa kanalı tekrar seçerek bağlantıyı yenileyebilirsiniz.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-8 bg-blue-600 rounded-full"></div>
+                    <h2 class="text-2xl font-bold tracking-tight uppercase">Tüm Kanallar</h2>
+                </div>
+                [span_19](start_span)<span id="channelCount" class="px-4 py-1 bg-brand-secondary rounded-full text-sm font-bold text-blue-400">0 Kanal</span>[span_19](end_span)
             </div>
 
-            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 pb-20">
+            [span_20](start_span)<div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">[span_20](end_span)
                 </div>
+        </section>
 
-        </div>
     </main>
+
+    [span_21](start_span)<footer class="py-12 border-t border-white/5 text-center">[span_21](end_span)
+        <p class="text-slate-500 text-sm font-medium italic">© 2026 Larcivert Sports – Kesintisiz Sporun Adresi</p>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const allChannels = [
-                { name: 'Bein Sports 1', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayininat', type: 'iframe' },
-                { name: 'Bein Sports 1 (2)', streamUrl: 'https://k4e.zirvedesin120.cfd/yayinzirve.m3u8', type: 'hls' },
-                { name: 'Bein Sports 2', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb2', type: 'iframe' },
-                { name: 'Bein Sports 2 (2)', streamUrl: 'https://andro.226503.xyz/checklist/androstreamlivebirazb2.m3u8', type: 'hls' },
-                { name: 'Bein Sports 3', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb3', type: 'iframe' },
-                { name: 'Bein Sports 3 (2)', streamUrl: 'https://andro.226503.xyz/checklist/androstreamlivebirazb3.m3u8', type: 'hls' },
-                { name: 'Bein Sports 4', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb4', type: 'iframe' },
-                { name: 'Bein Sports 4 (2)', streamUrl: 'https://andro.226503.xyz/checklist/androstreamlivebirazb2ç4.m3u8', type: 'hls' },
-                { name: 'Bein Sports 5', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb5', type: 'iframe' },
-                { name: 'ATV', streamUrl: 'https://dga1op10s1u3leo.38f3bb9511487c.click/live/selcukobs1/playlist.m3u8', type: 'hls' },
-                { name: 'Bein Sports Max 1', streamUrl: 'https://dga1op10s1u3leo.965f3f5ef2ea2c.click/live/selcukbeinsportsmax1/playlist.m3u8', type: 'hls' },
-                { name: 'HT Spor', streamUrl: 'https://ciner.daioncdn.net/ht-spor/ht-spor.m3u8?app=web', type: 'hls' },
-                { name: 'Bein Sports Max 2', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcukbeinsportsmax2/playlist.m3u8', type: 'hls' },
-                { name: 'Bein Sports HABER', streamUrl: 'https://www.youtube.com/embed/live_stream?channel=UCv_v6T_np_vW7l8U1p0b9kw', type: 'iframe' },
-                { name: 'Tivibu Spor 1', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor1/playlist.m3u8', type: 'hls' },
-                { name: 'S Sport 1', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinss', type: 'iframe' },
-                { name: 'Tivibu Spor 2', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor2/playlist.m3u8', type: 'hls' },
-                { name: 'S Sport 2', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinss2', type: 'iframe' },
-                { name: 'Tivibu Spor 3', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor3/playlist.m3u8', type: 'hls' },
-                { name: 'Tabii Spor', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'Smart Spor', streamUrl: 'https://inattv1211.xyz/channel.html?id=androstreamlivesm1', type: 'iframe' },
-                { name: 'A Spor', streamUrl: 'https://inattv1211.xyz/channel.html?id=androstreamliveas', type: 'iframe' },
-                { name: 'TV 8,5', streamUrl: 'https://tv8.daioncdn.net/tv8bucuk/tv8bucuk_1080p.m3u8?app=bf58ab52-4865-4c81-b223-26b41009801e', type: 'hls' },
-                { name: 'TRT 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe' },
-                { name: 'TV 8', streamUrl: 'https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788', type: 'hls' },
-                { name: 'TRT SPOR', streamUrl: 'https://tv-trtspor1.medya.trt.com.tr/master.m3u8', type: 'hls' },
-                { name: 'TRT SPOR YILDIZ', streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'Tabii SPOR 1', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'Tabii SPOR 2', streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'Tivibu Spor 4', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor4/playlist.m3u8', type: 'hls' }
+                [span_22](start_span){ name: 'Bein Sports 1', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayininat', type: 'iframe' },[span_22](end_span)
+                [span_23](start_span){ name: 'Bein Sports 1 (2)', streamUrl: 'https://k4e.zirvedesin120.cfd/yayinzirve.m3u8', type: 'hls' },[span_23](end_span)
+                [span_24](start_span){ name: 'Bein Sports 2', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb2', type: 'iframe' },[span_24](end_span)
+                [span_25](start_span){ name: 'Bein Sports 2 (2)', streamUrl: 'https://andro.226503.xyz/checklist/androstreamlivebirazb2.m3u8', type: 'hls' },[span_25](end_span)
+                [span_26](start_span){ name: 'Bein Sports 3', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb3', type: 'iframe' },[span_26](end_span)
+                [span_27](start_span){ name: 'Bein Sports 3 (2)', streamUrl: 'https://andro.226503.xyz/checklist/androstreamlivebirazb3.m3u8', type: 'hls' },[span_27](end_span)
+                [span_28](start_span){ name: 'Bein Sports 4', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb4', type: 'iframe' },[span_28](end_span)
+                [span_29](start_span){ name: 'Bein Sports 4 (2)', streamUrl: 'https://andro.226503.xyz/checklist/androstreamlivebirazb2ç4.m3u8', type: 'hls' },[span_29](end_span)
+                [span_30](start_span){ name: 'Bein Sports 5', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb5', type: 'iframe' },[span_30](end_span)
+                [span_31](start_span){ name: 'ATV', streamUrl: 'https://dga1op10s1u3leo.38f3bb9511487c.click/live/selcukobs1/playlist.m3u8', type: 'hls' },[span_31](end_span)
+                [span_32](start_span){ name: 'Bein Sports Max 1', streamUrl: 'https://dga1op10s1u3leo.965f3f5ef2ea2c.click/live/selcukbeinsportsmax1/playlist.m3u8', type: 'hls' },[span_32](end_span)
+                [span_33](start_span){ name: 'HT Spor', streamUrl: 'https://ciner.daioncdn.net/ht-spor/ht-spor.m3u8?app=web', type: 'hls' },[span_33](end_span)
+                [span_34](start_span){ name: 'Bein Sports Max 2', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcukbeinsportsmax2/playlist.m3u8', type: 'hls' },[span_34](end_span)
+                [span_35](start_span){ name: 'Bein Sports HABER', streamUrl: 'https://www.youtube.com/embed/live_stream?channel=UCPe9vNjHF1kEExT5kHwc7aw', type: 'iframe' },[span_35](end_span)
+                [span_36](start_span){ name: 'Tivibu Spor 1', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor1/playlist.m3u8', type: 'hls' },[span_36](end_span)
+                [span_37](start_span){ name: 'S Sport 1', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinss', type: 'iframe' },[span_37](end_span)
+                [span_38](start_span){ name: 'Tivibu Spor 2', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor2/playlist.m3u8', type: 'hls' },[span_38](end_span)
+                [span_39](start_span){ name: 'S Sport 2', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinss2', type: 'iframe' },[span_39](end_span)
+                [span_40](start_span){ name: 'Tivibu Spor 3', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor3/playlist.m3u8', type: 'hls' },[span_40](end_span)
+                [span_41](start_span){ name: 'Tabii Spor', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },[span_41](end_span)
+                [span_42](start_span){ name: 'Smart Spor', streamUrl: 'https://inattv1211.xyz/channel.html?id=androstreamlivesm1', type: 'iframe' },[span_42](end_span)
+                [span_43](start_span){ name: 'A Spor', streamUrl: 'https://inattv1211.xyz/channel.html?id=androstreamliveas', type: 'iframe' },[span_43](end_span)
+                [span_44](start_span){ name: 'TV 8,5', streamUrl: 'https://tv8.daioncdn.net/tv8bucuk/tv8bucuk_1080p.m3u8?app=bf58ab52-4865-4c81-b223-26b41009801e', type: 'hls' },[span_44](end_span)
+                [span_45](start_span){ name: 'TRT 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe' },[span_45](end_span)
+                [span_46](start_span){ name: 'TV 8', streamUrl: 'https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788', type: 'hls' },[span_46](end_span)
+                [span_47](start_span){ name: 'TRT SPOR', streamUrl: 'https://tv-trtspor1.medya.trt.com.tr/master.m3u8', type: 'hls' },[span_47](end_span)
+                [span_48](start_span){ name: 'TRT SPOR YILDIZ', streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },[span_48](end_span)
+                [span_49](start_span){ name: 'Tabii SPOR 1', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },[span_49](end_span)
+                [span_50](start_span){ name: 'Tabii SPOR 2', streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },[span_50](end_span)
+                [span_51](start_span){ name: 'Tivibu Spor 4', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor4/playlist.m3u8', type: 'hls' }[span_51](end_span)
             ];
 
+            let hlsInstance = null;
             const grid = document.getElementById('channel-grid');
             const playerArea = document.getElementById('player-area');
-            const currentTitle = document.getElementById('currentChannelTitle');
-            const statusText = document.getElementById('playerStatus');
-            let hls = null;
+            const channelTitle = document.getElementById('currentChannelTitle');
+            const search = document.getElementById('searchInput');
 
-            function play(channel) {
-                if (hls) { hls.destroy(); hls = null; }
-                playerArea.innerHTML = '<div class="loader"></div>';
-                currentTitle.innerText = channel.name;
-                statusText.innerHTML = '<span class="text-green-500">● CANLI YAYIN</span>';
+            [span_52](start_span)const playChannel = (channel) => {[span_52](end_span)
+                if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; [span_53](start_span)}
+                playerArea.innerHTML = '<div class="flex flex-col items-center gap-4"><div class="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div><p class="text-sm font-medium animate-pulse">Yükleniyor...</p></div>';[span_53](end_span)
+                [span_54](start_span)channelTitle.innerText = channel.name;[span_54](end_span)
 
                 setTimeout(() => {
                     playerArea.innerHTML = '';
-                    if (channel.streamUrl.includes('.m3u8') || channel.type === 'hls') {
+                    [span_55](start_span)const isM3U8 = channel.streamUrl.includes('.m3u8') || channel.type === 'hls';[span_55](end_span)
+
+                    if (isM3U8) {
                         const video = document.createElement('video');
-                        video.className = 'w-full h-full';
-                        video.controls = true;
-                        video.autoplay = true;
-                        video.playsInline = true;
+                        video.className = 'w-full h-full object-contain';
+                        [span_56](start_span)video.controls = video.autoplay = video.playsInline = true;[span_56](end_span)
                         playerArea.appendChild(video);
 
-                        if (Hls.isSupported()) {
-                            hls = new Hls();
-                            hls.loadSource(channel.streamUrl);
-                            hls.attachMedia(video);
-                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                        [span_57](start_span)if (Hls.isSupported()) {[span_57](end_span)
+                            hlsInstance = new Hls();
+                            [span_58](start_span)hlsInstance.loadSource(channel.streamUrl);[span_58](end_span)
+                            hlsInstance.attachMedia(video);
+                        [span_59](start_span)} else if (video.canPlayType('application/vnd.apple.mpegurl')) {[span_59](end_span)
                             video.src = channel.streamUrl;
                         }
                     } else {
-                        const iframe = document.createElement('iframe');
+                        [span_60](start_span)const iframe = document.createElement('iframe');[span_60](end_span)
                         iframe.src = channel.streamUrl;
-                        iframe.className = 'w-full h-full border-none';
-                        iframe.allow = 'autoplay; fullscreen';
+                        iframe.className = 'w-full h-full border-none shadow-inner';
+                        [span_61](start_span)iframe.allow = 'autoplay; fullscreen; picture-in-picture';[span_61](end_span)
                         playerArea.appendChild(iframe);
                     }
-                }, 600);
-            }
+                }, 800);
+            };
 
-            function render(query = '') {
+            [span_62](start_span)const render = (query = '') => {[span_62](end_span)
                 grid.innerHTML = '';
-                const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
-                document.getElementById('channelCount').innerText = filtered.length;
+                [span_63](start_span)const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));[span_63](end_span)
+                document.getElementById('channelCount').innerText = `${filtered.length} Kanal`;
 
-                filtered.forEach(c => {
-                    const btn = document.createElement('div');
-                    btn.className = 'channel-card bg-brand-card p-4 rounded-xl border border-white/5 cursor-pointer text-center';
-                    btn.innerHTML = `<span class="text-sm font-medium text-slate-300">${c.name}</span>`;
-                    btn.onclick = () => {
-                        document.querySelectorAll('.channel-card').forEach(x => x.classList.remove('active'));
-                        btn.classList.add('active');
-                        play(c);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                filtered.forEach(ch => {
+                    const card = document.createElement('div');
+                    card.className = 'premium-card p-5 rounded-2xl cursor-pointer group flex flex-col items-center gap-3';
+                    card.innerHTML = `
+                        <div class="w-12 h-12 rounded-full bg-blue-600/10 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                            <i class="fa-solid fa-play text-xs"></i>
+                        </div>
+                        <span class="text-sm font-bold text-slate-300 group-hover:text-white transition-colors">${ch.name}</span>
+                    [span_64](start_span)`;[span_64](end_span)
+                    card.onclick = () => {
+                        document.querySelectorAll('.premium-card').forEach(c => c.classList.remove('active'));
+                        [span_65](start_span)card.classList.add('active');[span_65](end_span)
+                        playChannel(ch);
+                        [span_66](start_span)window.scrollTo({ top: 0, behavior: 'smooth' });[span_66](end_span)
                     };
-                    grid.appendChild(btn);
+                    grid.appendChild(card);
                 });
-            }
+            };
 
-            document.getElementById('searchInput').oninput = (e) => render(e.target.value);
-            document.getElementById('fullscreenBtn').onclick = () => {
-                const p = document.getElementById('player-container');
-                if (p.requestFullscreen) p.requestFullscreen();
+            [span_67](start_span)search.addEventListener('input', (e) => render(e.target.value));[span_67](end_span)
+            [span_68](start_span)document.getElementById('fsBtn').onclick = () => {[span_68](end_span)
+                const el = document.getElementById('player-container');
+                [span_69](start_span)if (el.requestFullscreen) el.requestFullscreen();[span_69](end_span)
             };
 
             render();

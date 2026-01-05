@@ -1,275 +1,462 @@
-
 <!DOCTYPE html>
-<html lang="tr" class="dark">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Larcivert Sports | Pro Stream</title>
-    
+    <title>Cinematic Prompt Architect | OzWorks.ai</title>
+    <!-- Font Awesome 6.6.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
-                    colors: {
-                        brand: { dark: '#05070A', card: '#0F131C', accent: '#3B82F6', secondary: '#1E293B' }
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --neon-red: #ff003c;
+            --neon-blue: #00f2ff;
+            --dark-bg: #050a14;
+        }
+
         body {
-            background-color: #05070A;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.1) 0px, transparent 50%);
-            color: #F8FAFC;
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
 
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .neon-text-red { text-shadow: 0 0 10px var(--neon-red); color: var(--neon-red); }
+        .neon-text-blue { text-shadow: 0 0 10px var(--neon-blue); color: var(--neon-blue); }
+        .neon-border-blue { border: 1px solid rgba(0, 242, 255, 0.3); box-shadow: 0 0 15px rgba(0, 242, 255, 0.1); }
 
-        .glass-header {
-            background: rgba(5, 7, 10, 0.8);
+        .glass-card {
+            background: rgba(10, 22, 40, 0.8);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
         }
 
-        .premium-card {
-            background: #0F131C;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        .signature-frame {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 12px 24px;
         }
 
-        .premium-card:hover {
-            border-color: #3B82F6;
-            background: rgba(59, 130, 246, 0.05);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+        .btn-action {
+            position: relative;
+            background: #ffffff;
+            color: #000;
+            font-weight: 900;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 0 #b3b3b3, 0 8px 15px rgba(0,0,0,0.3);
+            transition: all 0.1s ease;
+            cursor: pointer;
+            outline: none;
+        }
+        .btn-action:hover { transform: translateY(1px); box-shadow: 0 3px 0 #b3b3b3, 0 6px 12px rgba(0,0,0,0.25); }
+        .btn-action:active { transform: translateY(4px); box-shadow: 0 0 0 #b3b3b3; }
+        .btn-copy-mode { background: var(--neon-blue); box-shadow: 0 4px 0 #008c94; }
+
+        .btn-toggle {
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .btn-toggle.active {
+            background: rgba(0, 242, 255, 0.15);
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
         }
 
-        .premium-card.active {
-            border-color: #3B82F6;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(15, 19, 28, 1));
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+        .custom-input {
+            background: #ffffff;
+            border: 1px solid var(--neon-blue);
+            color: #000000;
+            font-weight: 700;
         }
 
-        .status-dot {
-            width: 8px; height: 8px;
-            background-color: #22C55E;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #22C55E;
-            animation: pulse 2s infinite;
+        .scanner-container { position: relative; overflow: hidden; border-radius: 10px; }
+        .scanner-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue);
+            z-index: 20; display: none;
+            animation: scan 2s linear infinite;
         }
+        .hologram-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 242, 255, 0.05), transparent);
+            display: none; z-index: 10;
+        }
+        @keyframes scan { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        .scanning .scanner-line, .scanning .hologram-overlay { display: block; }
 
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
+        .social-link { transition: all 0.3s ease; color: #64748b; }
+        .social-link:hover { color: var(--neon-blue); transform: scale(1.1); }
+
+        .section-deactivated { opacity: 0.3; pointer-events: none; }
+        
+        .cyber-text { font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.15em; }
+        .loader-dots::after { content: '...'; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots { 0%, 20% { color: transparent; } 40%, 100% { color: inherit; } }
     </style>
 </head>
-<body class="antialiased custom-scrollbar">
+<body class="p-4 md:p-8 text-wrap">
 
-    <header class="glass-header sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
-                <i class="fa-solid fa-bolt-lightning text-white text-lg"></i>
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-10 flex flex-col items-center justify-center text-center">
+            <div class="mb-6">
+                <h1 class="text-3xl md:text-5xl font-black tracking-tighter mb-2 text-white">
+                    CINEMATIC <span class="neon-text-red">PROMPT</span> ARCHITECT
+                </h1>
+                <p class="text-gray-500 font-medium tracking-[0.2em] text-[10px] md:text-xs uppercase">3D VOLUMETRIC RE-RENDER ENGINE</p>
             </div>
-            <h1 class="font-extrabold text-2xl tracking-tighter italic">LARCIVERT<span class="text-blue-500">SPORTS</span></h1>
+            
+            <div class="signature-frame flex flex-col items-center gap-3">
+                <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-500">
+                    Ozan Sihay tarafından oluşturulmuştur
+                </span>
+                <div class="flex items-center justify-center gap-6">
+                    <a href="https://www.youtube.com/@ozansihay" target="_blank" class="social-link text-lg"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/ozansihay" target="_blank" class="social-link text-lg"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://x.com/ozan_sihay" target="_blank" class="social-link text-lg"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://www.tiktok.com/@ozansihay" target="_blank" class="social-link text-lg"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
+            <div class="lg:col-span-7 space-y-6">
+                <section class="glass-card p-6 border-white/5 relative shadow-2xl">
+                    <div class="flex items-center gap-3 mb-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                        <i class="fa-solid fa-microchip neon-text-blue"></i> Data Source
+                    </div>
+                    <div id="drop-zone" class="relative cursor-pointer border-2 border-dashed border-white/10 rounded-xl p-4 transition-all hover:bg-white/5">
+                        <input type="file" id="image-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <div id="preview-container" class="hidden flex flex-col items-center scanner-container">
+                            <div class="scanner-line"></div>
+                            <div class="hologram-overlay"></div>
+                            <img id="image-preview" src="" alt="Preview" class="max-h-60 rounded-lg shadow-2xl">
+                            <button id="remove-img" class="mt-3 text-[9px] text-red-500/70 hover:text-red-400 underline uppercase tracking-widest z-30">Veriyi Temizle</button>
+                        </div>
+                        <div id="upload-prompt" class="flex flex-col items-center py-12">
+                            <i class="fa-solid fa-camera-retro text-2xl mb-4 text-gray-700"></i>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Master Görseli Yükle</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="glass-card p-5 border-l-4 border-blue-500/30">
+                    <div class="flex items-center gap-3 mb-4 text-[10px] font-bold uppercase tracking-widest text-blue-400">
+                        <i class="fa-solid fa-wand-sparkles"></i> Manuel Kamera Direktifi
+                    </div>
+                    <input type="text" id="custom-angle-input" placeholder="Örn: Ayak Yakın Plan, Ters Açı..." class="w-full custom-input p-3 rounded-xl text-sm focus:outline-none">
+                </section>
+
+                <section class="glass-card p-5 border-l-4 border-blue-500/30">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Aspect Ratio</div>
+                        <input type="text" id="custom-ratio-input" placeholder="Örn: 2.39:1" class="w-24 custom-input p-1.5 px-3 rounded-lg text-[10px]">
+                    </div>
+                    <div id="ratio-grid" class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                        <button class="btn-toggle p-2 rounded" data-type="ratio" data-val="Original Aspect Ratio">Orijinal</button>
+                        <button class="btn-toggle p-2 rounded" data-type="ratio" data-val="1:1">1:1</button>
+                        <button class="btn-toggle p-2 rounded" data-type="ratio" data-val="4:3">4:3</button>
+                        <button class="btn-toggle p-2 rounded" data-type="ratio" data-val="16:9">16:9</button>
+                        <button class="btn-toggle p-2 rounded" data-type="ratio" data-val="21:9">21:9</button>
+                        <button class="btn-toggle p-2 rounded" data-type="ratio" data-val="3:4">3:4</button>
+                        <button class="btn-toggle p-2 rounded" data-type="ratio" data-val="4:5">4:5</button>
+                        <button class="btn-toggle p-2 rounded" data-type="ratio" data-val="9:16">9:16</button>
+                    </div>
+                </section>
+
+                <div id="selection-grids-container">
+                    <section class="glass-card p-5 mb-4">
+                        <div class="mb-3 text-[9px] font-bold uppercase tracking-widest text-gray-500">Kamera Açısı</div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="angle-grid">
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Eye-Level Shot">Göz Hizası</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Shoulder-Level Shot">Omuz Hizası</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Hip-Level Shot">Bel Hizası</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Knee-Level Shot">Diz Hizası</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Ground-Level Shot">Yer Seviyesi</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Worm's-Eye Shot">Solucan Bakışı</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Low-Angle Shot">Alt Açı</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="High-Angle Shot">Üst Açı</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Bird's-Eye View">Kuş Bakışı</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Aerial Drone Shot">Drone Çekimi</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Satellite Perspective">Uydu Bakışı</button>
+                            <button class="btn-toggle p-2 rounded" data-type="angle" data-val="Dutch Angle">Eğik Açı</button>
+                        </div>
+                    </section>
+
+                    <section class="glass-card p-5 mb-4">
+                        <div class="mb-3 text-[9px] font-bold uppercase tracking-widest text-gray-500">Çekim Ölçeği</div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="scale-grid">
+                            <button class="btn-toggle p-2 rounded" data-type="scale" data-val="Extreme Close-Up (ECU)">Çok Yakın (Göz/Ağız)</button>
+                            <button class="btn-toggle p-2 rounded" data-type="scale" data-val="Close-Up (CU)">Yakın Plan (Baş/Omuz)</button>
+                            <button class="btn-toggle p-2 rounded" data-type="scale" data-val="Medium Close-Up (MCU)">Göğüs Plan (Sternum)</button>
+                            <button class="btn-toggle p-2 rounded" data-type="scale" data-val="Medium Shot (MS)">Bel Plan (Waist)</button>
+                            <button class="btn-toggle p-2 rounded" data-type="scale" data-val="Full Shot (FS)">Boy Plan (Body)</button>
+                            <button class="btn-toggle p-2 rounded" data-type="scale" data-val="Long Shot (LS)">Genel Plan</button>
+                            <button class="btn-toggle p-2 rounded" data-type="scale" data-val="Extreme Long Shot (ELS)">Çok Genel Plan</button>
+                            <button class="btn-toggle p-2 rounded" data-type="scale" data-val="Establishing Wide Shot">Uzak Mesafe</button>
+                        </div>
+                    </section>
+
+                    <section class="glass-card p-5">
+                        <div class="mb-3 text-[9px] font-bold uppercase tracking-widest text-gray-500">Lens Tercihi</div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="lens-grid">
+                            <button class="btn-toggle p-2 rounded" data-type="lens" data-val="8mm Fisheye Lens">8mm Fisheye</button>
+                            <button class="btn-toggle p-2 rounded" data-type="lens" data-val="14mm Ultra Wide-Angle">14mm Ultra</button>
+                            <button class="btn-toggle p-2 rounded" data-type="lens" data-val="24mm Wide-Angle">24mm Wide</button>
+                            <button class="btn-toggle p-2 rounded" data-type="lens" data-val="35mm Cinematic Prime">35mm Classic</button>
+                            <button class="btn-toggle p-2 rounded" data-type="lens" data-val="50mm Standard Natural">50mm Natural</button>
+                            <button class="btn-toggle p-2 rounded" data-type="lens" data-val="85mm Portrait Prime">85mm Portrait</button>
+                            <button class="btn-toggle p-2 rounded" data-type="lens" data-val="200mm Telephoto Compression">200mm Tele</button>
+                            <button class="btn-toggle p-2 rounded" data-type="lens" data-val="Anamorfik Lens">Anamorfik</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 flex flex-col items-center">
+                <div class="sticky top-12 w-full max-w-sm space-y-8">
+                    <div id="action-terminal" class="w-full flex flex-col items-center p-6 glass-card border-white/10 shadow-2xl text-wrap">
+                        <button id="main-action-btn" class="btn-action w-full py-6 cyber-text text-sm uppercase transition-all duration-300">
+                            PROMPTU OLUŞTUR
+                        </button>
+                        <div id="terminal-loader" class="hidden mt-8 text-center space-y-3">
+                            <p class="cyber-text text-[10px] text-blue-400 animate-pulse">Re-Projection Engine Active</p>
+                            <div id="status-log" class="text-[9px] text-gray-600 cyber-text loader-dots italic">3D hacim analizi yapılıyor</div>
+                        </div>
+                        <div id="ready-ui" class="hidden mt-8 text-center">
+                            <p class="cyber-text text-[10px] text-green-400 font-bold"><i class="fa-solid fa-check-double mr-2"></i>Teknik Çıktı Hazır</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="relative w-full md:w-96">
-            <input type="text" id="searchInput" placeholder="Favori kanalını bul..." 
-                class="w-full bg-brand-secondary/50 border border-white/5 rounded-xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
-            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-        </div>
-    </header>
-
-    <main class="max-w-[1600px] mx-auto p-4 md:p-8 space-y-10">
-        
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-9">
-                <div id="player-container" class="relative group rounded-3xl overflow-hidden bg-black aspect-video border border-white/5 shadow-2xl">
-                    <div id="player-area" class="w-full h-full flex items-center justify-center">
-                        <div class="text-center opacity-40">
-                            <i class="fa-solid fa-circle-play text-7xl mb-4"></i>
-                            <p class="text-lg font-medium">Başlamak için bir kanal seçin</p>
-                        </div>
-                    </div>
-                    
-                    <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h2 id="currentChannelTitle" class="text-xl font-bold">Yayın Seçilmedi</h2>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <div class="status-dot"></div>
-                                    <span class="text-xs text-slate-400 uppercase tracking-widest font-semibold">Sinyal Aktif</span>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <button id="pipBtn" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition hidden"><i class="fa-solid fa-clone text-sm"></i></button>
-                                <button id="fsBtn" class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 transition"><i class="fa-solid fa-expand text-sm"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <footer class="flex flex-col items-center justify-center gap-4 pb-12 border-t border-white/5 pt-12 text-center">
+            <div class="opacity-10 grayscale text-[9px] font-mono tracking-[0.8em]">
+                OZWORKS.AI // PROMPT ENGINEERING LABS
             </div>
+        </footer>
+    </div>
 
-            <div class="lg:col-span-3 space-y-6">
-                <div class="premium-card p-6 rounded-3xl">
-                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Topluluk</h3>
-                    <p class="text-sm text-slate-400 mb-6">Yayınlar hakkında anlık bilgi almak için Telegram grubumuza katılın.</p>
-                    <a href="https://t.me/+mSNjtNrQ0xozNWNk" target="_blank" class="flex items-center justify-center gap-3 w-full py-3 bg-[#229ED9] hover:bg-[#1e8ec3] text-white rounded-2xl font-bold transition-all shadow-lg shadow-[#229ED9]/20">
-                        <i class="fa-brands fa-telegram text-xl"></i>
-                        TELEGRAM'A KATIL
-                    </a>
-                </div>
-                <div class="bg-blue-600/5 border border-blue-500/10 p-6 rounded-3xl">
-                    <div class="flex items-center gap-4">
-                        <div class="text-blue-500"><i class="fa-solid fa-circle-info text-2xl"></i></div>
-                        <div>
-                            <h4 class="font-bold text-sm">Hızlı İpucu</h4>
-                            <p class="text-xs text-slate-400 mt-1">Yayın takılırsa kanalı tekrar seçerek bağlantıyı yenileyebilirsiniz.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center gap-3">
-                    <div class="w-2 h-8 bg-blue-600 rounded-full"></div>
-                    <h2 class="text-2xl font-bold tracking-tight uppercase">Tüm Kanallar</h2>
-                </div>
-                <span id="channelCount" class="px-4 py-1 bg-brand-secondary rounded-full text-sm font-bold text-blue-400">0 Kanal</span>
-            </div>
-
-            <div id="channel-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                </div>
-        </section>
-
-    </main>
-
-    <footer class="py-12 border-t border-white/5 text-center">
-        <p class="text-slate-500 text-sm font-medium italic">© 2026 Larcivert Sports – Kesintisiz Sporun Adresi</p>
-    </footer>
+    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-white text-black px-8 py-3 rounded-full font-bold text-[10px] shadow-2xl opacity-0 transition-all pointer-events-none z-50 uppercase tracking-[0.2em]">
+        JSON Prompt Panoya Kopyalandı!
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const allChannels = [
-                { name: 'Bein Sports 1', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayininat', type: 'iframe' },
-                { name: 'Bein Sports 1 (2)', streamUrl: 'https://k4e.zirvedesin120.cfd/yayinzirve.m3u8', type: 'hls' },
-                { name: 'Bein Sports 2', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb2', type: 'iframe' },
-                { name: 'Bein Sports 2 (2)', streamUrl: 'https://andro.226503.xyz/checklist/androstreamlivebirazb2.m3u8', type: 'hls' },
-                { name: 'Bein Sports 3', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb3', type: 'iframe' },
-                { name: 'Bein Sports 3 (2)', streamUrl: 'https://andro.226503.xyz/checklist/androstreamlivebirazb3.m3u8', type: 'hls' },
-                { name: 'Bein Sports 4', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb4', type: 'iframe' },
-                { name: 'Bein Sports 4 (2)', streamUrl: 'https://andro.226503.xyz/checklist/androstreamlivebirazb2ç4.m3u8', type: 'hls' },
-                { name: 'Bein Sports 5', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinb5', type: 'iframe' },
-                { name: 'ATV', streamUrl: 'https://dga1op10s1u3leo.38f3bb9511487c.click/live/selcukobs1/playlist.m3u8', type: 'hls' },
-                { name: 'Bein Sports Max 1', streamUrl: 'https://dga1op10s1u3leo.965f3f5ef2ea2c.click/live/selcukbeinsportsmax1/playlist.m3u8', type: 'hls' },
-                { name: 'HT Spor', streamUrl: 'https://ciner.daioncdn.net/ht-spor/ht-spor.m3u8?app=web', type: 'hls' },
-                { name: 'Bein Sports Max 2', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcukbeinsportsmax2/playlist.m3u8', type: 'hls' },
-                { name: 'Bein Sports HABER', streamUrl: 'https://www.youtube.com/embed/live_stream?channel=UCPe9vNjHF1kEExT5kHwc7aw', type: 'iframe' },
-                { name: 'Tivibu Spor 1', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor1/playlist.m3u8', type: 'hls' },
-                { name: 'S Sport 1', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinss', type: 'iframe' },
-                { name: 'Tivibu Spor 2', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor2/playlist.m3u8', type: 'hls' },
-                { name: 'S Sport 2', streamUrl: 'https://inattv1212.xyz/channel.html?id=yayinss2', type: 'iframe' },
-                { name: 'Tivibu Spor 3', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor3/playlist.m3u8', type: 'hls' },
-                { name: 'Tabii Spor', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'Smart Spor', streamUrl: 'https://inattv1211.xyz/channel.html?id=androstreamlivesm1', type: 'iframe' },
-                { name: 'A Spor', streamUrl: 'https://inattv1211.xyz/channel.html?id=androstreamliveas', type: 'iframe' },
-                { name: 'TV 8,5', streamUrl: 'https://tv8.daioncdn.net/tv8bucuk/tv8bucuk_1080p.m3u8?app=bf58ab52-4865-4c81-b223-26b41009801e', type: 'hls' },
-                { name: 'TRT 1', streamUrl: 'https://www.mersotv1.com/channel.html?id=yayintrt1', type: 'iframe' },
-                { name: 'TV 8', streamUrl: 'https://tv8.daioncdn.net/tv8/tv8.m3u8?app=7ddc255a-ef47-4e81-ab14-c0e5f2949788', type: 'hls' },
-                { name: 'TRT SPOR', streamUrl: 'https://tv-trtspor1.medya.trt.com.tr/master.m3u8', type: 'hls' },
-                { name: 'TRT SPOR YILDIZ', streamUrl: 'https://tv-trtspor2.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'Tabii SPOR 1', streamUrl: 'https://beert7sqimrk0bfdupfgn6qew.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'Tabii SPOR 2', streamUrl: 'https://klublsslubcgyiz7zqt5bz8il.medya.trt.com.tr/master_1080p.m3u8', type: 'hls' },
-                { name: 'Tivibu Spor 4', streamUrl: 'https://dga1op10s1u3leo.4155657c37ab54.click/live/selcuktivibuspor4/playlist.m3u8', type: 'hls' }
-            ];
+        const apiKey = ""; 
+        let selectedAngle = "Eye-Level Shot";
+        let selectedScale = "Medium Shot (MS)";
+        let selectedLens = "50mm Standard Natural";
+        let selectedRatio = "Original Aspect Ratio";
+        let base64Image = null;
+        let finalPromptResult = null;
 
-            let hlsInstance = null;
-            const grid = document.getElementById('channel-grid');
-            const playerArea = document.getElementById('player-area');
-            const channelTitle = document.getElementById('currentChannelTitle');
-            const search = document.getElementById('searchInput');
+        const imageInput = document.getElementById('image-input');
+        const customAngleInput = document.getElementById('custom-angle-input');
+        const customRatioInput = document.getElementById('custom-ratio-input');
+        const selectionGridsContainer = document.getElementById('selection-grids-container');
+        const previewContainer = document.getElementById('preview-container');
+        const previewImg = document.getElementById('image-preview');
+        const uploadPrompt = document.getElementById('upload-prompt');
+        const actionBtn = document.getElementById('main-action-btn');
+        const terminalLoader = document.getElementById('terminal-loader');
+        const statusLog = document.getElementById('status-log');
+        const readyUi = document.getElementById('ready-ui');
+        const toast = document.getElementById('toast');
 
-            const playChannel = (channel) => {
-                if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-                playerArea.innerHTML = '<div class="flex flex-col items-center gap-4"><div class="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div><p class="text-sm font-medium animate-pulse">Yükleniyor...</p></div>';
-                channelTitle.innerText = channel.name;
+        const logs = [
+            "Referans görselden 3D hacim verisi çıkarılıyor",
+            "Orijinal kamera açısı tamamen sıfırlanıyor",
+            "Karakterin iskelet sistemi yeni koordinata taşınıyor",
+            "Lens distorsiyonu ve perspektif yeniden hesaplanıyor",
+            "Kadraj sınırları (surgical framing) çiziliyor",
+            "Identity (kimlik) dokusu yeni geometriye giydiriliyor"
+        ];
 
-                setTimeout(() => {
-                    playerArea.innerHTML = '';
-                    const isM3U8 = channel.streamUrl.includes('.m3u8') || channel.type === 'hls';
-
-                    if (isM3U8) {
-                        const video = document.createElement('video');
-                        video.className = 'w-full h-full object-contain';
-                        video.controls = video.autoplay = video.playsInline = true;
-                        playerArea.appendChild(video);
-
-                        if (Hls.isSupported()) {
-                            hlsInstance = new Hls();
-                            hlsInstance.loadSource(channel.streamUrl);
-                            hlsInstance.attachMedia(video);
-                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                            video.src = channel.streamUrl;
-                        }
-                    } else {
-                        const iframe = document.createElement('iframe');
-                        iframe.src = channel.streamUrl;
-                        iframe.className = 'w-full h-full border-none shadow-inner';
-                        iframe.allow = 'autoplay; fullscreen; picture-in-picture';
-                        playerArea.appendChild(iframe);
-                    }
-                }, 800);
-            };
-
-            const render = (query = '') => {
-                grid.innerHTML = '';
-                const filtered = allChannels.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
-                document.getElementById('channelCount').innerText = `${filtered.length} Kanal`;
-
-                filtered.forEach(ch => {
-                    const card = document.createElement('div');
-                    card.className = 'premium-card p-5 rounded-2xl cursor-pointer group flex flex-col items-center gap-3';
-                    card.innerHTML = `
-                        <div class="w-12 h-12 rounded-full bg-blue-600/10 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                            <i class="fa-solid fa-play text-xs"></i>
-                        </div>
-                        <span class="text-sm font-bold text-slate-300 group-hover:text-white transition-colors">${ch.name}</span>
-                    `;
-                    card.onclick = () => {
-                        document.querySelectorAll('.premium-card').forEach(c => c.classList.remove('active'));
-                        card.classList.add('active');
-                        playChannel(ch);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    };
-                    grid.appendChild(card);
-                });
-            };
-
-            search.addEventListener('input', (e) => render(e.target.value));
-            document.getElementById('fsBtn').onclick = () => {
-                const el = document.getElementById('player-container');
-                if (el.requestFullscreen) el.requestFullscreen();
-            };
-
-            render();
+        document.querySelectorAll('.btn-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const type = btn.dataset.type;
+                const val = btn.dataset.val;
+                if(type === 'ratio') {
+                    customRatioInput.value = '';
+                    selectedRatio = val;
+                } else {
+                    customAngleInput.value = '';
+                    selectionGridsContainer.classList.remove('section-deactivated');
+                    if (type === 'angle') selectedAngle = val;
+                    if (type === 'scale') selectedScale = val;
+                    if (type === 'lens') selectedLens = val;
+                }
+                btn.parentElement.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                resetState();
+            });
         });
+
+        customRatioInput.addEventListener('input', () => {
+            resetState();
+            if (customRatioInput.value.trim() !== '') {
+                document.getElementById('ratio-grid').querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+                selectedRatio = `Custom Ratio: ${customRatioInput.value.trim()}`;
+            }
+        });
+
+        customAngleInput.addEventListener('input', () => {
+            resetState();
+            if (customAngleInput.value.trim() !== '') {
+                selectionGridsContainer.classList.add('section-deactivated');
+                selectionGridsContainer.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+                selectedAngle = null; selectedScale = null; selectedLens = null;
+            } else {
+                selectionGridsContainer.classList.remove('section-deactivated');
+            }
+        });
+
+        document.querySelectorAll('[data-val="Eye-Level Shot"], [data-val="Medium Shot (MS)"], [data-val="50mm Standard Natural"], [data-val="Original Aspect Ratio"]')
+                .forEach(b => b.classList.add('active'));
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    base64Image = re.target.result.split(',')[1];
+                    previewImg.src = re.target.result;
+                    previewContainer.classList.remove('hidden');
+                    uploadPrompt.classList.add('hidden');
+                    resetState();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('remove-img').onclick = (e) => {
+            e.stopPropagation(); base64Image = null;
+            previewContainer.classList.add('hidden');
+            uploadPrompt.classList.remove('hidden');
+            imageInput.value = ''; resetState();
+        };
+
+        function resetState() {
+            finalPromptResult = null;
+            actionBtn.innerText = "PROMPTU OLUŞTUR";
+            actionBtn.classList.remove('btn-copy-mode');
+            terminalLoader.classList.add('hidden');
+            readyUi.classList.add('hidden');
+            previewContainer.classList.remove('scanning');
+        }
+
+        async function handleAction() {
+            if (!base64Image) { showToast("Görsel yüklemeden devam edilemez!"); return; }
+            if (finalPromptResult) {
+                copyToClipboard(finalPromptResult);
+                showToast("JSON Prompt Panoya Kopyalandı!");
+                return;
+            }
+
+            actionBtn.disabled = true;
+            actionBtn.innerText = "YAPILANDIRILIYOR...";
+            terminalLoader.classList.remove('hidden');
+            previewContainer.classList.add('scanning');
+            let logIdx = 0;
+            const logInterval = setInterval(() => {
+                statusLog.innerText = logs[logIdx % logs.length];
+                logIdx++;
+            }, 850);
+
+            const systemPrompt = `You are a Technical AI Director for OzWorks.ai.
+GOAL: RE-RENDER the subject from a completely NEW perspective.
+CRITICAL OVERRIDE: 
+1. IGNORE the camera angle and framing of the reference image. The reference is ONLY for the subject's identity (face, clothes) and skeletal pose structure.
+2. FORCE the camera to move to the new coordinate defined by the user. If user says "Worm's Eye", the camera MUST be on the ground looking up, even if the original is eye-level.
+3. VOLUMETRIC CONSISTENCY: The subject is a 3D object. You are taking a photo of this 3D object from a NEW spot in the room.
+4. LENS PHYSICS: If 14mm is chosen, describe strong distortion. If 200mm, describe compression.
+
+JSON SCHEMA: {
+  "camera_override_protocol": "Explicit command to ABANDON the original framing and adopt the new [Angle/Scale].",
+  "volumetric_reconstruction": "Description of the subject's 3D pose seen from the NEW angle (e.g. 'From below, the chin and nostrils are prominent, body tapers up').",
+  "consistency_anchors": "Identity details to keep (scar on cheek, texture of shirt) while changing the view.",
+  "framing_boundaries": "Precise cut-off points for the new shot (e.g. 'Frame strictly cuts at knees').",
+  "optical_physics": "Lens character description.",
+  "final_technical_prompt": "A master directive focusing on the NEW camera position looking at the SAME subject."
+}`;
+
+            const customAngle = customAngleInput.value.trim();
+            const techData = customAngle ? `- Technical Directive: ${customAngle}` : `- Angle: ${selectedAngle}\n- Scale: ${selectedScale}\n- Lens: ${selectedLens}`;
+            const ratioData = `- Ratio: ${selectedRatio}`;
+
+            try {
+                const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            role: "user",
+                            parts: [
+                                { text: `COMMAND: RE-RENDER SCENE. CONFIG: ${techData}\n${ratioData}. MANDATORY: Forget the original camera angle. Move the camera to the new position physically. Return JSON ONLY.` },
+                                { inlineData: { mimeType: "image/png", data: base64Image } }
+                            ]
+                        }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+
+                const data = await response.json();
+                finalPromptResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                clearInterval(logInterval);
+                actionBtn.disabled = false;
+                terminalLoader.classList.add('hidden');
+                previewContainer.classList.remove('scanning');
+
+                if (finalPromptResult) {
+                    actionBtn.innerText = "PROMPTU KOPYALA";
+                    actionBtn.classList.add('btn-copy-mode');
+                    readyUi.classList.remove('hidden');
+                }
+            } catch (error) {
+                clearInterval(logInterval);
+                actionBtn.disabled = false;
+                actionBtn.innerText = "PROMPTU OLUŞTUR";
+                showToast("Hata oluştu. Lütfen tekrar dene.");
+            }
+        }
+
+        async function fetchWithRetry(url, options, retries = 5, backoff = 1000) {
+            try {
+                const res = await fetch(url, options);
+                if (!res.ok) throw new Error('API Error');
+                return res;
+            } catch (err) {
+                if (retries === 0) throw err;
+                await new Promise(r => setTimeout(r, backoff));
+                return fetchWithRetry(url, options, retries - 1, backoff * 2);
+            }
+        }
+
+        function showToast(msg) {
+            toast.innerText = msg; toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 3000);
+        }
+
+        function copyToClipboard(text) {
+            const el = document.createElement('textarea');
+            el.value = text; document.body.appendChild(el);
+            el.select(); document.execCommand('copy');
+            document.body.removeChild(el);
+        }
+
+        actionBtn.addEventListener('click', handleAction);
     </script>
 </body>
 </html>
- 

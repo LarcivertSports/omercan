@@ -3,331 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alanyaspor vs Fenerbahçe Maç Özeti - myfootball.pw</title>
+    <title>Canlı Yayın Oynatıcı</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-        .match-title {
-            font-size: 2.8em;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        }
-        .match-info {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            background: rgba(255,255,255,0.1);
-            padding: 20px 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .team {
-            text-align: center;
-        }
-        .team-name {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .team-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin: 0 auto 10px;
-        }
-        .score {
-            font-size: 3em;
-            font-weight: bold;
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .match-date {
-            font-size: 1.2em;
-            color: rgba(255,255,255,0.8);
-            margin-top: 10px;
-        }
-        .source-credit {
-            background: rgba(255,255,255,0.1);
-            padding: 15px 25px;
-            border-radius: 15px;
-            margin: 20px auto;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            max-width: 500px;
-        }
-        .video-player {
-            position: relative;
-            background: #000;
-            border-radius: 25px;
-            overflow: hidden;
-            margin-bottom: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .video-container {
-            position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-        }
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 25px;
-        }
-        .video-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 20px 40px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        .video-overlay:hover {
-            background: rgba(78,205,196,0.9);
-            transform: translate(-50%, -50%) scale(1.05);
-        }
-        .play-btn {
-            font-size: 3em;
-            margin-bottom: 10px;
-            display: block;
-        }
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin: 50px 0;
-        }
-        .feature-card {
-            background: rgba(255,255,255,0.1);
-            padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.2);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        .feature-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .back-btn {
-            display: inline-block;
-            margin: 20px auto;
-            padding: 15px 35px;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(255,107,107,0.4);
-        }
-        .back-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(255,107,107,0.6);
-        }
-        @media (max-width: 768px) {
-            .match-title {
-                font-size: 2em;
-            }
-            .match-info {
-                gap: 15px;
-                padding: 15px 20px;
-            }
-            .score {
-                font-size: 2.5em;
-            }
-            .team-logo {
-                width: 50px;
-                height: 50px;
-                font-size: 1em;
-            }
-        }
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #1a1a1a; margin: 0; }
+        .container { width: 80%; max-width: 900px; text-align: center; }
+        video { width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { color: white; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 class="match-title">Alanyaspor vs Fenerbahçe</h1>
-            <div class="match-info">
-                <div class="team">
-                    <div class="team-logo">ALA</div>
-                    <div class="team-name">Alanyaspor</div>
-                </div>
-                <div class="score">1 - 3</div>
-                <div class="team">
-                    <div class="team-logo">FB</div>
-                    <div class="team-name">Fenerbahçe</div>
-                </div>
-            </div>
-            <div class="match-date">18. Hafta - Türkiye Şampiyonası 2025/26</div>
-            <div class="source-credit">
-                <strong>🔗 Orijinal Kaynak:</strong> 
-                <a href="https://myfootball.pw/11522111-chempionat-turcii-2025-26-18-y-tur-alanyaspor-fenerbahche.html" 
-                   target="_blank" style="color: #4ecdc4; font-weight: bold;">myfootball.pw</a>
-            </div>
-        </div>
 
-        <div class="video-player" id="videoPlayer">
-            <div class="video-container">
-                <div class="video-overlay" onclick="loadVideo()">
-                    <div class="play-btn">▶️</div>
-                    <div>Maç Özetini Oynat</div>
-                    <div style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">HD Kalite - Tam Maç</div>
-                </div>
-            </div>
-        </div>
+<div class="container">
+    <h2>Video Oynatıcı</h2>
+    <video id="video" controls autoplay playsinline></video>
+</div>
 
-        <div class="features">
-            <div class="feature-card">
-                <div class="feature-icon">🎥</div>
-                <h3>Full HD Kalite</h3>
-                <p>En yüksek çözünürlükte maç özeti</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⏯️</div>
-                <h3>Hızlı Yükleme</h3>
-                <p>Optimize edilmiş video player</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <h3>Mobil Uyumlu</h3>
-                <p>Tüm cihazlarda sorunsuz izleme</p>
-            </div>
-        </div>
+<script>
+    var video = document.getElementById('video');
+    // Sizin M3U8 bağlantınız
+    var videoSrc = 'https://videomf246.life/le/25-26/fa22012026/playlist.m3u8?md5=FjEdZdtuhTGRXkITwTxEjw&expires=1769338882';
 
-        <a href="javascript:history.back()" class="back-btn">← Geri Dön</a>
-    </div>
-
-    <script>
-        let videoLoaded = false;
-
-        async function loadVideo() {
-            if (videoLoaded) return;
-
-            try {
-                // myfootball.pw sayfasından video embed kodunu çek
-                const response = await fetch('https://myfootball.pw/11522111-chempionat-turcii-2025-26-18-y-tur-alanyaspor-fenerbahche.html');
-                const html = await response.text();
-                
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                
-                // Video iframe'ini bul (site yapısına göre selector ayarla)
-                let iframeSrc = '';
-                const iframes = doc.querySelectorAll('iframe[src*="youtube"], iframe[src*="vimeo"], iframe');
-                
-                if (iframes.length > 0) {
-                    iframeSrc = iframes[0].src;
-                } else {
-                    // Alternatif video kaynakları
-                    const videoLinks = doc.querySelectorAll('a[href*="youtube"], a[href*="vimeo"], .video-link');
-                    if (videoLinks.length > 0) {
-                        iframeSrc = videoLinks[0].href;
-                    }
-                }
-
-                // Video yoksa demo kullan
-                if (!iframeSrc) {
-                    iframeSrc = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
-                }
-
-                // iframe'i yükle
-                const overlay = document.querySelector('.video-overlay');
-                const container = document.querySelector('.video-container');
-                
-                overlay.style.display = 'none';
-                container.innerHTML = `<iframe src="${iframeSrc}" allowfullscreen></iframe>`;
-                
-                videoLoaded = true;
-                
-            } catch (error) {
-                console.error('Video yüklenirken hata:', error);
-                
-                // Fallback demo video
-                const container = document.querySelector('.video-container');
-                const overlay = document.querySelector('.video-overlay');
-                
-                overlay.innerHTML = `
-                    <div class="play-btn">✅</div>
-                    <div>Demo Video Yüklendi</div>
-                `;
-                overlay.style.background = 'rgba(78,205,196,0.9)';
-                overlay.onclick = null;
-                
-                setTimeout(() => {
-                    container.innerHTML = `
-                        <iframe src="https://videomf246.life/le/25-26/fa22012026/playlist.m3u8?md5=FjEdZdtuhTGRXkITwTxEjw&expires=1769338882" allowfullscreen></iframe>
-                    `;
-                }, 1000);
-            }
-        }
-
-        // Klavye kısayolu (Space tuşu ile oynat)
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                loadVideo();
-            }
+    if (Hls.isSupported()) {
+        var hls = new Hls();
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+            video.play();
         });
+    }
+    // Safari gibi HLS'yi yerel olarak destekleyen tarayıcılar için
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = videoSrc;
+        video.addEventListener('loadedmetadata', function() {
+            video.play();
+        });
+    }
+</script>
 
-        // Sayfa yüklendiğinde otomatik oynatma (isteğe bağlı)
-        // window.onload = () => setTimeout(loadVideo, 2000);
-    </script>
 </body>
 </html>

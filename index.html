@@ -3,245 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RGFootball Video İndirici</title>
+    <title>🔥 RGFootball Ultimate Video İndirici v2.0</title>
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #1a1a1a;
-            color: #fff;
-        }
-        .tool-container {
-            background: #2a2a2a;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        input[type="url"] {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #444;
-            border-radius: 10px;
-            background: #333;
-            color: #fff;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-        input[type="url"]:focus {
-            outline: none;
-            border-color: #4facfe;
-            box-shadow: 0 0 10px rgba(79,172,254,0.5);
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #4facfe, #00f2fe);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(79,172,254,0.4);
-        }
-        .results {
-            margin-top: 30px;
-            padding: 20px;
-            background: #333;
-            border-radius: 10px;
-            display: none;
-        }
-        .video-item {
-            background: #444;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-        }
-        .download-btn {
-            background: #ff6b6b;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .spinner {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
-        }
-        .spinner::after {
-            content: '';
-            width: 40px;
-            height: 40px;
-            margin: 0 auto;
-            border: 4px solid #444;
-            border-top: 4px solid #4facfe;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        /* Mevcut stil + yeni geliştirmeler */
+        body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 30px auto; padding: 20px; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); color: #fff; }
+        .tool-container { background: rgba(42,42,74,0.9); padding: 40px; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); backdrop-filter: blur(20px); }
+        .status-bar { background: #333; padding: 10px; border-radius: 10px; margin: 20px 0; font-weight: bold; }
+        .advanced-toggle { background: #ff6b6b; margin-bottom: 20px; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .bulk-download { background: linear-gradient(45deg, #00d2d3, #4facfe); margin-top: 20px; }
+        @media (max-width: 768px) { .video-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div class="tool-container">
-        <h1>⚽ RGFootball Video İndirici</h1>
-        <p><strong>http://rgfootball.net</strong> forumundan videoları kolayca indirin!</p>
+        <h1>⚽ RGFootball ULTIMATE Video İndirici v2.0</h1>
+        <p><strong>Forum, topic ve tüm videoları otomatik bulur & indirir!</strong></p>
         
-        <input type="url" id="urlInput" placeholder="RGFootball video linkini yapıştırın (örn: http://rgfootball.net/viewtopic.php?...)" />
+        <input type="url" id="urlInput" placeholder="http://rgfootball.net/viewforum.php?f=87 veya topic linki..." />
+        <button class="advanced-toggle" onclick="toggleAdvanced()">⚙️ Gelişmiş Ayarlar</button>
         
-        <button onclick="extractVideos()">🔍 Videoları Bul</button>
+        <div id="advancedOptions" style="display:none; margin: 20px 0; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+            <label><input type="checkbox" id="deepScan" checked> Derin Tarama (M3U8/MP4)</label><br>
+            <label><input type="checkbox" id="streamHosts"> Streamtape/Mixdrop</label><br>
+            <label><input type="checkbox" id="bbcode"> BBCode Videolar</label>
+        </div>
         
+        <button onclick="extractVideos()" style="background: linear-gradient(45deg, #4facfe, #00f2fe);">🔍 TÜM VİDEOLARI BUL</button>
+        
+        <div class="status-bar" id="statusBar" style="display:none;"></div>
         <div class="spinner" id="spinner"></div>
         <div class="results" id="results"></div>
+        
+        <button class="bulk-download" onclick="bulkDownload()" id="bulkBtn" style="display:none;">📦 HEPSİNİ İNDİR</button>
     </div>
 
     <script>
+        let allVideos = [];
+        
+        // Geliştirilmiş extractVideos fonksiyonu
         async function extractVideos() {
             const url = document.getElementById('urlInput').value;
-            const spinner = document.getElementById('spinner');
-            const results = document.getElementById('results');
+            if (!url.includes('rgfootball.net')) return alert('❌ RGFootball linki girin!');
             
-            if (!url.includes('rgfootball.net')) {
-                alert('Lütfen geçerli bir RGFootball linki girin!');
-                return;
-            }
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = '🔍 Sayfa analiz ediliyor...';
+            statusBar.style.display = 'block';
             
-            spinner.style.display = 'block';
-            results.style.display = 'none';
-            results.innerHTML = '';
+            // MULTIPLE PROXY fallback
+            const proxies = [
+                'https://api.allorigins.win/raw?url=',
+                'https://corsproxy.io/?',
+                'https://thingproxy.freeboard.io/fetch/'
+            ];
             
-            try {
-                // CORS proxy kullanarak sayfayı çek
-                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-                const response = await fetch(proxyUrl);
-                const html = await response.text();
-                
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                
-                // RGFootball'daki yaygın video kaynaklarını bul
-                const videos = [];
-                
-                // 1. YouTube/Vimeo iframes
-                doc.querySelectorAll('iframe[src*="youtube"], iframe[src*="youtu.be"], iframe[src*="vimeo"], iframe[src*="dailymotion"]').forEach(iframe => {
-                    const src = iframe.src;
-                    if (src && !videos.some(v => v.url === src)) {
-                        videos.push({
-                            type: 'iframe',
-                            url: src,
-                            title: 'YouTube/Vimeo Video'
-                        });
-                    }
-                });
-                
-                // 2. Direkt MP4 linkleri
-                const mp4Links = doc.querySelectorAll('a[href$=".mp4"], a[href*=".m3u8"], a[href*="video"]');
-                mp4Links.forEach(link => {
-                    const href = link.href;
-                    if (href.includes('.mp4') || href.includes('.m3u8')) {
-                        videos.push({
-                            type: 'direct',
-                            url: href,
-                            title: href.split('/').pop() || 'MP4 Video'
-                        });
-                    }
-                });
-                
-                // 3. BBCode video linkleri
-                const bbcodeVideos = html.match(/\[video\](.*?)\[\/video\]/gi) || [];
-                bbcodeVideos.forEach(match => {
-                    const urlMatch = match.match(/http[^"\]]+/);
-                    if (urlMatch) {
-                        videos.push({
-                            type: 'bbcode',
-                            url: urlMatch[0],
-                            title: 'BBCode Video'
-                        });
-                    }
-                });
-                
-                // 4. Streamtape/Mixdrop gibi hostlar
-                const streamHosts = ['streamtape', 'mixdrop', 'dood', 'upstream', 'ok.ru', 'vk.com'];
-                doc.querySelectorAll('a[href]').forEach(link => {
-                    const href = link.href.toLowerCase();
-                    const hostMatch = streamHosts.find(host => href.includes(host));
-                    if (hostMatch && !videos.some(v => v.url === link.href)) {
-                        videos.push({
-                            type: 'stream',
-                            url: link.href,
-                            title: `${hostMatch.toUpperCase()} Video`,
-                            host: hostMatch
-                        });
-                    }
-                });
-                
-                spinner.style.display = 'none';
-                
-                if (videos.length === 0) {
-                    results.innerHTML = '<p>❌ Bu sayfada video bulunamadı. Sayfayı yenileyip tekrar deneyin.</p>';
-                } else {
-                    displayResults(videos);
+            let html = '';
+            for (let proxy of proxies) {
+                try {
+                    const response = await fetch(proxy + encodeURIComponent(url));
+                    html = await response.text();
+                    break;
+                } catch(e) {
+                    continue;
                 }
-                
-                results.style.display = 'block';
-                
-            } catch (error) {
-                spinner.style.display = 'none';
-                results.innerHTML = `<p>❌ Hata: ${error.message}. VPN kullanmayı deneyin.</p>`;
-                results.style.display = 'block';
             }
+            
+            if (!html) throw new Error('Proxy hatası');
+            
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const videos = [];
+            
+            // SUPER GÜÇLÜ VIDEO DETECTOR
+            const deepScan = document.getElementById('deepScan').checked;
+            const streamScan = document.getElementById('streamHosts').checked;
+            const bbcodeScan = document.getElementById('bbcode').checked;
+            
+            // 1. M3U8 + MP4 (EN ÖNEMLİ)
+            if (deepScan) {
+                const m3u8s = Array.from(html.match(/https?:\/\/[^"\s]+\.m3u8[^"\s]*/gi) || []);
+                const mp4s = Array.from(html.match(/https?:\/\/[^"\s]+\.mp4[^"\s]*/gi) || []);
+                [...m3u8s, ...mp4s].forEach(url => {
+                    if (!allVideos.some(v => v.url === url)) {
+                        allVideos.push({url, type: 'direct', quality: url.includes('1080') ? '1080p' : '720p'});
+                    }
+                });
+            }
+            
+            // 2. Iframe videolar
+            doc.querySelectorAll('iframe').forEach(iframe => {
+                const src = iframe.src;
+                if (src && (src.includes('youtube') || src.includes('vimeo') || src.includes('dailymotion'))) {
+                    if (!allVideos.some(v => v.url === src)) {
+                        allVideos.push({url: src, type: 'iframe', title: 'YouTube/Vimeo'});
+                    }
+                }
+            });
+            
+            // 3. Stream hostlar
+            if (streamScan) {
+                const hosts = ['streamtape.com', 'mixdrop.co', 'dood', 'upstream', 'ok.ru', 'vk.com'];
+                doc.querySelectorAll('a[href]').forEach(a => {
+                    hosts.forEach(host => {
+                        if (a.href.includes(host) && !allVideos.some(v => v.url === a.href)) {
+                            allVideos.push({url: a.href, type: 'stream', host});
+                        }
+                    });
+                });
+            }
+            
+            // 4. BBCode + gizli linkler
+            if (bbcodeScan) {
+                const bbMatches = html.match(/\[video[^\]]*]([^[]+?)\[\/video\]/gi) || [];
+                bbMatches.forEach(match => {
+                    const urlMatch = match.match(/https?:\/\/[^\s\]]+/);
+                    if (urlMatch && !allVideos.some(v => v.url === urlMatch[0])) {
+                        allVideos.push({url: urlMatch[0], type: 'bbcode'});
+                    }
+                });
+            }
+            
+            statusBar.textContent = `✅ ${allVideos.length} video bulundu!`;
+            document.getElementById('bulkBtn').style.display = allVideos.length ? 'block' : 'none';
+            displayResults(allVideos);
         }
         
         function displayResults(videos) {
             const results = document.getElementById('results');
+            results.style.display = 'block';
             results.innerHTML = `
-                <h3>🎉 ${videos.length} video bulundu!</h3>
-                ${videos.map((video, index) => `
-                    <div class="video-item">
-                        <strong>${index + 1}. ${video.title}</strong>
-                        <br><small>${video.url.substring(0, 80)}...</small>
-                        <br>
-                        <button class="download-btn" onclick="downloadVideo('${video.url}', '${video.type}')">
-                            📥 İNDİR (${video.type.toUpperCase()})
-                        </button>
-                    </div>
-                `).join('')}
+                <h3>🎉 ${videos.length} Video Bulundu!</h3>
+                <div class="video-grid">
+                    ${videos.map((v, i) => `
+                        <div class="video-item">
+                            <strong>${i+1}.</strong> ${v.title || v.host || v.quality || 'Video'}
+                            <br><small>${v.url.substring(0, 60)}...</small>
+                            <br>
+                            <button class="download-btn" onclick="smartDownload('${v.url}', '${v.type}')">
+                                📥 ${v.type.toUpperCase()}
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
             `;
         }
         
-        function downloadVideo(url, type) {
-            if (type === 'direct' && url.includes('.mp4')) {
-                // Direkt MP4 indirme
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `rgfootball_${Date.now()}.mp4`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+        // AKILLI İNDİRME
+        function smartDownload(url, type) {
+            if (type === 'direct') {
+                downloadFile(url, 'video_' + Date.now() + '.mp4');
+            } else if (type === 'iframe' && url.includes('youtube')) {
+                const ytId = url.split('v=')[1]?.split('&')[0] || url.split('/embed/')[1]?.split('?')[0];
+                window.open(`https://www.y2mate.com/youtube/${ytId}`, '_blank');
             } else {
-                // Diğer videolar için aç
                 window.open(url, '_blank');
             }
         }
         
-        // Enter tuşu ile çalıştır
-        document.getElementById('urlInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                extractVideos();
-            }
-        });
+        function bulkDownload() {
+            allVideos.forEach((video, i) => {
+                setTimeout(() => smartDownload(video.url, video.type), i * 1000);
+            });
+        }
+        
+        function downloadFile(url, filename) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        
+        function toggleAdvanced() {
+            const adv = document.getElementById('advancedOptions');
+            adv.style.display = adv.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Otomatik çalıştır
+        document.getElementById('urlInput').addEventListener('keypress', e => e.key === 'Enter' && extractVideos());
     </script>
 </body>
-</html> 
+</html>

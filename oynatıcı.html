@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ömercan IPTV Oynatıcı</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+        #sidebar {
+            width: 300px;
+            background: #252525;
+            overflow-y: auto;
+            border-right: 1px solid #444;
+        }
+        #sidebar h2 {
+            padding: 15px;
+            font-size: 18px;
+            background: #333;
+            margin: 0;
+            position: sticky;
+            top: 0;
+        }
+        .channel-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+            transition: background 0.2s;
+        }
+        .channel-item:hover {
+            background: #444;
+        }
+        #main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+        video {
+            width: 90%;
+            max-height: 80vh;
+            outline: none;
+        }
+        .status {
+            margin-top: 10px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h2>Kanal Listesi</h2>
+    <div id="channelList">Yükleniyor...</div>
+</div>
+
+<div id="main">
+    <video id="video" controls autoplay></video>
+    <div id="status" class="status">Bir kanal seçin</div>
+</div>
+
+<script>
+    const m3uUrl = 'https://raw.githubusercontent.com/LarcivertSports/omercan/refs/heads/main/omarcan.m3u';
+    const video = document.getElementById('video');
+    const channelListContainer = document.getElementById('channelList');
+    const statusText = document.getElementById('status');
+
+    // M3U dosyasını çek ve parçala
+    async function fetchM3U() {
+        try {
+            const response = await fetch(m3uUrl);
+            const data = await response.text();
+            parseM3U(data);
+        } catch (error) {
+            channelListContainer.innerHTML = "Liste yüklenemedi. CORS hatası olabilir.";
+            console.error("Hata:", error);
+        }
+    }
+
+    function parseM3U(content) {
+        const lines = content.split('\n');
+        channelListContainer.innerHTML = '';
+        let currentName = '';
+
+        lines.forEach(line => {
+            line = line.trim();
+            if (line.startsWith('#EXTINF:')) {
+                // Kanal adını ayıkla
+                currentName = line.split(',')[1] || "Bilinmeyen Kanal";
+            } else if (line.startsWith('http')) {
+                // Kanal linkini al ve listeye ekle
+                const btn = document.createElement('div');
+                btn.className = 'channel-item';
+                btn.innerText = currentName || "Kanal";
+                btn.onclick = () => playStream(line, currentName);
+                channelListContainer.appendChild(btn);
+                currentName = '';
+            }
+        });
+    }
+
+    function playStream(url, name) {
+        statusText.innerText = "Oynatılıyor: " + name;
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play();
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            // Safari desteği için
+            video.src = url;
+            video.addEventListener('loadedmetadata', function() {
+                video.play();
+            });
+        } else {
+            alert("Tarayıcınız bu yayını desteklemiyor.");
+        }
+    }
+
+    fetchM3U();
+</script>
+
+</body>
+</html>

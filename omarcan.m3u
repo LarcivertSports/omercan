@@ -3,7 +3,7 @@
 https://balkonkralligi.lol/static/bs1.m3u8
 
 #EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-2-logo-56F85DDE25-seeklogo.com.png" group-title="BeINSports",BeIN Sport 2
-https://hepbetspor1.cfd/ch.html?id=b2
+https://edge.cdn-live.ru/secure/api/v1/tr-bein-sports-2/playlist.m3u8?token=1222dc54bdfbeaec21972302d8c69320b95bec638b59a0dda2168a7c1b9c74f5.1770475813.dcd73247c42b0da2b313974966615c7b.fe98b9d6d52d3223abee1031a90ee7eb.22f72d26c96018da5d038836061e5327&signature=648345d53543b290b45a92c8d748beefe7211ad14b5032f1a7949082a28f8188
 
 #EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 3" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-3-logo-42227D7D66-seeklogo.com.png" group-title="BeINSports",BeIN Sport 3
 https://balkonkralligi.lol/static/bs3.m3u8

@@ -1,11 +1,8 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 1" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-1-logo-4E5E4AE6B8-seeklogo.com.png" group-title="BeINSports",BeIN Sport 1
-https://bo.156adc9e6e8bdb97f0.workers.dev/f6e33e69e0fdec0a7780e174f3c8b2c2/DmodYM9CdSNPUZyc2x7VWd/777/bo.156adc9e6e8bdb97f0.workers.dev/chunklist_hd.m3u8
+#EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 1" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-1-logo-4E5E4AE6B8-seeklogo.com.png" group-title="BeINSports",BeIN Sport 2
+https://balkonkralligi.lol/static/bs2.m3u8
 #EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 1" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-1-logo-4E5E4AE6B8-seeklogo.com.png" group-title="BeINSports",BeIN Sport 1
 https://balkonkralligi.lol/static/bs1.m3u8
-
-#EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-1-logo-4E5E4AE6B8-seeklogo.com.png" group-title="BeINSports",BeIN Sport 2
-https://balkonkralligi.lol/static/bs2.m3u8
 
 #EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-2-logo-56F85DDE25-seeklogo.com.png" group-title="BeINSports",BeIN Sport 2
 https://cdn-live.tv/api/v1/channels/player/?name=beIN%20SPORTS%202&code=tr&user=cdnlivetv&plan=free 

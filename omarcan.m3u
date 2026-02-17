@@ -5,6 +5,9 @@ https://corestream.ronaldovurdu.help/hls/bein-sports-1.m3u8
 #EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 1" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-1-logo-4E5E4AE6B8-seeklogo.com.png" group-title="BeINSports",BeIN Sport 1 (B) 
 https://hls-proxy.wingsmedya.workers.dev/?url=https%3A%2F%2Favvasportscdn.com%2Fbein1%2Ftracks-v1a1%2Fmono.ts.m3u8
 
+#EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 1" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-1-logo-4E5E4AE6B8-seeklogo.com.png" group-title="BeINSports",BeIN Sport 1 (C) 
+https://bo.e37ce4476e6d2d7695.workers.dev/f6e33e69e0fdec0a7780e174f3c8b2c2/DmodYM9CdSNPUZyc2x7VWd/777/bo.e37ce4476e6d2d7695.workers.dev/chunklist_hd.m3u8
+
 #EXTINF:-1 tvg-id="bein_sport" tvg-name="BeIN Sport 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://seeklogo.com/images/B/bein-sports-2-logo-56F85DDE25-seeklogo.com.png" group-title="BeINSports",BeIN Sport 2
 https://corestream.ronaldovurdu.help/hls/bein-sports-2.m3u8
 

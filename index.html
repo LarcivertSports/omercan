@@ -164,20 +164,3 @@
     </script>
 </body>
 </html>
-            card.className = "card bg-gray-900 rounded-2xl overflow-hidden cursor-pointer transition-all border border-gray-800 shadow-lg";
-            card.innerHTML = `
-                <div class="relative aspect-[2/3]">
-                    <img src="${item.poster}" class="w-full h-full object-cover" alt="${item.title}">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                </div>
-                <div class="p-4"><p class="font-bold text-sm truncate">${item.title}</p></div>
-            `;
-            card.onclick = () => playSource(item.url, item.title);
-            movieGrid.appendChild(card);
-        });
-
-        lucide.createIcons();
-    </script>
-</body>
-</html>
-

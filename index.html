@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stremio Web Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #0f0f10; color: white; font-family: 'Inter', sans-serif; }
+        .sidebar { background-color: #161617; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        .card:hover { transform: translateY(-5px); border-color: #7c3aed; }
+        input:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 10px rgba(124, 58, 237, 0.3); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <aside class="sidebar w-64 flex-shrink-0 border-r border-gray-800 hidden md:flex flex-col">
+        <div class="p-6">
+            <h1 class="text-2xl font-black text-purple-600 tracking-tighter italic">STREMIO CLONE</h1>
+        </div>
+        <nav class="flex-1 px-4 space-y-2">
+            <div class="text-gray-500 text-xs font-bold uppercase px-2 mb-2">Menü</div>
+            <a href="#" class="flex items-center gap-3 p-3 bg-purple-600 text-white rounded-xl shadow-lg shadow-purple-900/20">
+                <i data-lucide="home"></i> Ana Sayfa
+            </a>
+            <a href="#" class="flex items-center gap-3 p-3 text-gray-400 hover:bg-gray-800 hover:text-white rounded-xl transition">
+                <i data-lucide="heart"></i> Favoriler
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        
+        <header class="p-6 border-b border-gray-800 glass sticky top-0 z-10 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div class="relative w-full max-w-2xl">
+                <input type="text" id="m3u8-input" 
+                    placeholder="Buraya m3u8 linkini yapıştırın..." 
+                    class="w-full bg-gray-900 border border-gray-700 rounded-full py-3 px-6 text-sm transition-all pr-32">
+                <button onclick="playFromInput()" 
+                    class="absolute right-2 top-1.5 bg-purple-600 hover:bg-purple-700 text-white px-5 py-1.5 rounded-full text-sm font-bold transition-colors">
+                    Oynat
+                </button>
+            </div>
+            <div class="flex gap-4">
+                <i data-lucide="user" class="text-gray-400 cursor-pointer"></i>
+                <i data-lucide="settings" class="text-gray-400 cursor-pointer"></i>
+            </div>
+        </header>
+
+        <section class="p-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video border border-gray-800 shadow-purple-900/10">
+                    <video id="video" controls class="w-full h-full"></video>
+                </div>
+                <div class="mt-6 flex justify-between items-start">
+                    <div>
+                        <h2 id="current-title" class="text-3xl font-black">Hoş Geldiniz</h2>
+                        <p id="current-status" class="text-purple-400 font-medium">Bir m3u8 linki girin veya listeden seçin</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="p-8">
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i data-lucide="trending-up" class="text-purple-500"></i> Öne Çıkan Kanallar
+            </h3>
+            <div id="movie-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                </div>
+        </section>
+    </main>
+
+    <script>
+        const playlist = [
+            { id: 1, title: "Test Stream 1", poster: "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=500", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" },
+            { id: 2, title: "Sintel Animation", poster: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=500", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8" },
+            { id: 3, title: "Canlı Doğa Yayını", poster: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=500", url: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8" }
+        ];
+
+        const video = document.getElementById('video');
+        const hls = new Hls();
+
+        function playSource(url, title) {
+            document.getElementById('current-title').innerText = title;
+            document.getElementById('current-status').innerText = "Yayında • Canlı";
+
+            if (Hls.isSupported()) {
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = url;
+                video.play();
+            }
+        }
+
+        function playFromInput() {
+            const url = document.getElementById('m3u8-input').value;
+            if (url.trim() !== "") {
+                playSource(url, "Harici Kaynak");
+            } else {
+                alert("Lütfen geçerli bir m3u8 linki girin!");
+            }
+        }
+
+        // Başlangıç Kartlarını Oluştur
+        const movieGrid = document.getElementById('movie-grid');
+        playlist.forEach(item => {
+            const card = document.createElement('div');
+            card.className = "card bg-gray-900 rounded-2xl overflow-hidden cursor-pointer transition-all border border-gray-800 shadow-lg";
+            card.innerHTML = `
+                <div class="relative aspect-[2/3]">
+                    <img src="${item.poster}" class="w-full h-full object-cover" alt="${item.title}">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                </div>
+                <div class="p-4"><p class="font-bold text-sm truncate">${item.title}</p></div>
+            `;
+            card.onclick = () => playSource(item.url, item.title);
+            movieGrid.appendChild(card);
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+

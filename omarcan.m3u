@@ -47,7 +47,7 @@ https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master.m3u8
 #EXTINF:-1 tvg-id="ssport" tvg-name="S Sport" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://feo.kablowebtv.com/resize/168A635D265A4328C2883FB4CD8FF/0/0/Vod/HLS/f0f167c1-f2b1-41d0-9713-75c315820713.png" group-title="SSports",S Sport 1
 https://zeustv32321.info/s1/tracks-v1a1/mono.ts.m3u8
 
-#EXTINF:-1 tvg-id="ssport" tvg-name="S Sport" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://feo.kablowebtv.com/resize/168A635D265A4328C2883FB4CD8FF/0/0/Vod/HLS/f0f167c1-f2b1-41d0-9713-75c315820713.png" group-title="SSports",S Sport 2
+#EXTINF:-1 tvg-id="ssport" tvg-name="S Sport 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://feo.kablowebtv.com/resize/168A635D265A4328C2883FB4CD8FF/0/0/Vod/HLS/f0f167c1-f2b1-41d0-9713-75c315820713.png" group-title="SSports",S Sport 2
 https://zeustv32321.info/s2/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="ssport" tvg-name="S Sport Plus" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://i.hizliresim.com/qioouyh.png" group-title="SSports",S Sport Plus

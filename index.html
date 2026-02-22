@@ -3,113 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stremio Web Hub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { background-color: #0b0b0c; color: #e1e1e1; font-family: 'Segoe UI', sans-serif; }
-        .sidebar { background-color: #111112; }
-        .player-gradient { background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(11,11,12,1) 100%); }
-        .glass-input { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .glass-input:focus { border-color: #7c3aed; background: rgba(255, 255, 255, 0.05); }
-        .history-card:hover .delete-btn { opacity: 1; }
-    </style>
+    <title>Discord Clone</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="flex h-screen overflow-hidden">
+<body>
+    <div class="app-container">
+        <nav class="sidebar-servers">
+            <div class="server-icon discord-logo">D</div>
+            <div class="divider"></div>
+            <div class="server-icon active">Y</div>
+            <div class="server-icon">O</div>
+            <div class="server-icon add-btn">+</div>
+        </nav>
 
-    <aside class="sidebar w-72 flex-shrink-0 border-r border-white/5 hidden lg:flex flex-col">
-        <div class="p-8">
-            <h1 class="text-2xl font-black text-purple-500 tracking-tighter italic">STREMIO <span class="text-white">HUB</span></h1>
-        </div>
-        
-        <div class="px-6 flex-1 overflow-y-auto">
-            <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4 px-2">Senin Kütüphanen</div>
-            <div id="history-list" class="space-y-2">
-                </div>
-        </div>
-
-        <div class="p-6 border-t border-white/5">
-            <button onclick="clearHistory()" class="text-xs text-gray-500 hover:text-red-400 flex items-center gap-2 transition">
-                <i data-lucide="trash-2" size="14"></i> Geçmişi Temizle
-            </button>
-        </div>
-    </aside>
-
-    <main class="flex-1 flex flex-col overflow-y-auto relative">
-        
-        <header class="p-6 sticky top-0 z-20 bg-[#0b0b0c]/80 backdrop-blur-md">
-            <div class="max-w-4xl mx-auto flex gap-3">
-                <div class="relative flex-1">
-                    <i data-lucide="link" class="absolute left-4 top-3.5 text-gray-500" size="18"></i>
-                    <input type="text" id="m3u8-input" 
-                        placeholder="m3u8 yayın linkini buraya yapıştır..." 
-                        class="w-full glass-input rounded-2xl py-3.5 pl-12 pr-4 text-sm transition-all outline-none">
-                </div>
-                <button onclick="addNewLink()" 
-                    class="bg-purple-600 hover:bg-purple-700 text-white px-8 rounded-2xl font-bold transition-all flex items-center gap-2">
-                    <i data-lucide="play" size="18"></i> Oynat
-                </button>
+        <aside class="sidebar-channels">
+            <div class="server-name">Yazılım Grubu</div>
+            <div class="channel-list">
+                <div class="channel-group">METİN KANALLARI</div>
+                <div class="channel-item active"><span>#</span> genel</div>
+                <div class="channel-item"><span>#</span> projeler</div>
+                <div class="channel-item"><span>#</span> yardımlaşma</div>
             </div>
-        </header>
+        </aside>
 
-        <section class="px-6 pb-6">
-            <div class="max-w-5xl mx-auto">
-                <div class="relative rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border border-white/5 shadow-purple-900/20">
-                    <video id="video" controls class="w-full h-full"></video>
-                    <div id="player-overlay" class="absolute inset-0 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
-                        <p class="text-gray-400">Oynatmak için bir link ekleyin</p>
+        <main class="chat-main">
+            <header class="chat-header"># genel</header>
+            <div class="messages" id="chat-box">
+                <div class="msg-card">
+                    <div class="avatar">G</div>
+                    <div class="msg-content">
+                        <div class="user-info">Gemini <span class="time">Bugün 13:30</span></div>
+                        <div class="text">Selam! Discord klonun hazır. Mesaj yazmaya başlayabilirsin!</div>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <h2 id="current-title" class="text-3xl font-bold tracking-tight">Hoş Geldiniz</h2>
-                    <p id="current-url" class="text-gray-500 text-sm mt-1 truncate max-w-xl">Henüz bir medya yüklenmedi</p>
-                </div>
             </div>
-        </section>
-
-    </main>
-
-    <script>
-        const video = document.getElementById('video');
-        const hls = new Hls();
-        let history = JSON.parse(localStorage.getItem('stremio_history')) || [];
-
-        // Başlangıçta geçmişi yükle
-        window.onload = () => {
-            renderHistory();
-            lucide.createIcons();
-        };
-
-        function renderHistory() {
-            const list = document.getElementById('history-list');
-            list.innerHTML = history.length === 0 ? 
-                '<p class="text-gray-600 text-sm px-2 italic">Henüz geçmiş yok...</p>' : '';
-            
-            history.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = "history-card group flex items-center justify-between p-3 rounded-xl hover:bg-white/5 cursor-pointer transition-all border border-transparent hover:border-white/10";
-                div.innerHTML = `
-                    <div class="flex items-center gap-3 overflow-hidden" onclick="playSource('${item.url}', 'Yayın ${index + 1}')">
-                        <div class="w-10 h-10 rounded-lg bg-purple-900/30 flex items-center justify-center text-purple-400 shrink-0">
-                            <i data-lucide="tv"></i>
-                        </div>
-                        <div class="overflow-hidden">
-                            <p class="text-sm font-medium truncate">${item.url}</p>
-                            <p class="text-[10px] text-gray-500">Eklenme: ${item.date}</p>
-                        </div>
-                    </div>
-                    <button onclick="deleteItem(${index})" class="delete-btn opacity-0 text-gray-600 hover:text-red-500 transition-opacity p-1">
-                        <i data-lucide="x" size="16"></i>
-                    </button>
-                `;
-                list.appendChild(div);
-            });
-            lucide.createIcons();
-        }
-
-        function playSource(url, title) {
-            document.getElementById('player-overlay').style.display = 'none';
+            <div class="input-container">
+                <input type="text" id="msg-input" placeholder="#genel kanalına mesaj gönder">
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
             document.getElementById('current-title').innerText = "Canlı Yayın";
             document.getElementById('current-url').innerText = url;
 

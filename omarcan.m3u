@@ -45,14 +45,10 @@ https://vbtob9hyq58eiophct5qctxr2.medya.trt.com.tr/master.m3u8
 https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master.m3u8
 
 #EXTINF:-1 tvg-id="ssport" tvg-name="S Sport" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://feo.kablowebtv.com/resize/168A635D265A4328C2883FB4CD8FF/0/0/Vod/HLS/f0f167c1-f2b1-41d0-9713-75c315820713.png" group-title="SSports",S Sport 1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-#EXTVLCOPT:http-referrer=https://justintv.co/
-https://andro.326503.xyz/checklist/androstreamlivess1.m3u8
+https://zeustv32321.info/s1/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="ssport" tvg-name="S Sport 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://feo.kablowebtv.com/resize/168A635D265A4328C2883FB4CD8FF/0/0/Vod/HLS/80f415bc-60e4-4dd9-8dc6-6e51d88f6abb.png" group-title="SSports",S Sport 2
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-#EXTVLCOPT:http-referrer=https://justintv.co/
-https://andro.326503.xyz/checklist/androstreamlivess2.m3u8
+#https://zeustv32321.info/s2/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="ssport" tvg-name="S Sport Plus" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://i.hizliresim.com/qioouyh.png" group-title="SSports",S Sport Plus
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
@@ -100,39 +96,25 @@ https://andro.326503.xyz/checklist/androstreamliveexn7.m3u8
 https://andro.326503.xyz/checklist/androstreamliveexn8.m3u8
 
 #EXTINF:-1 tvg-id="spor_smart" tvg-name="Spor Smart 1" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://image.milimaj.com/i/milliyet/75/869x477/61013bfb86b24419fc684867.jpg" group-title="SporSmart",Spor Smart 1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-#EXTVLCOPT:http-referrer=https://justintv.co/
-https://andro.326503.xyz/checklist/androstreamlivesm1.m3u8
+https://zeustv32321.info/smart1/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="spor_smart" tvg-name="Spor Smart 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://image.milimaj.com/i/milliyet/75/869x477/61013bfb86b24419fc684867.jpg" group-title="SporSmart",Spor Smart 2
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-#EXTVLCOPT:http-referrer=https://justintv.co/
-https://andro.326503.xyz/checklist/androstreamlivesm2.m3u8
+https://zeustv32321.info/smart2/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="tivibu_spor" tvg-name="Tivibu Spor" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://upload.wikimedia.org/wikipedia/tr/3/36/Tivibu_spor_logosu.jpg" group-title="TivibuSpor",Tivibu Spor
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-#EXTVLCOPT:http-referrer=https://justintv.co/
-https://andro.326503.xyz/checklist/androstreamlivets.m3u8
+https://zeustv32321.info/tivibu/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="tivibu_spor" tvg-name="Tivibu Spor 1" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://upload.wikimedia.org/wikipedia/tr/3/36/Tivibu_spor_logosu.jpg" group-title="TivibuSpor",Tivibu Spor 1
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-#EXTVLCOPT:http-referrer=https://justintv.co/
-https://andro.326503.xyz/checklist/androstreamlivets1.m3u8
+https://zeustv32321.info/tivibu1/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="tivibu_spor" tvg-name="Tivibu Spor 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://upload.wikimedia.org/wikipedia/tr/3/36/Tivibu_spor_logosu.jpg" group-title="TivibuSpor",Tivibu Spor 2
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-#EXTVLCOPT:http-referrer=https://justintv.co/
-https://andro.326503.xyz/checklist/androstreamlivets2.m3u8
+https://zeustv32321.info/tivibu2/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="tivibu_spor" tvg-name="Tivibu Spor 3" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://upload.wikimedia.org/wikipedia/tr/3/36/Tivibu_spor_logosu.jpg" group-title="TivibuSpor",Tivibu Spor 3
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-#EXTVLCOPT:http-referrer=https://justintv.co/
-https://andro.326503.xyz/checklist/androstreamlivets3.m3u8
+https://zeustv32321.info/tivibu3/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="tivibu_spor" tvg-name="Tivibu Spor 4" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://upload.wikimedia.org/wikipedia/tr/3/36/Tivibu_spor_logosu.jpg" group-title="TivibuSpor",Tivibu Spor 4
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-#EXTVLCOPT:http-referrer=https://justintv.co/
-https://andro.326503.xyz/checklist/androstreamlivets4.m3u8
+https://zeustv32321.info/tivibu4/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-name="TRT 1" tvg-language="Turkish" tvg-country="TR" tvg-id="Trt1" tvg-logo="https://cms-rotf-api.tabii.com/r/int/w500/23846_1-0-465-262.jpeg" group-title="Diğerleri", TRT 1
 https://tv-trt1.medya.trt.com.tr/master.m3u8

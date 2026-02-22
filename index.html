@@ -3,99 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Clone</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Discord Pro Clone</title>
+    <style>
+        :root {
+            --bg-dark: #1e1f22; --bg-medium: #2b2d31; --bg-light: #313338;
+            --text-muted: #949ba4; --text-normal: #dbdee1; --brand: #5865f2;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Whitney', sans-serif; }
+        body { background: var(--bg-light); color: var(--text-normal); height: 100vh; display: flex; overflow: hidden; }
+
+        /* Sol Bar - Sunucular */
+        .servers-bar { width: 72px; background: var(--bg-dark); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 8px; }
+        .srv-icon { width: 48px; height: 48px; background: var(--bg-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; position: relative; font-weight: bold; }
+        .srv-icon:hover { border-radius: 15px; background: var(--brand); color: white; }
+        .srv-icon.active { border-radius: 15px; background: var(--brand); }
+
+        /* Orta Bar - Kanallar */
+        .channels-bar { width: 240px; background: var(--bg-medium); display: flex; flex-direction: column; }
+        .srv-title { height: 48px; padding: 0 16px; display: flex; align-items: center; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.2); cursor: pointer; }
+        .srv-title:hover { background: rgba(255,255,255,0.05); }
+        .channel-container { flex: 1; overflow-y: auto; padding: 10px 8px; }
+        .cat-title { font-size: 12px; font-weight: bold; color: var(--text-muted); padding: 18px 8px 4px; display: flex; align-items: center; }
+        .item { padding: 6px 8px; margin: 2px 0; border-radius: 4px; cursor: pointer; display: flex; align-items: center; color: var(--text-muted); transition: 0.1s; }
+        .item:hover { background: #35373c; color: var(--text-normal); }
+        .item.active { background: #3f4147; color: white; }
+        .item.voice::before { content: "🔊"; margin-right: 8px; font-size: 14px; }
+        .item.text::before { content: "#"; margin-right: 8px; font-size: 20px; font-weight: normal; color: var(--text-muted); }
+
+        /* Ana Sohbet Alanı */
+        .chat-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-light); }
+        .chat-nav { height: 48px; display: flex; align-items: center; padding: 0 16px; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.2); }
+        .msg-list { flex: 1; padding: 16px; overflow-y: auto; }
+        .msg-row { display: flex; gap: 16px; margin-bottom: 18px; position: relative; }
+        .msg-row:hover .delete-btn { display: block; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #eb459e; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
+        .msg-body b { color: white; font-size: 15px; margin-right: 8px; }
+        .msg-body small { font-size: 12px; color: var(--text-muted); }
+        .delete-btn { display: none; position: absolute; right: 10px; top: 0; background: #ed4245; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
+
+        /* Sağ Bar - Üye Listesi */
+        .members-bar { width: 240px; background: var(--bg-medium); padding: 10px 8px; }
+        .mem-item { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 4px; cursor: pointer; }
+        .mem-item:hover { background: #35373c; }
+        .status { width: 10px; height: 10px; border-radius: 50%; background: #23a55a; border: 2px solid var(--bg-medium); margin-left: -15px; margin-top: 25px; }
+
+        /* Mesaj Girişi */
+        .input-wrapper { padding: 0 16px 24px; }
+        .input-field { width: 100%; padding: 12px 16px; background: #383a40; border: none; border-radius: 8px; color: white; outline: none; font-size: 15px; }
+    </style>
 </head>
 <body>
-    <div class="app-container">
-        <nav class="sidebar-servers">
-            <div class="server-icon discord-logo">D</div>
-            <div class="divider"></div>
-            <div class="server-icon active">Y</div>
-            <div class="server-icon">O</div>
-            <div class="server-icon add-btn">+</div>
-        </nav>
 
-        <aside class="sidebar-channels">
-            <div class="server-name">Yazılım Grubu</div>
-            <div class="channel-list">
-                <div class="channel-group">METİN KANALLARI</div>
-                <div class="channel-item active"><span>#</span> genel</div>
-                <div class="channel-item"><span>#</span> projeler</div>
-                <div class="channel-item"><span>#</span> yardımlaşma</div>
-            </div>
-        </aside>
+    <div class="servers-bar">
+        <div class="srv-icon active" title="Yazılım Dünyası">Y</div>
+        <div class="srv-icon" title="Oyun Grubu">O</div>
+        <div class="srv-icon" style="color:#23a55a">+</div>
+    </div>
 
-        <main class="chat-main">
-            <header class="chat-header"># genel</header>
-            <div class="messages" id="chat-box">
-                <div class="msg-card">
-                    <div class="avatar">G</div>
-                    <div class="msg-content">
-                        <div class="user-info">Gemini <span class="time">Bugün 13:30</span></div>
-                        <div class="text">Selam! Discord klonun hazır. Mesaj yazmaya başlayabilirsin!</div>
-                    </div>
+    <div class="channels-bar">
+        <div class="srv-title">Yazılım Dünyası ⌵</div>
+        <div class="channel-container">
+            <div class="cat-title">METİN KANALLARI</div>
+            <div class="item text active" onclick="ui.setChannel('genel')">genel</div>
+            <div class="item text" onclick="ui.setChannel('kod-paylasim')">kod-paylasim</div>
+            
+            <div class="cat-title">SESLİ KANALLAR</div>
+            <div class="item voice" onclick="ui.joinVoice(this)">Genel Ses</div>
+            <div class="item voice" onclick="ui.joinVoice(this)">Toplantı Odası</div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-nav" id="active-ch-name"># genel</div>
+        <div class="msg-list" id="msg-list">
+            <div class="msg-row">
+                <div class="avatar" style="background:#5865f2">G</div>
+                <div class="msg-body">
+                    <b>Gemini</b> <small>Bugün 13:45</small>
+                    <div>Gelişmiş sürümüne hoş geldin! Artık sağ tarafta arkadaş listesi var.</div>
                 </div>
             </div>
-            <div class="input-container">
-                <input type="text" id="msg-input" placeholder="#genel kanalına mesaj gönder">
-            </div>
-        </main>
+        </div>
+        <div class="input-wrapper">
+            <input type="text" class="input-field" id="chat-input" placeholder="Mesaj gönder...">
+        </div>
     </div>
-    <script src="script.js"></script>
-</body>
-</html>
-            document.getElementById('current-title').innerText = "Canlı Yayın";
-            document.getElementById('current-url').innerText = url;
 
-            if (Hls.isSupported()) {
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = url;
-                video.play();
+    <div class="members-bar">
+        <div class="cat-title">ÇEVRİMİÇİ — 2</div>
+        <div class="mem-item">
+            <div class="avatar" style="width:32px; height:32px; font-size:12px;">G</div>
+            <div class="status"></div>
+            <span>Gemini (Bot)</span>
+        </div>
+        <div class="mem-item">
+            <div class="avatar" style="width:32px; height:32px; font-size:12px; background:#23a55a">S</div>
+            <div class="status"></div>
+            <span>Sen</span>
+        </div>
+    </div>
+
+    <script>
+        const ui = {
+            input: document.getElementById('chat-input'),
+            list: document.getElementById('msg-list'),
+
+            // Mesaj Gönder
+            send: function(val) {
+                const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const id = "msg-" + Date.now();
+                const html = `
+                    <div class="msg-row" id="${id}">
+                        <div class="avatar" style="background:#23a55a">S</div>
+                        <div class="msg-body">
+                            <b>Sen</b> <small>Bugün ${now}</small>
+                            <div>${val}</div>
+                        </div>
+                        <button class="delete-btn" onclick="ui.deleteMsg('${id}')">Sil</button>
+                    </div>
+                `;
+                this.list.insertAdjacentHTML('beforeend', html);
+                this.list.scrollTop = this.list.scrollHeight;
+            },
+
+            deleteMsg: function(id) {
+                document.getElementById(id).remove();
+            },
+
+            setChannel: function(name) {
+                document.getElementById('active-ch-name').innerText = "# " + name;
+                document.querySelectorAll('.item').forEach(el => el.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+            },
+
+            joinVoice: function(el) {
+                alert(el.innerText + " kanalına bağlanılıyor... (Simülasyon)");
             }
-        }
+        };
 
-        function addNewLink() {
-            const input = document.getElementById('m3u8-input');
-            const url = input.value.trim();
-            
-            if (url && url.includes('m3u8')) {
-                const newItem = {
-                    url: url,
-                    date: new Date().toLocaleDateString()
-                };
-                
-                // Aynı link varsa tekrar ekleme
-                if(!history.some(h => h.url === url)) {
-                    history.unshift(newItem);
-                    if(history.length > 10) history.pop(); // Son 10 kaydı tut
-                    localStorage.setItem('stremio_history', JSON.stringify(history));
-                    renderHistory();
-                }
-                
-                playSource(url, "Yeni Yayın");
-                input.value = '';
-            } else {
-                alert("Lütfen geçerli bir .m3u8 linki girin!");
+        ui.input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && ui.input.value.trim() !== "") {
+                ui.send(ui.input.value);
+                ui.input.value = "";
             }
-        }
-
-        function deleteItem(index) {
-            history.splice(index, 1);
-            localStorage.setItem('stremio_history', JSON.stringify(history));
-            renderHistory();
-        }
-
-        function clearHistory() {
-            if(confirm("Tüm geçmişi silmek istediğine emin misin?")) {
-                history = [];
-                localStorage.removeItem('stremio_history');
-                renderHistory();
-            }
-        }
+        });
     </script>
 </body>
 </html>

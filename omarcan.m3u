@@ -47,8 +47,8 @@ https://rxnE77JupTdEYKE3TytvGQWYh.medya.trt.com.tr/master.m3u8
 #EXTINF:-1 tvg-id="ssport" tvg-name="S Sport" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://feo.kablowebtv.com/resize/168A635D265A4328C2883FB4CD8FF/0/0/Vod/HLS/f0f167c1-f2b1-41d0-9713-75c315820713.png" group-title="SSports",S Sport 1
 https://zeustv32321.info/s1/tracks-v1a1/mono.ts.m3u8
 
-#EXTINF:-1 tvg-id="ssport" tvg-name="S Sport 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://feo.kablowebtv.com/resize/168A635D265A4328C2883FB4CD8FF/0/0/Vod/HLS/80f415bc-60e4-4dd9-8dc6-6e51d88f6abb.png" group-title="SSports",S Sport 2
-#https://zeustv32321.info/s2/tracks-v1a1/mono.ts.m3u8
+#EXTINF:-1 tvg-id="ssport" tvg-name="S Sport" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://feo.kablowebtv.com/resize/168A635D265A4328C2883FB4CD8FF/0/0/Vod/HLS/f0f167c1-f2b1-41d0-9713-75c315820713.png" group-title="SSports",S Sport 2
+https://zeustv32321.info/s2/tracks-v1a1/mono.ts.m3u8
 
 #EXTINF:-1 tvg-id="ssport" tvg-name="S Sport Plus" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://i.hizliresim.com/qioouyh.png" group-title="SSports",S Sport Plus
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)

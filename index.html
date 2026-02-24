@@ -1,181 +1,825 @@
-<!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPTV Otomatik Kanal Listesi</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            background-color: #0b0b0b;
-            color: #efefef;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        .header {
-            background: #1a1a1a;
-            padding: 15px;
-            text-align: center;
-            border-bottom: 2px solid #e50914;
-        }
-        .container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-        .video-section {
-            flex: 3;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 20px;
-        }
-        video {
-            width: 100%;
-            max-height: 80vh;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        .playlist-section {
-            flex: 1;
-            background: #141414;
-            border-left: 1px solid #333;
-            display: flex;
-            flex-direction: column;
-        }
-        .playlist-header {
-            padding: 15px;
-            background: #1f1f1f;
-            font-weight: bold;
-            border-bottom: 1px solid #333;
-        }
-        #channelList {
-            overflow-y: auto;
-            flex: 1;
-        }
-        .channel-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #222;
-            transition: 0.2s;
-        }
-        .channel-item:hover { background: #2a2a2a; }
-        .channel-item.active { background: #333; border-left: 4px solid #e50914; }
-        .channel-item img {
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
-            object-fit: contain;
-            background: #fff;
-            border-radius: 4px;
-        }
-        .loading { padding: 20px; text-align: center; color: #888; }
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>90 Dakika - Canli Mac Yayinlari | HD Canli Mac Izle</title> 
+  <meta name="description" content="90 Dakika ile canli mac izle. HD kalitede futbol maclari, spor kanallari ve canli mac yayinlari. Ucretsiz canli yayin."> 
+  <meta name="keywords" content="90 dakika, canli mac, canli mac izle, mac izle, futbol, spor, hd mac izle, canli yayin, canli mac yayinlari"> 
+  <meta name="robots" content="index, follow"> 
+  <meta name="author" content="90 Dakika"> 
+  <link rel="canonical" href="https://90dakika1.online/"> 
+  <meta property="og:type" content="website"> 
+  <meta property="og:site_name" content="90 Dakika"> 
+  <meta property="og:title" content="90 Dakika - Canli Mac Yayinlari"> 
+  <meta property="og:description" content="90 Dakika ile canli mac izle. HD kalitede futbol maclari, spor kanallari ve canli mac yayinlari."> 
+  <meta property="og:image" content="https://90dakika1.online/90dakika-og.png"> 
+  <meta property="og:url" content="https://90dakika1.online/"> 
+  <meta property="og:locale" content="tr_TR"> 
+  <meta name="twitter:card" content="summary_large_image"> 
+  <meta name="twitter:site" content="@90dakika"> 
+  <meta name="twitter:title" content="90 Dakika - Canli Mac Yayinlari"> 
+  <meta name="twitter:description" content="90 Dakika ile canli mac izle. HD kalitede futbol maclari, spor kanallari ve canli mac yayinlari."> 
+  <meta name="twitter:image" content="https://90dakika1.online/90dakika-og.png"> 
+  <link rel="icon" type="image/x-icon" href="90dakika-logo.png?v=2"> 
+  <link id="dynamicFavicon" rel="icon" type="image/png" href="90dakika-logo.png?v=2"> 
+  <link rel="preconnect" href="https://fonts.googleapis.com"> 
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""> 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="css/style.css?v=10"> 
+  <!-- Yandex.Metrika counter --> 
+  <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106955665', 'ym');
 
-        @media (max-width: 768px) {
-            .container { flex-direction: column; }
-            .playlist-section { height: 300px; }
-        }
-    </style>
-</head>
-<body>
-
-<div class="header">
-    <h2>Canlı TV Oynatıcı</h2>
-</div>
-
-<div class="container">
-    <div class="video-section">
-        <video id="videoPlayer" controls autoplay></video>
-        <div id="currentTitle" style="margin-top:10px; color:#aaa;">Yayın seçiniz...</div>
-    </div>
-
-    <div class="playlist-section">
-        <div class="playlist-header">Kanallar</div>
-        <div id="channelList">
-            <div class="loading">Liste yükleniyor...</div>
+        ym(106955665, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+    </script> 
+  <noscript>
+   &lt;div&gt;&lt;img src="https://mc.yandex.ru/watch/106955665" style="position:absolute; left:-9999px;" alt=""&gt;
+  </noscript> 
+  <!-- /Yandex.Metrika counter --> 
+ </head> 
+ <body> 
+  <header class="header"> 
+   <div class="header-container"> 
+    <a href="/" class="logo" id="headerLogo"> <img src="/site-logo.png?v=2" alt="90 Dakika" style="height: 45px; max-width: 200px; object-fit: contain;"> </a> 
+    <nav class="nav-menu"> 
+     <a href="/" class="nav-item active"> 
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path> 
+       <polyline points="9 22 9 12 15 12 15 22"></polyline> 
+      </svg> <span>ANA SAYFA</span> </a> 
+     <a href="/channels" class="nav-item"> 
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+       <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect> 
+       <polyline points="17 2 12 7 7 2"></polyline> 
+      </svg> <span>CANLI TV</span> </a> 
+     <a href="/matches" class="nav-item"> 
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+       <circle cx="12" cy="12" r="10"></circle> 
+       <path d="M12 6v6l4 2"></path> 
+      </svg> <span>MACLAR</span> </a> 
+     <a href="#" class="nav-item"> 
+      <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path> 
+      </svg> <span>BIZE ULASIN</span> </a> 
+    </nav> 
+    <button class="mobile-menu-btn"> 
+     <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+      <line x1="3" y1="12" x2="21" y2="12"></line> 
+      <line x1="3" y1="6" x2="21" y2="6"></line> 
+      <line x1="3" y1="18" x2="21" y2="18"></line> 
+     </svg> </button> 
+   </div> 
+  </header> 
+  <main class="main-content"> 
+   <div class="content-wrapper"> 
+    <section class="video-section"> 
+     <div class="video-container"> 
+      <div class="video-player" id="videoPlayer"> 
+       <div class="video-placeholder" id="videoPlaceholder"> 
+        <svg width="80" height="80" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"> 
+         <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon> 
+        </svg> 
+        <p>Mac secmek icin sag taraftaki listeden bir mac secin</p> 
+       </div> 
+       <video id="hlsPlayer" playsinline=""></video> 
+       <div id="watermarkContainer" class="watermark-container"></div> 
+       <div class="player-controls" id="playerControls"> 
+        <div class="progress-bar" id="progressBar"> 
+         <div class="progress-filled" id="progressFilled"></div> 
+         <div class="progress-buffered" id="progressBuffered"></div> 
+        </div> 
+        <div class="controls-row"> 
+         <div class="controls-left"> 
+          <button class="player-btn" id="playPauseBtn"> 
+           <svg class="play-icon" width="24" height="24" viewbox="0 0 24 24" fill="currentColor"> 
+            <polygon points="5 3 19 12 5 21 5 3"></polygon> 
+           </svg> 
+           <svg class="pause-icon" width="24" height="24" viewbox="0 0 24 24" fill="currentColor" style="display:none;"> 
+            <rect x="6" y="4" width="4" height="16"></rect> 
+            <rect x="14" y="4" width="4" height="16"></rect> 
+           </svg> </button> 
+          <button class="player-btn" id="muteBtn"> 
+           <svg class="volume-icon" width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon> 
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path> 
+           </svg> 
+           <svg class="mute-icon" width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"> 
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon> 
+            <line x1="23" y1="9" x2="17" y2="15"></line> 
+            <line x1="17" y1="9" x2="23" y2="15"></line> 
+           </svg> </button> 
+          <div class="volume-slider-wrapper"> 
+           <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100"> 
+          </div> 
+          <span class="time-display" id="timeDisplay">CANLI</span> 
+         </div> 
+         <div class="controls-right"> 
+          <button class="player-btn" id="pipBtn" title="Pencere icinde Pencere"> 
+           <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+            <rect x="2" y="3" width="20" height="14" rx="2"></rect> 
+            <rect x="12" y="9" width="8" height="6" rx="1" fill="currentColor"></rect> 
+           </svg> </button> 
+          <button class="player-btn" id="fullscreenPlayerBtn" title="Tam Ekran"> 
+           <svg class="fs-enter" width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+            <polyline points="15 3 21 3 21 9"></polyline> 
+            <polyline points="9 21 3 21 3 15"></polyline> 
+            <polyline points="21 15 21 21 15 21"></polyline> 
+            <polyline points="3 9 3 3 9 3"></polyline> 
+           </svg> 
+           <svg class="fs-exit" width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"> 
+            <polyline points="4 14 10 14 10 20"></polyline> 
+            <polyline points="20 10 14 10 14 4"></polyline> 
+            <polyline points="14 20 14 14 20 14"></polyline> 
+            <polyline points="10 4 10 10 4 10"></polyline> 
+           </svg> </button> 
+         </div> 
+        </div> 
+       </div> 
+       <div class="player-overlay" id="playerOverlay"> 
+        <button class="big-play-btn" id="bigPlayBtn"> 
+         <svg width="60" height="60" viewbox="0 0 24 24" fill="currentColor"> 
+          <polygon points="5 3 19 12 5 21 5 3"></polygon> 
+         </svg> </button> 
+       </div> 
+       <div class="loading-spinner" id="loadingSpinner"> 
+        <div class="spinner"></div> 
+       </div> 
+       <div id="prerollAdOverlay" class="preroll-ad-overlay hidden"> 
+        <video id="prerollAdVideo" class="preroll-video" playsinline=""></video> 
+        <div id="adCountdownBadge" class="ad-countdown-badge"> 
+         <span>Reklam</span> 
+         <span id="adCountdownTimer">5</span> 
+        </div> 
+        <button id="skipAdBtn" class="skip-ad-btn hidden"> Reklami Gec 
+         <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+          <polyline points="13 17 18 12 13 7"></polyline> 
+          <polyline points="6 17 11 12 6 7"></polyline> 
+         </svg> </button> 
+       </div> 
+      </div> 
+      <div class="video-controls"> 
+       <div class="now-playing" id="nowPlaying"> 
+        <span class="live-badge">CANLI</span> 
+        <span class="match-title">Mac secilmedi</span> 
+       </div> 
+      </div> 
+      <div class="promo-bar"> 
+       <span class="promo-text">TÜRKİYEDE TEK 100₺ HAVALE YATIRIM, 500 FREESPIN 90 Dakika'da SİZLERİ BEKLİYOR. TIKLA ÜYE OL!</span> 
+      </div> 
+     </div> 
+    </section> 
+    <aside class="sidebar"> 
+     <div class="sidebar-tabs"> 
+      <button class="tab-btn active" data-tab="matches">MAÇLAR</button> 
+      <button class="tab-btn" data-tab="channels">KANALLAR</button> 
+     </div> 
+     <div class="search-box"> 
+      <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+       <circle cx="11" cy="11" r="8"></circle> 
+       <line x1="21" y1="21" x2="16.65" y2="16.65"></line> 
+      </svg> 
+      <input type="text" id="searchInput" placeholder="Kanal veya mac ara..."> 
+     </div> 
+     <div class="tab-content active" id="matches-content"> 
+      <div class="match-list-container" id="matchList">
+       <div class="match-card " data-match-id="84">
+        <div class="match-card-body">
+         <div class="match-left-section">
+          <div class="team-logo-box">
+           <img src="https://90dakika1.online/uploads/logos/1771669329_060cbe19ad2f34c98ff4.png" alt="B. Leverkusen" class="team-logo-img">
+          </div>
+         </div>
+         <div class="match-center-section">
+          <div class="match-teams-row">
+           <span>B. Leverkusen</span>
+           <span style="color: var(--text-secondary);">-</span>
+           <span>Olympiakos</span>
+          </div>
+          <div class="match-live-badge-center">
+           CANLI
+          </div>
+         </div>
+         <div class="match-right-section">
+          <div class="team-logo-box">
+           <img src="https://90dakika1.online/uploads/logos/1771940093_3d536c1a2983884a8808.png" alt="Olympiakos" class="team-logo-img">
+          </div>
+         </div>
         </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-<script>
-    const m3uUrl = 'https://raw.githubusercontent.com/LarcivertSports/omercan/refs/heads/main/omarcan.m3u';
-    const video = document.getElementById('videoPlayer');
-    const channelListContainer = document.getElementById('channelList');
-    const currentTitle = document.getElementById('currentTitle');
-    let hls = new Hls();
-
-    async function fetchPlaylist() {
-        try {
-            const response = await fetch(m3uUrl);
-            const data = await response.text();
-            parseM3U(data);
-        } catch (error) {
-            channelListContainer.innerHTML = '<div class="loading">Liste yüklenemedi! (CORS hatası olabilir)</div>';
-        }
-    }
-
-    function parseM3U(content) {
-        const lines = content.split('\n');
-        channelListContainer.innerHTML = '';
-        let currentChannel = {};
-
-        lines.forEach(line => {
-            line = line.trim();
-            if (line.startsWith('#EXTINF:')) {
-                // Kanal adını ve logoyu ayıkla
-                const nameMatch = line.split(',').pop();
-                const logoMatch = line.match(/tvg-logo="([^"]+)"/);
-                
-                currentChannel.name = nameMatch || "Bilinmeyen Kanal";
-                currentChannel.logo = logoMatch ? logoMatch[1] : 'https://via.placeholder.com/40?text=TV';
-            } else if (line.startsWith('http')) {
-                currentChannel.url = line;
-                createChannelElement(currentChannel);
-                currentChannel = {}; // Objeyi sıfırla
-            }
-        });
-    }
-
-    function createChannelElement(channel) {
-        const div = document.createElement('div');
-        div.className = 'channel-item';
-        div.innerHTML = `
-            <img src="${channel.logo}" onerror="this.src='https://via.placeholder.com/40?text=TV'">
-            <span>${channel.name}</span>
-        `;
-        div.onclick = () => playChannel(channel.url, channel.name, div);
-        channelListContainer.appendChild(div);
-    }
-
-    function playChannel(url, name, element) {
-        document.querySelectorAll('.channel-item').forEach(el => el.classList.remove('active'));
-        element.classList.add('active');
-        currentTitle.innerText = "Oynatılıyor: " + name;
-
-        if (Hls.isSupported()) {
-            hls.destroy();
-            hls = new Hls();
-            hls.loadSource(url);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = url;
-            video.play();
-        }
-    }
-
-    // Başlat
-    fetchPlaylist();
-</script>
-
-</body>
-</html>
- 
+        <div class="match-card-footer">
+         <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+          <polyline points="17 2 12 7 7 2"></polyline>
+         </svg>
+         <span class="channel-info">TABİİ 1</span>
+        </div>
+       </div>
+       <div class="match-card " data-match-id="85">
+        <div class="match-card-body">
+         <div class="match-left-section">
+          <div class="team-logo-box">
+           <img src="https://90dakika1.online/uploads/logos/1771668577_9c63bab0ccd29376edfc.png" alt="Inter" class="team-logo-img">
+          </div>
+         </div>
+         <div class="match-center-section">
+          <div class="match-teams-row">
+           <span>Inter</span>
+           <span style="color: var(--text-secondary);">-</span>
+           <span>Bodo/Glimt</span>
+          </div>
+          <div class="match-live-badge-center">
+           CANLI
+          </div>
+         </div>
+         <div class="match-right-section">
+          <div class="team-logo-box">
+           <img src="https://90dakika1.online/uploads/logos/1771940155_f6fa15e63382bd61f3e0.png" alt="Bodo/Glimt" class="team-logo-img">
+          </div>
+         </div>
+        </div>
+        <div class="match-card-footer">
+         <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+          <polyline points="17 2 12 7 7 2"></polyline>
+         </svg>
+         <span class="channel-info">TABİİ </span>
+        </div>
+       </div>
+       <div class="match-card " data-match-id="86">
+        <div class="match-card-body">
+         <div class="match-left-section">
+          <div class="team-logo-box">
+           <img src="https://90dakika1.online/uploads/logos/1771624827_903ed48900f4537fb8dc.png" alt="Newcastle" class="team-logo-img">
+          </div>
+         </div>
+         <div class="match-center-section">
+          <div class="match-teams-row">
+           <span>Newcastle</span>
+           <span style="color: var(--text-secondary);">-</span>
+           <span>Karabağ</span>
+          </div>
+          <div class="match-live-badge-center">
+           CANLI
+          </div>
+         </div>
+         <div class="match-right-section">
+          <div class="team-logo-box">
+           <img src="https://90dakika1.online/uploads/logos/1771940188_f732e98358bae74f6c92.png" alt="Karabağ" class="team-logo-img">
+          </div>
+         </div>
+        </div>
+        <div class="match-card-footer">
+         <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+          <polyline points="17 2 12 7 7 2"></polyline>
+         </svg>
+         <span class="channel-info">TABİİ 2</span>
+        </div>
+       </div>
+       <div class="match-card " data-match-id="89">
+        <div class="match-card-body">
+         <div class="match-left-section">
+          <div class="team-logo-box">
+           <img src="https://90dakika1.online/uploads/logos/1771940414_e2723f63851239ff580b.png" alt="Southampton" class="team-logo-img">
+          </div>
+         </div>
+         <div class="match-center-section">
+          <div class="match-teams-row">
+           <span>Southampton</span>
+           <span style="color: var(--text-secondary);">-</span>
+           <span>QPR</span>
+          </div>
+          <div class="match-live-badge-center">
+           CANLI
+          </div>
+         </div>
+         <div class="match-right-section">
+          <div class="team-logo-box">
+           <img src="https://90dakika1.online/uploads/logos/1771940414_40e8f582e5c7e3323d11.png" alt="QPR" class="team-logo-img">
+          </div>
+         </div>
+        </div>
+        <div class="match-card-footer">
+         <svg width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+          <polyline points="17 2 12 7 7 2"></polyline>
+         </svg>
+         <span class="channel-info">EXXEN 1</span>
+        </div>
+       </div>
+      </div> 
+     </div> 
+     <div class="tab-content" id="channels-content"> 
+      <div class="channel-list" id="channelList">
+       <div class="ch-row" data-channel-id="1">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">beIN SPORTS 1</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771506370_7bf5b25371f80d5b3bf6.png" alt="beIN SPORTS 1" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="2">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">beIN SPORTS 2</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771506388_d393463837d172cb7a56.png" alt="beIN SPORTS 2" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="3">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">beIN SPORTS 3</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771506399_f1e32d2e69d95b9964fd.png" alt="beIN SPORTS 3" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="9">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">beIN SPORTS 4 </span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771506646_5013e3c468efef3623d9.png" alt="beIN SPORTS 4	" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="10">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">beIN SPORTS 5 </span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771506676_63c1e6ce559a92bf3922.png" alt="beIN SPORTS 5	" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="11">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">beIN SPORTS HD MAX 1</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771506974_406b4b8c5c77edfdcdad.png" alt="beIN SPORTS HD MAX 1" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="12">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">beIN SPORTS HD MAX 2</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507073_40f2ad00de2eea49345c.png" alt="beIN SPORTS HD MAX 2" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="13">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">EXXEN 1</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507445_c731d518b66cb7a371f8.png" alt="EXXEN 1" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="14">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">EXXEN 2</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507486_64ac1b5cbed38a46f45f.png" alt="EXXEN 2" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="15">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">EXXEN 3</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507534_bebbc2902a04b336a2aa.png" alt="EXXEN 3" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="16">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">EXXEN 4</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507579_d2064f049a4783c204b9.png" alt="EXXEN 4" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="17">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">EXXEN 5</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507607_edb209e9737d94638bf6.png" alt="EXXEN 5" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="18">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">SMART SPOR 1</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507693_a88efe88e819a8747b60.png" alt="SMART SPOR 1" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="19">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">SMART SPOR 2</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507757_b61a11dd0c3013acf67f.png" alt="SMART SPOR 2" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="5">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">S SPORT</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771506425_ade37e84cad0034455ee.png" alt="S SPORT" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="20">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">S SPORT 2</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507835_5560ec580fdd7d29857c.png" alt="S SPORT 2" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="8">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">S SPORT +</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771506513_54418023946e8ced514f.png" alt="S SPORT +" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="21">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TABİİ </span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507936_5cb329c6f78daa81c881.png" alt="TABİİ " class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="30">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TABİİ 1</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771522449_2d53f076ad3813ea8025.png" alt="TABİİ 1" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="22">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TABİİ 2</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771507976_7d69793bd8efeef2b4be.png" alt="TABİİ 2" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="23">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TABİİ 3</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771508004_0044057baf985b16c549.png" alt="TABİİ 3" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="24">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TABİİ 4</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771508023_707497139408fafcacd3.png" alt="TABİİ 4" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="25">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TABİİ 5</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771508038_c8a51c49233d49120006.png" alt="TABİİ 5" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="26">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TİVİBUSPOR</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771508116_f96e4569ca46a7c5060f.png" alt="TİVİBUSPOR" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="27">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TİVİBUSPOR 2</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771508155_ecd1bed7b5a5a851d66b.png" alt="TİVİBUSPOR 2" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="31">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TİVİBUSPOR 3</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771668999_d55939b2a8b4baf41e06.png" alt="TİVİBUSPOR 3" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="32">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TİVİBUSPOR 4</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771669105_1c31e211bc2746e04621.png" alt="TİVİBUSPOR 4" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="7">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">A SPOR</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771506345_8d1c677e3471f5e0cf2d.png" alt="A SPOR" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+       <div class="ch-row" data-channel-id="29">
+        <div class="ch-row-play">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+         </svg>
+        </div>
+        <span class="ch-row-name">TRT SPOR</span>
+        <div class="ch-row-right">
+         <img src="https://90dakika1.online/uploads/logos/1771508291_34736318ce5e31ceedc9.png" alt="TRT SPOR" class="ch-row-logo">
+         <span class="ch-row-live">CANLI</span>
+        </div>
+       </div>
+      </div> 
+     </div> 
+    </aside> 
+   </div> 
+  </main> 
+  <div id="mobileMenuOverlay" class="mobile-menu-overlay"></div> 
+  <aside id="mobileSlideMenu" class="mobile-slide-menu"> 
+   <div class="mobile-menu-header"> 
+    <a href="/" class="mobile-menu-logo"> <img src="/site-logo.png?v=2" alt="90 Dakika" style="height: 36px; max-width: 160px; object-fit: contain;"> </a> 
+    <button id="mobileMenuClose" class="mobile-menu-close"> 
+     <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+      <line x1="18" y1="6" x2="6" y2="18"></line> 
+      <line x1="6" y1="6" x2="18" y2="18"></line> 
+     </svg> </button> 
+   </div> 
+   <nav class="mobile-menu-nav"> 
+    <a href="/" class="mobile-menu-item active"> 
+     <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path> 
+      <polyline points="9 22 9 12 15 12 15 22"></polyline> 
+     </svg> <span>Ana Sayfa</span> </a> 
+    <a href="/channels" class="mobile-menu-item"> 
+     <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+      <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect> 
+      <polyline points="17 2 12 7 7 2"></polyline> 
+     </svg> <span>Canli TV</span> </a> 
+    <a href="/matches" class="mobile-menu-item"> 
+     <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+      <circle cx="12" cy="12" r="10"></circle> 
+      <path d="M12 6v6l4 2"></path> 
+     </svg> <span>Maclar</span> </a> 
+    <a href="#" class="mobile-menu-item"> 
+     <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path> 
+     </svg> <span>Bize Ulasin</span> </a> 
+   </nav> 
+  </aside> 
+  <div class="popup-modal-overlay active" id="popupModalOverlay"> 
+   <div class="popup-modal-container"> 
+    <button class="popup-modal-close" id="popupModalClose"> 
+     <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+      <line x1="18" y1="6" x2="6" y2="18"></line> 
+      <line x1="6" y1="6" x2="18" y2="18"></line> 
+     </svg> </button> 
+    <a href="https://t2m.io/AvvabetResmi" target="_blank" id="popupModalLink"> <img id="popupModalBanner" src="https://90dakika1.online/uploads/modals/1771515447_510852aa6ec978022947.webp" alt="Popup Banner"> </a> 
+    <a href="https://t2m.io/AvvabetResmi" target="_blank" id="popupRegisterBtn" class="popup-register-btn" style=""> HEMEN KAYIT OL </a> 
+   </div> 
+  </div> 
+  <footer class="footer"> 
+   <div class="footer-container"> 
+    <div class="footer-section"> 
+     <h3 class="footer-title">90 Dakika</h3> 
+     <p class="footer-desc">Guncel adresimiz https://90dakika1.online</p> 
+    </div> 
+    <div class="footer-section"> 
+     <h4 class="footer-heading">HIZLI LİNKLER</h4> 
+     <ul class="footer-links"> 
+      <li><a href="#">Ana Sayfa</a></li> 
+      <li><a href="#">Canlı Maçlar</a></li> 
+     </ul> 
+    </div> 
+    <div class="footer-section"> 
+     <h4 class="footer-heading">SPONSOR SİTELER</h4> 
+     <ul class="footer-links"> 
+      <li><a href="#">90 Dakika</a></li> 
+      <li><a href="#">Rakewin</a></li> 
+     </ul> 
+    </div> 
+    <div class="footer-section"> 
+     <h4 class="footer-heading">TAKİP EDİN</h4> 
+     <div class="footer-social"> 
+      <a href="#" class="social-icon"> 
+       <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor"> 
+        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path> 
+       </svg> </a> 
+      <a href="#" class="social-icon"> 
+       <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor"> 
+        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"></path> 
+       </svg> </a> 
+      <a href="#" class="social-icon"> 
+       <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor"> 
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path> 
+       </svg> </a> 
+      <a href="#" class="social-icon"> 
+       <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor"> 
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path> 
+       </svg> </a> 
+      <a href="#" class="social-icon"> 
+       <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor"> 
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"></path> 
+       </svg> </a> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="footer-bottom"> 
+    <div class="footer-bottom-container"> 
+     <div class="age-badge">
+      +18
+     </div> 
+     <p class="footer-disclaimer">Bu site 18 yaş üzeri kullanıcılar içindir</p> 
+    </div> 
+    <p class="footer-warning">Bu platform sadece eğlence amaçlıdır. Bahis oynamak bağımlılık yapabilir. Sorumlu oyun oynayın. Tüm hakları saklıdır.</p> 
+   </div> 
+  </footer> 
+  <nav class="mobile-bottom-nav"> 
+   <a href="/" class="bottom-nav-item active" data-nav="home"> 
+    <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path> 
+     <polyline points="9 22 9 12 15 12 15 22"></polyline> 
+    </svg> <span>Ana Sayfa</span> </a> 
+   <a href="/channels" class="bottom-nav-item" data-nav="live"> 
+    <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+     <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect> 
+     <polyline points="17 2 12 7 7 2"></polyline> 
+    </svg> <span>Canlı TV</span> </a> 
+   <a href="/" class="bottom-nav-item bottom-nav-logo" data-nav="logo"> 
+    <div class="bottom-nav-logo-circle"> 
+     <img id="bottomNavLogo" src="90dakika-logo.png?v=2" alt="90 Dakika Logo"> 
+    </div> </a> 
+   <a href="/matches" class="bottom-nav-item" data-nav="matches"> 
+    <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+     <circle cx="12" cy="12" r="10"></circle> 
+     <path d="M12 6v6l4 2"></path> 
+    </svg> <span>Maclar</span> </a> 
+   <a href="#" class="bottom-nav-item" data-nav="contact"> 
+    <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path> 
+    </svg> <span>Bize Ulaşın</span> </a> 
+  </nav> 
+ </body>
+              </html>

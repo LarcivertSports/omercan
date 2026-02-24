@@ -3,202 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Ultimate Edition</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.js"></script>
+    <title>IPTV Otomatik Kanal Listesi</title>
     <style>
-        :root {
-            --brand: #5865f2; --brand-hover: #4752c4;
-            --bg-tertiary: #1e1f22; --bg-secondary: #2b2d31; --bg-primary: #313338;
-            --text-normal: #dbdee1; --text-muted: #949ba4; --header-primary: #ffffff;
-            --online: #23a55a; --dnd: #f23f43; --idle: #f0b232;
+        * { box-sizing: border-box; }
+        body {
+            background-color: #0b0b0b;
+            color: #efefef;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
+        .header {
+            background: #1a1a1a;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid #e50914;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .video-section {
+            flex: 3;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+        }
+        video {
+            width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .playlist-section {
+            flex: 1;
+            background: #141414;
+            border-left: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+        .playlist-header {
+            padding: 15px;
+            background: #1f1f1f;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+        }
+        #channelList {
+            overflow-y: auto;
+            flex: 1;
+        }
+        .channel-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #222;
+            transition: 0.2s;
+        }
+        .channel-item:hover { background: #2a2a2a; }
+        .channel-item.active { background: #333; border-left: 4px solid #e50914; }
+        .channel-item img {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 4px;
+        }
+        .loading { padding: 20px; text-align: center; color: #888; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'gg sans', 'Whitney', sans-serif; }
-        body { background: var(--bg-tertiary); color: var(--text-normal); height: 100vh; display: flex; overflow: hidden; }
-
-        /* 1. SÜTUN: SUNUCU LİSTESİ */
-        .server-rail { width: 72px; background: var(--bg-tertiary); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 8px; flex-shrink: 0; }
-        .server-item { width: 48px; height: 48px; border-radius: 50%; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s all; position: relative; color: var(--text-normal); }
-        .server-item:hover { border-radius: 16px; background: var(--brand); color: white; }
-        .server-item.active { border-radius: 16px; background: var(--brand); color: white; }
-        .server-item.active::before { content: ""; position: absolute; left: -12px; width: 4px; height: 40px; background: white; border-radius: 0 4px 4px 0; }
-        .pill-divider { width: 32px; height: 2px; background: #35363c; border-radius: 1px; }
-
-        /* 2. SÜTUN: KANAL LİSTESİ */
-        .sidebar { width: 240px; background: var(--bg-secondary); display: flex; flex-direction: column; flex-shrink: 0; }
-        .sidebar-header { height: 48px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; font-weight: bold; box-shadow: 0 1px 0 rgba(0,0,0,0.2); cursor: pointer; color: var(--header-primary); }
-        .channel-scroller { flex: 1; overflow-y: auto; padding: 12px 8px; }
-        .category-header { font-size: 12px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; margin-top: 16px; cursor: pointer; }
-        .category-header i { width: 12px; margin-right: 4px; }
-        .channel-row { height: 34px; padding: 0 8px; margin: 2px 0; display: flex; align-items: center; border-radius: 4px; cursor: pointer; color: var(--text-muted); }
-        .channel-row:hover { background: rgba(255,255,255,0.05); color: var(--text-normal); }
-        .channel-row.active { background: rgba(255,255,255,0.1); color: white; }
-        .channel-row svg { margin-right: 6px; width: 18px; color: var(--text-muted); }
-
-        /* ALT KULLANICI PANELİ */
-        .user-panel { height: 52px; background: #232428; padding: 0 8px; display: flex; align-items: center; gap: 8px; }
-        .avatar-wrapper { position: relative; cursor: pointer; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
-        .status-indicator { position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; border: 3px solid #232428; background: var(--online); }
-        .user-meta { flex: 1; font-size: 13px; line-height: 1.2; }
-        .user-meta b { color: var(--header-primary); display: block; }
-        .user-controls { display: flex; color: var(--text-muted); gap: 4px; }
-        .icon-btn { padding: 4px; border-radius: 4px; cursor: pointer; }
-        .icon-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-normal); }
-
-        /* 3. SÜTUN: CHAT ALANI */
-        .main-chat { flex: 1; display: flex; flex-direction: column; background: var(--bg-primary); }
-        .chat-header { height: 48px; padding: 0 16px; display: flex; align-items: center; font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.2); }
-        .chat-header i { color: var(--text-muted); margin-right: 8px; }
-        .message-area { flex: 1; overflow-y: auto; padding: 20px 0; }
-        .message-group { padding: 8px 16px; display: flex; gap: 16px; transition: 0.1s; position: relative; }
-        .message-group:hover { background: rgba(0,0,0,0.05); }
-        .msg-content { flex: 1; }
-        .msg-content .name { font-weight: 500; color: white; margin-right: 8px; cursor: pointer; }
-        .msg-content .name:hover { text-decoration: underline; }
-        .msg-content .timestamp { font-size: 12px; color: var(--text-muted); }
-        .msg-content .text { margin-top: 2px; color: #dbdee1; line-height: 1.4; }
-
-        /* GİRİŞ ALANI */
-        .chat-input-area { padding: 0 16px 24px; }
-        .input-box-wrapper { background: #383a40; border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
-        .attach-btn { color: var(--text-muted); cursor: pointer; }
-        .attach-btn:hover { color: var(--text-normal); }
-        .input-box-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 15px; }
-
-        /* 4. SÜTUN: ÜYE LİSTESİ */
-        .member-list { width: 240px; background: var(--bg-secondary); padding: 12px 8px; flex-shrink: 0; }
-        .member-group { font-size: 12px; font-weight: 700; color: var(--text-muted); padding: 12px 8px 4px; }
-        .member-row { display: flex; align-items: center; gap: 12px; padding: 6px 8px; border-radius: 4px; cursor: pointer; opacity: 0.7; }
-        .member-row:hover { background: rgba(255,255,255,0.05); opacity: 1; }
-        .member-row.online { opacity: 1; }
-
-        /* RESPONSIVE */
-        @media (max-width: 900px) { .member-list { display: none; } }
-        @media (max-width: 600px) { .sidebar { display: none; } }
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .playlist-section { height: 300px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="server-rail">
-        <div class="server-item"><i data-lucide="message-square"></i></div>
-        <div class="pill-divider"></div>
-        <div class="server-item active">H</div>
-        <div class="server-item">JS</div>
-        <div class="server-item">PY</div>
-        <div class="server-item" style="color:var(--online)"><i data-lucide="plus"></i></div>
+<div class="header">
+    <h2>Canlı TV Oynatıcı</h2>
+</div>
+
+<div class="container">
+    <div class="video-section">
+        <video id="videoPlayer" controls autoplay></video>
+        <div id="currentTitle" style="margin-top:10px; color:#aaa;">Yayın seçiniz...</div>
     </div>
 
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <span>Hepsijet İzmir</span>
-            <i data-lucide="chevron-down" size="18"></i>
-        </div>
-        <div class="channel-scroller">
-            <div class="category-header"><i data-lucide="chevron-down"></i> METİN KANALLARI</div>
-            <div class="channel-row active" onclick="ui.changeChannel('genel')"><i data-lucide="hash"></i> genel</div>
-            <div class="channel-row" onclick="ui.changeChannel('lojistik')"><i data-lucide="hash"></i> lojistik-takip</div>
-            <div class="channel-row" onclick="ui.changeChannel('duyurular')"><i data-lucide="hash"></i> duyurular</div>
-
-            <div class="category-header"><i data-lucide="chevron-down"></i> SESLİ KANALLAR</div>
-            <div class="channel-row"><i data-lucide="volume-2"></i> Mola Odası</div>
-            <div class="channel-row"><i data-lucide="volume-2"></i> Toplantı #1</div>
-        </div>
-        <div class="user-panel">
-            <div class="avatar-wrapper" onclick="ui.toggleStatus()">
-                <div class="user-avatar">S</div>
-                <div class="status-indicator" id="my-status"></div>
-            </div>
-            <div class="user-meta">
-                <b>User_2026</b>
-                <span style="color:var(--text-muted); font-size:11px;">Çevrimiçi</span>
-            </div>
-            <div class="user-controls">
-                <div class="icon-btn"><i data-lucide="mic" size="18"></i></div>
-                <div class="icon-btn"><i data-lucide="headphones" size="18"></i></div>
-                <div class="icon-btn"><i data-lucide="settings" size="18"></i></div>
-            </div>
+    <div class="playlist-section">
+        <div class="playlist-header">Kanallar</div>
+        <div id="channelList">
+            <div class="loading">Liste yükleniyor...</div>
         </div>
     </div>
+</div>
 
-    <main class="main-chat">
-        <div class="chat-header">
-            <i data-lucide="hash"></i> <span id="ch-title">genel</span>
-        </div>
-        <div class="message-area" id="msg-container">
-            <div class="message-group">
-                <div class="user-avatar" style="background:#f23f43">G</div>
-                <div class="msg-content">
-                    <span class="name">Gemini</span>
-                    <span class="timestamp">Bugün 13:34</span>
-                    <div class="text">Bu sistem şu an tamamen senin için özel olarak geliştirildi. HTML/CSS sınırlarını zorlayan bir yapı! 🚀</div>
-                </div>
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <div class="input-box-wrapper">
-                <div class="attach-btn"><i data-lucide="plus-circle"></i></div>
-                <input type="text" id="main-input" placeholder="#genel kanalına mesaj gönder">
-                <div class="icon-btn"><i data-lucide="smile"></i></div>
-            </div>
-        </div>
-    </main>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-    <div class="member-list">
-        <div class="member-group">ÇEVRİMİÇİ — 2</div>
-        <div class="member-row online">
-            <div class="user-avatar" style="width:32px; height:32px; background:var(--brand)">G</div>
-            <span>Gemini Bot</span>
-        </div>
-        <div class="member-row online">
-            <div class="user-avatar" style="width:32px; height:32px; background:var(--online)">S</div>
-            <span>Sen</span>
-        </div>
-    </div>
+<script>
+    const m3uUrl = 'https://raw.githubusercontent.com/LarcivertSports/omercan/refs/heads/main/omarcan.m3u';
+    const video = document.getElementById('videoPlayer');
+    const channelListContainer = document.getElementById('channelList');
+    const currentTitle = document.getElementById('currentTitle');
+    let hls = new Hls();
 
-    <script>
-        // İkonları Başlat
-        lucide.createIcons();
+    async function fetchPlaylist() {
+        try {
+            const response = await fetch(m3uUrl);
+            const data = await response.text();
+            parseM3U(data);
+        } catch (error) {
+            channelListContainer.innerHTML = '<div class="loading">Liste yüklenemedi! (CORS hatası olabilir)</div>';
+        }
+    }
 
-        const ui = {
-            input: document.getElementById('main-input'),
-            container: document.getElementById('msg-container'),
-            statusIdx: 0,
-            statuses: ['#23a55a', '#f23f43', '#f0b232', '#747f8d'], // online, dnd, idle, offline
+    function parseM3U(content) {
+        const lines = content.split('\n');
+        channelListContainer.innerHTML = '';
+        let currentChannel = {};
 
-            send: function() {
-                if(this.input.value.trim() === "") return;
-                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const html = `
-                    <div class="message-group">
-                        <div class="user-avatar" style="background:#23a55a">S</div>
-                        <div class="msg-content">
-                            <span class="name">Sen</span>
-                            <span class="timestamp">Bugün ${time}</span>
-                            <div class="text">${this.input.value}</div>
-                        </div>
-                    </div>
-                `;
-                this.container.insertAdjacentHTML('beforeend', html);
-                this.input.value = "";
-                this.container.scrollTop = this.container.scrollHeight;
-            },
-
-            changeChannel: function(name) {
-                document.getElementById('ch-title').innerText = name;
-                document.querySelectorAll('.channel-row').forEach(el => el.classList.remove('active'));
-                event.currentTarget.classList.add('active');
-            },
-
-            toggleStatus: function() {
-                this.statusIdx = (this.statusIdx + 1) % this.statuses.length;
-                document.getElementById('my-status').style.background = this.statuses[this.statusIdx];
+        lines.forEach(line => {
+            line = line.trim();
+            if (line.startsWith('#EXTINF:')) {
+                // Kanal adını ve logoyu ayıkla
+                const nameMatch = line.split(',').pop();
+                const logoMatch = line.match(/tvg-logo="([^"]+)"/);
+                
+                currentChannel.name = nameMatch || "Bilinmeyen Kanal";
+                currentChannel.logo = logoMatch ? logoMatch[1] : 'https://via.placeholder.com/40?text=TV';
+            } else if (line.startsWith('http')) {
+                currentChannel.url = line;
+                createChannelElement(currentChannel);
+                currentChannel = {}; // Objeyi sıfırla
             }
-        };
-
-        ui.input.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') ui.send();
         });
-    </script>
+    }
+
+    function createChannelElement(channel) {
+        const div = document.createElement('div');
+        div.className = 'channel-item';
+        div.innerHTML = `
+            <img src="${channel.logo}" onerror="this.src='https://via.placeholder.com/40?text=TV'">
+            <span>${channel.name}</span>
+        `;
+        div.onclick = () => playChannel(channel.url, channel.name, div);
+        channelListContainer.appendChild(div);
+    }
+
+    function playChannel(url, name, element) {
+        document.querySelectorAll('.channel-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        currentTitle.innerText = "Oynatılıyor: " + name;
+
+        if (Hls.isSupported()) {
+            hls.destroy();
+            hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = url;
+            video.play();
+        }
+    }
+
+    // Başlat
+    fetchPlaylist();
+</script>
+
 </body>
 </html>
+ 

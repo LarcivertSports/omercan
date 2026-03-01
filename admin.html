@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canlı Yönetim Paneli - TV</title>
+    <style>
+        :root { --main-red: #e50914; --bg: #000; --panel-bg: #141414; }
+        body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); color: white; overflow: hidden; }
+
+        /* SOL TARAF: TV İZLEME ALANI */
+        .viewer-side { flex: 3; display: flex; flex-direction: column; border-right: 2px solid #333; }
+        .player-container { flex: 2; background: #000; position: relative; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .channel-list-footer { flex: 1; padding: 20px; overflow-y: auto; background: #0a0a0a; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+        .btn-ch { background: #222; padding: 15px; text-align: center; border-radius: 5px; cursor: pointer; transition: 0.3s; border: 1px solid #444; }
+        .btn-ch:hover { background: var(--main-red); }
+        .btn-ch.active { background: var(--main-red); border-color: white; }
+
+        /* SAĞ TARAF: ADMİN PANELİ */
+        .admin-side { flex: 1; background: var(--panel-bg); padding: 20px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.5); }
+        .admin-side h2 { color: var(--main-red); border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 12px; color: #aaa; }
+        input { width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; box-sizing: border-box; }
+        button.save-btn { width: 100%; padding: 12px; background: var(--main-red); border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; }
+        button:hover { opacity: 0.8; }
+        .status-msg { font-size: 12px; color: #4CAF50; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="viewer-side">
+        <div class="player-container">
+            <iframe id="tvFrame" src="https://zeustv229.com/ch.html?id=b1" allowfullscreen></iframe>
+        </div>
+        <div class="channel-list-footer">
+            <h3>Kanallar</h3>
+            <div id="gridArea" class="grid">
+                </div>
+        </div>
+    </div>
+
+    <div class="admin-side">
+        <h2>Admin Paneli</h2>
+        <p style="font-size: 11px; color: #888;">Buradan değiştirdiğin bilgiler anında sola yansır.</p>
+        
+        <div id="editArea">
+            </div>
+
+        <button class="save-btn" onclick="kanallariUygula()">DEĞİŞİKLİKLERİ YAYINLA</button>
+        <div id="status" class="status-msg">✓ Başarıyla güncellendi ve oynatıcı yenilendi!</div>
+    </div>
+
+    <script>
+        // Başlangıç Kanal Verileri
+        let kanallar = [
+            { id: 1, ad: "Zeus TV 1", url: "https://zeustv229.com/ch.html?id=b1" },
+            { id: 2, ad: "Zeus TV 2", url: "https://zeustv229.com/ch.html?id=b2" },
+            { id: 3, ad: "Zeus TV 3", url: "https://zeustv229.com/ch.html?id=b3" }
+        ];
+
+        // 1. ADMİN PANELİNDEKİ INPUTLARI OLUŞTUR
+        function adminPaneliniOlustur() {
+            const editArea = document.getElementById('editArea');
+            editArea.innerHTML = '';
+            kanallar.forEach((kanal, index) => {
+                editArea.innerHTML += `
+                    <div class="input-group">
+                        <label>Kanal ${kanal.id} Adı ve Linki</label>
+                        <input type="text" value="${kanal.ad}" oninput="veriGuncelle(${index}, 'ad', this.value)" style="margin-bottom:5px;">
+                        <input type="text" value="${kanal.url}" oninput="veriGuncelle(${index}, 'url', this.value)">
+                    </div>
+                `;
+            });
+        }
+
+        // 2. KULLANICI LİSTESİNİ OLUŞTUR
+        function listeOlustur() {
+            const gridArea = document.getElementById('gridArea');
+            gridArea.innerHTML = '';
+            kanallar.forEach((kanal) => {
+                const btn = document.createElement('div');
+                btn.className = 'btn-ch';
+                btn.innerText = kanal.ad;
+                btn.onclick = () => {
+                    document.getElementById('tvFrame').src = kanal.url;
+                    // Aktiflik görseli
+                    document.querySelectorAll('.btn-ch').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                };
+                gridArea.appendChild(btn);
+            });
+        }
+
+        // 3. VERİYİ GEÇİCİ OLARAK TUT
+        function veriGuncelle(index, alan, deger) {
+            kanallar[index][alan] = deger;
+        }
+
+        // 4. DEĞİŞİKLİKLERİ OYNATICIYA VE LİSTEYE BAS
+        function kanallariUygula() {
+            listeOlustur(); // Listeyi güncelle
+            // Şu an açık olan kanalın linkini de tazeleyelim (opsiyonel)
+            const currentSrc = document.getElementById('tvFrame').src;
+            // Durum mesajı göster
+            const status = document.getElementById('status');
+            status.style.display = 'block';
+            setTimeout(() => status.style.display = 'none', 3000);
+        }
+
+        // Başlat
+        adminPaneliniOlustur();
+        listeOlustur();
+    </script>
+</body>
+</html>

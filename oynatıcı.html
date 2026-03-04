@@ -1,101 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html>
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsversion='3' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/namespaces/blogger/template/kind' xmlns:data='http://www.google.com/namespaces/blogger/template/data' xmlns:expr='http://www.google.com/namespaces/blogger/template/expression'>
 <head>
-    <title>⚽ VPN-FREE M3U Player</title>
-    <style>
-        body { margin:0; background:#000; color:#fff; font-family:Arial; overflow:hidden; }
-        #player { width:100vw; height:100vh; }
-        .controls { position:fixed; top:10px; left:10px; z-index:999; background:rgba(0,0,0,0.8); padding:15px; border-radius:10px; }
-        select, button { background:#f00; color:#fff; border:none; padding:8px 12px; margin:5px; border-radius:5px; cursor:pointer; }
-    </style>
+  <meta content='width=device-width, initial-scale=1' name='viewport'/>
+  <title><data:view.title.escape/></title>
+  <b:skin><![CDATA[
+    /* CSS Tasarımı */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    .post-card {
+      background: white;
+      margin-bottom: 30px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .post-title a {
+      color: #2c3e50;
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .post-meta {
+      font-size: 13px;
+      color: #7f8c8d;
+      margin: 10px 0;
+    }
+    .post-snippet {
+      line-height: 1.6;
+    }
+    .read-more {
+      display: inline-block;
+      margin-top: 15px;
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #95a5a6;
+    }
+  ]]></b:skin>
 </head>
-<body>
-    <video id="player" controls autoplay muted></video>
-    
-    <div class="controls">
-        <select id="channels" onchange="loadChannel()">
-            <option>Yükleniyor...</option>
-        </select>
-        <button onclick="toggleProxy()">Proxy ON/OFF</button>
-        <span id="status">Bağlanıyor...</span>
-    </div>
 
-    <script>
-        const M3U_URL = 'https://raw.githubusercontent.com/LarcivertSports/omercan/refs/heads/main/omarcan.m3u';
-        let channels = [], useProxy = true;
-        
-        // PROXY POOL (VPN bypass)
-        const proxies = [
-            'https://api.allorigins.win/raw?url=',
-            'https://corsproxy.io/?',
-            'https://thingproxy.freeboard.io/fetch/',
-            'https://api.codetabs.com/v1/proxy?quest=',
-            'https://cors-anywhere.herokuapp.com/'
-        ];
-        
-        async function loadM3U() {
-            let m3uContent = '';
-            for(let proxy of proxies) {
-                try {
-                    const url = proxy + encodeURIComponent(M3U_URL);
-                    const res = await fetch(url);
-                    m3uContent = await res.text();
-                    if(m3uContent.includes('#EXTINF')) break;
-                } catch(e) {}
-            }
-            
-            // Parse channels
-            channels = parseM3U(m3uContent);
-            const select = document.getElementById('channels');
-            select.innerHTML = channels.map((ch,i) => 
-                `<option value="${i}">${ch.name}</option>`
-            ).join('');
-            
-            document.getElementById('status').textContent = `✅ ${channels.length} kanal yüklendi`;
-            loadChannel();
-        }
-        
-        function parseM3U(content) {
-            const lines = content.split('\n');
-            let channels = [], current = {};
-            
-            for(let line of lines) {
-                if(line.startsWith('#EXTINF')) {
-                    current.name = line.match(/tvg-name="([^"]+)"/)?.[1] || line.match(/,(.*)/)?.[1] || 'Kanal';
-                } else if(line.startsWith('http') && current.name) {
-                    current.url = line.trim();
-                    channels.push({...current});
-                    current = {};
-                }
-            }
-            return channels;
-        }
-        
-        async function loadChannel() {
-            const index = document.getElementById('channels').value;
-            if(!channels[index]) return;
-            
-            const channel = channels[index];
-            document.getElementById('status').textContent = `▶️ ${channel.name} yükleniyor...`;
-            
-            let streamUrl = channel.url;
-            if(useProxy) {
-                // Otomatik proxy uygula
-                const proxy = proxies[0];
-                streamUrl = proxy + encodeURIComponent(streamUrl);
-            }
-            
-            const player = document.getElementById('player');
-            player.src = streamUrl;
-            player.play().catch(e=>console.log('Autoplay blocked'));
-        }
-        
-        function toggleProxy() {
-            useProxy = !useProxy;
-            loadChannel();
-        }
-        
-        loadM3U();
-    </script>
+<body>
+  <header>
+    <h1><data:blog.title/></h1>
+  </header>
+
+  <div class='container'>
+    <b:section id='main-content' showaddelement='yes'>
+      <b:widget id='Blog1' locked='true' title='Blog Kayıtları' type='Blog'>
+        <b:includable id='main'>
+          <b:loop values='data:posts' var='post'>
+            <article class='post-card'>
+              <h2 class='post-title'>
+                <a expr:href='data:post.url'><data:post.title/></a>
+              </h2>
+              <div class='post-meta'>
+                <span><data:post.dateHeader/></span>
+              </div>
+              <div class='post-snippet'>
+                <b:if cond='data:post.snippets.short'>
+                  <data:post.snippets.short/>...
+                </b:if>
+              </div>
+              <a class='read-more' expr:href='data:post.url'>Devamını Oku →</a>
+            </article>
+          </b:loop>
+        </b:includable>
+      </b:widget>
+    </b:section>
+  </div>
+
+  <footer>
+    <p>&copy; <data:blog.title/> - <script>document.write(new Date().getFullYear());</script></p>
+  </footer>
 </body>
-</html> 
+</html>

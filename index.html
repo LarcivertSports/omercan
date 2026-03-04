@@ -1,98 +1,128 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html b:css='false' b:defaultwidgetversion='2' b:layoutsversion='3' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/namespaces/blogger/template/kind' xmlns:data='http://www.google.com/namespaces/blogger/template/data' xmlns:expr='http://www.google.com/namespaces/blogger/template/expression'>
+<html lang="tr">
 <head>
-  <meta content='width=device-width, initial-scale=1' name='viewport'/>
-  <title><data:view.title.escape/></title>
-  <b:skin><![CDATA[
-    /* CSS Tasarımı */
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f7f6;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #2c3e50;
-      color: white;
-      padding: 20px 0;
-      text-align: center;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 20px auto;
-      padding: 0 20px;
-    }
-    .post-card {
-      background: white;
-      margin-bottom: 30px;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .post-title a {
-      color: #2c3e50;
-      text-decoration: none;
-      font-size: 24px;
-      font-weight: bold;
-    }
-    .post-meta {
-      font-size: 13px;
-      color: #7f8c8d;
-      margin: 10px 0;
-    }
-    .post-snippet {
-      line-height: 1.6;
-    }
-    .read-more {
-      display: inline-block;
-      margin-top: 15px;
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      color: #95a5a6;
-    }
-  ]]></b:skin>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijital Lisans Mağazası | Hızlı ve Güvenilir</title>
+    <style>
+        /* Genel Tasarım Ayarları */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; 
+            color: #333; 
+        }
+        header { 
+            background-color: #1a1a1a; 
+            color: #fff; 
+            padding: 20px 0; 
+            text-align: center; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 { margin: 0; font-size: 28px; letter-spacing: 1px; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        .hero { 
+            text-align: center; 
+            padding: 50px 20px; 
+            background: #fff; 
+            border-radius: 8px; 
+            margin-bottom: 40px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        }
+        .hero h2 { font-size: 32px; color: #0056b3; margin-top: 0; }
+        .hero p { font-size: 18px; color: #666; }
+        
+        /* Ürün Kartları Izgarası */
+        .products { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 25px; 
+            justify-content: center; 
+        }
+        .product-card { 
+            background: #fff; 
+            border: 1px solid #eaeaea; 
+            border-radius: 10px; 
+            padding: 25px; 
+            width: 300px; 
+            text-align: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+        }
+        .product-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+        }
+        .product-card h3 { font-size: 22px; margin-top: 0; color: #222; }
+        .product-card p { color: #666; font-size: 14px; line-height: 1.5; height: 40px; }
+        .price { font-size: 28px; font-weight: bold; color: #28a745; margin: 20px 0; }
+        
+        /* Satın Al Butonu */
+        .btn { 
+            display: block; 
+            background-color: #e1306c; /* Instagram renk tonu */
+            color: #fff; 
+            padding: 15px; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 16px;
+            transition: background 0.3s; 
+        }
+        .btn:hover { background-color: #c13584; }
+        
+        footer { 
+            text-align: center; 
+            padding: 20px; 
+            margin-top: 50px; 
+            color: #777; 
+            font-size: 14px; 
+            border-top: 1px solid #ddd;
+        }
+    </style>
 </head>
-
 <body>
-  <header>
-    <h1><data:blog.title/></h1>
-  </header>
 
-  <div class='container'>
-    <b:section id='main-content' showaddelement='yes'>
-      <b:widget id='Blog1' locked='true' title='Blog Kayıtları' type='Blog'>
-        <b:includable id='main'>
-          <b:loop values='data:posts' var='post'>
-            <article class='post-card'>
-              <h2 class='post-title'>
-                <a expr:href='data:post.url'><data:post.title/></a>
-              </h2>
-              <div class='post-meta'>
-                <span><data:post.dateHeader/></span>
-              </div>
-              <div class='post-snippet'>
-                <b:if cond='data:post.snippets.short'>
-                  <data:post.snippets.short/>...
-                </b:if>
-              </div>
-              <a class='read-more' expr:href='data:post.url'>Devamını Oku →</a>
-            </article>
-          </b:loop>
-        </b:includable>
-      </b:widget>
-    </b:section>
-  </div>
+<header>
+    <h1>Dijital Lisans Merkezi</h1>
+</header>
 
-  <footer>
-    <p>&copy; <data:blog.title/> - <script>document.write(new Date().getFullYear());</script></p>
-  </footer>
+<div class="container">
+    <section class="hero">
+        <h2>Orijinal Yazılım, Anında Teslimat</h2>
+        <p>İhtiyacınız olan Windows, Office ve Antivirüs lisanslarını en uygun fiyatlarla, güvenle satın alın. Satın alma işlemi için Instagram üzerinden bizimle iletişime geçin.</p>
+    </section>
+
+    <section class="products">
+        <div class="product-card">
+            <h3>Windows 11 Pro OEM Lisans</h3>
+            <p>Tek bilgisayar için ömür boyu dijital lisans anahtarı.</p>
+            <div class="price">149 ₺</div>
+            <a href="https://instagram.com/omercansiskolu" target="_blank" class="btn">Instagram'dan SATIN AL</a>
+        </div>
+
+        <div class="product-card">
+            <h3>Office 2021 Pro Plus</h3>
+            <p>Word, Excel, PowerPoint ve diğer ofis uygulamaları.</p>
+            <div class="price">199 ₺</div>
+            <a href="https://instagram.com/omercansiskolu" target="_blank" class="btn">Instagram'dan SATIN AL</a>
+        </div>
+
+        <div class="product-card">
+            <h3>Kaspersky Total Security</h3>
+            <p>1 Yıllık koruma. Bilgisayarınızı siber tehditlerden koruyun.</p>
+            <div class="price">249 ₺</div>
+            <a href="https://instagram.com/omercansiskolu" target="_blank" class="btn">Instagram'dan SATIN AL</a>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2026 omercansiskolu.com.tr - Tüm Hakları Saklıdır.</p>
+</footer>
+
 </body>
 </html>

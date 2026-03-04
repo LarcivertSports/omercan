@@ -13,6 +13,11 @@ https://zeustv32342.info/b2/tracks-v1a1/mono.ts.m3u8
 #EXTINF:-1 tvg-id="bein_sport_3" tvg-name="BeIN Sport 3" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://www.digiturkburada.com.tr/kanal3/kanal-buyuk/bein-sports-hd-3-buyuk-1.png?rkt=DfS6Tgv6Hjr93k3" group-title="BeINSports",BeIN Sport 3
 https://zeustv32342.info/b3/tracks-v1a1/mono.ts.m3u8
 
+#EXTINF:-1 tvg-id="bein_sport_3" tvg-name="BeIN Sport 3" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://www.digiturkburada.com.tr/kanal3/kanal-buyuk/bein-sports-hd-3-buyuk-1.png?rkt=DfS6Tgv6Hjr93k3" group-title="BeINSports",BeIN Sport 3
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
+#EXTVLCOPT:http-referrer=https://inattv1269.xyz/
+https://inattv1269.xyz/channel.html?id=b3
+
 #EXTINF:-1 tvg-id="bein_sport_4" tvg-name="BeIN Sport 4" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://i.hizliresim.com/cww8drm.png" group-title="BeINSports",BeIN Sport 4
 https://zeustv32342.info/b4/tracks-v1a1/mono.ts.m3u8
 

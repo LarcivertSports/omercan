@@ -8,7 +8,9 @@ https://zeustv32342.info/b1/tracks-v1a1/mono.ts.m3u8
 https://andro.5172948.xyz/checklist/androstreamlivebs1.m3u8
 
 #EXTINF:-1 tvg-id="bein_sport_1" tvg-name="BeIN Sport 1" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://www.digiturkburada.com.tr/kanal3/kanal-buyuk/bein-sports-hd-1-buyuk.png?rkt=DfS6Tgv6Hjr93k3" group-title="BeINSports",BeIN Sport 1 (YEDEK) 
-https://dga1op10s1u3leo.7af32068d38fdf.click/live/selcukobs1/playlist.m3u8
+EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
+#EXTVLCOPT:http-referrer=https://zeustv230.com/
+https://zeustv230.com/ch.html?id=b1
 
 #EXTINF:-1 tvg-id="bein_sport_2" tvg-name="BeIN Sport 2" tvg-language="Turkish" tvg-country="TR" tvg-logo="https://www.digiturkburada.com.tr/kanal3/kanal-buyuk/bein-sports-hd-2-buyuk.png?rkt=DfS6Tgv6Hjr93k3" group-title="BeINSports",BeIN Sport 2
 https://zeustv32342.info/b2/tracks-v1a1/mono.ts.m3u8 
